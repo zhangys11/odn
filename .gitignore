@@ -1,0 +1,18 @@
+
+flower_efficientnet_dataset.pkl
+.ipynb_checkpoints/5.87 Fine Tuning (EfficientNetB4 fundus image classification C3)-checkpoint.ipynb
+.ipynb_checkpoints/5.26 Lightweight Models Flower - EfficientNetB0-checkpoint.ipynb
+.ipynb_checkpoints/5.26 Lightweight Models Flower - EfficientNetB0-checkpoint.ipynb
+.ipynb_checkpoints/5.26 Lightweight Models Flower - EfficientNetB0-checkpoint.ipynb
+.ipynb_checkpoints/5.26 Lightweight Models Flower - EfficientNetB0-checkpoint.ipynb
+fundus_efficientnet_dataset.pkl
+fundus_C3_customEfficientNetB4_model_best2.hdf5
+notebooks/flower_customEfficientNetB0_model_best.hdf5
+notebooks/fundus_C3_customEfficientNetB4_model_best.hdf5
+fundus_C3_customEfficientNetB4_model_best.hdf5
+flower_customEfficientNetB0_model_best.hdf5
+fundus_C3_customEfficientNetB4_model_best.hdf5
+flower_customEfficientNetB0_model_best.hdf5
+*.pyc
+src/odn/models/rpn/pretrained_rpn_vgg_model.36-1.42.hdf5
+notebooks/.ipynb_checkpoints/8.7 Object Detection -Fundus - Clean-checkpoint.ipynb
