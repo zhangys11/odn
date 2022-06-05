@@ -108,8 +108,8 @@ def train_rpn (train_path, output_weight_path, num_rois,
 
 
     #### load images here ####
-    # get voc images
-    all_imgs, classes_count, class_mapping = get_data(train_path)
+    # get voc images    
+    all_imgs, classes_count, class_mapping = get_data(train_path, skip_header=True)
 
     print(classes_count)
 

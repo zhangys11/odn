@@ -1,7 +1,9 @@
+from unittest import skip
 import cv2
 import numpy as np
 
-def get_data(input_path, cat = None):
+def get_data(input_path, cat = None, skip_header = True):
+
 	found_bg = False
 	all_imgs = {}
 
@@ -16,6 +18,10 @@ def get_data(input_path, cat = None):
 		print('Parsing annotation files')
 
 		for line in f:
+			if skip_header:
+				skip_header = False
+				continue # skip 1st row
+
 			line_split = line.strip().split(',')
 			(filename,x1,y1,x2,y2,class_name) = line_split
 
@@ -32,6 +38,8 @@ def get_data(input_path, cat = None):
 
 			if filename not in all_imgs:
 				all_imgs[filename] = {}
+				
+				print(filename)
 				
 				img = cv2.imread(filename)
 				(rows,cols) = img.shape[:2]

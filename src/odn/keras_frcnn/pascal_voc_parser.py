@@ -4,7 +4,7 @@ import xml.etree.ElementTree as ET
 import numpy as np
 
 
-def get_data(input_path, cat=None):
+def get_data(input_path, cat=None, skip_header = False):
 	all_imgs = []
 
 	classes_count = {}

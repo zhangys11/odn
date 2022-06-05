@@ -1,5 +1,6 @@
 import numpy as np
 import os
+import os.path
 import pathlib
 import time
 import pickle
@@ -110,7 +111,17 @@ class annotation():
         ax = fig.gca()
         ax.set_axis_off()
 
-        for _,row in df[df.filename == filename].iterrows():
+        idxs = []
+        base_fn = os.path.basename(filename).lower()
+        for idx, fn in enumerate(df.filename):
+            base_fn2 = os.path.basename(fn).lower()
+            if (base_fn == base_fn2):
+                idxs.append(idx)
+
+        # print(df.iloc[idxs])
+
+        for _, row in df.iloc[idxs].iterrows():
+            # print(row)
             xmin = row.xmin
             xmax = row.xmax
             ymin = row.ymin
