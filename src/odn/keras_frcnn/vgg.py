@@ -24,7 +24,7 @@ def get_weight_path():
         print('pretrained weights not available for VGG with theano backend')
         return
     else:
-        return '../models/rpn/vgg16_weights_tf_dim_ordering_tf_kernels.h5'
+        return './models/rpn/vgg16_weights_tf_dim_ordering_tf_kernels.h5'
 
 
 def get_img_output_length(width, height):

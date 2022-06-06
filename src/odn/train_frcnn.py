@@ -135,10 +135,10 @@ print('Num train samples {}'.format(len(train_imgs)))
 print('Num val samples {}'.format(len(val_imgs)))
 
 
-data_gen_train = data_generators.get_anchor_gt(train_imgs, classes_count, C, nn.get_img_output_length, K.image_dim_ordering(), mode='train')
-data_gen_val = data_generators.get_anchor_gt(val_imgs, classes_count, C, nn.get_img_output_length,K.image_dim_ordering(), mode='val')
+data_gen_train = data_generators.get_anchor_gt(train_imgs, classes_count, C, nn.get_img_output_length, K.image_data_format(), mode='train')
+data_gen_val = data_generators.get_anchor_gt(val_imgs, classes_count, C, nn.get_img_output_length,K.image_data_format(), mode='val')
 
-if K.image_dim_ordering() == 'th':
+if K.image_data_format() == 'channels_first': # K.image_dim_ordering() == 'th':
     input_shape_img = (3, None, None)
 else:
     input_shape_img = (None, None, 3)
@@ -239,27 +239,27 @@ for epoch_num in range(num_epochs):
 			loss_rpn = model_rpn.train_on_batch(X, Y)
 
 			P_rpn = model_rpn.predict_on_batch(X)
-			R = roi_helpers.rpn_to_roi(P_rpn[0], P_rpn[1], C, K.image_dim_ordering(), use_regr=True, overlap_thresh=0.4, max_boxes=300)
+			R = roi_helpers.rpn_to_roi(P_rpn[0], P_rpn[1], C, K.image_data_format(), use_regr=True, overlap_thresh=0.4, max_boxes=300)
 			# note: calc_iou converts from (x1,y1,x2,y2) to (x,y,w,h) format
 			X2, Y1, Y2, IouS = roi_helpers.calc_iou(R, img_data, C, class_mapping)
 
 			if X2 is None:
-			    rpn_accuracy_rpn_monitor.append(0)
-			    rpn_accuracy_for_epoch.append(0)
-			    continue
+				rpn_accuracy_rpn_monitor.append(0)
+				rpn_accuracy_for_epoch.append(0)
+				continue
 
 			neg_samples = np.where(Y1[0, :, -1] == 1)
 			pos_samples = np.where(Y1[0, :, -1] == 0)
 
 			if len(neg_samples) > 0:
-			    neg_samples = neg_samples[0]
+				neg_samples = neg_samples[0]
 			else:
 			    neg_samples = []
 
 			if len(pos_samples) > 0:
-			    pos_samples = pos_samples[0]
+				pos_samples = pos_samples[0]
 			else:
-			    pos_samples = []
+				pos_samples = []
 			
 			rpn_accuracy_rpn_monitor.append(len(pos_samples))
 			rpn_accuracy_for_epoch.append((len(pos_samples)))
