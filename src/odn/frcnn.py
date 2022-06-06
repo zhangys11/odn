@@ -19,11 +19,11 @@ from keras.layers import Input
 from keras.models import Model
 from keras_frcnn import data_generators
 from keras_frcnn import config
-from keras_frcnn import losses as losses
+from keras_frcnn import losses
 import keras_frcnn.roi_helpers as roi_helpers
 from keras.utils import generic_utils
 
-def train_rpn (train_path, output_weight_path, num_rois, 
+def train_rpn (train_path, path_prefix, output_weight_path, num_rois, 
                network = 'vgg16', input_weight_path = None, # pre-trained weights for transfer learning
                parser = 'pascal_voc', # anno file format
                config_filename = 'train_rpn.config',
@@ -109,7 +109,7 @@ def train_rpn (train_path, output_weight_path, num_rois,
 
     #### load images here ####
     # get voc images    
-    all_imgs, classes_count, class_mapping = get_data(train_path, skip_header=True)
+    all_imgs, classes_count, class_mapping = get_data(train_path, skip_header=True, path_prefix = path_prefix)
 
     print(classes_count)
 
@@ -144,8 +144,10 @@ def train_rpn (train_path, output_weight_path, num_rois,
     print('Num val samples {}'.format(len(val_imgs)))
 
 
-    data_gen_train = data_generators.get_anchor_gt(train_imgs, classes_count, C, nn.get_img_output_length, K.image_dim_ordering(), mode='train')
-    data_gen_val = data_generators.get_anchor_gt(val_imgs, classes_count, C, nn.get_img_output_length,K.image_dim_ordering(), mode='val')
+    data_gen_train = data_generators.get_anchor_gt(train_imgs, classes_count, C, nn.get_img_output_length, 
+    K.image_data_format(), mode='train')
+    data_gen_val = data_generators.get_anchor_gt(val_imgs, classes_count, C, nn.get_img_output_length,
+    K.image_data_format(), mode='val')
 
     # set input shape
     input_shape_img = (None, None, 3)
@@ -176,14 +178,15 @@ def train_rpn (train_path, output_weight_path, num_rois,
 
     # compile model
     optimizer = Adam(lr=1e-5, clipnorm=0.001)
-    model_rpn.compile(optimizer=optimizer, loss=[losses.rpn_loss_cls(num_anchors), losses.rpn_loss_regr(num_anchors)])
+    model_rpn.compile(optimizer=optimizer, 
+    loss=[losses.rpn_loss_cls(num_anchors), losses.rpn_loss_regr(num_anchors)])
 
     # write training misc here
     epoch_length = 100
     num_epochs = int(num_epochs)
     iter_num = 0
 
-    losses = np.zeros((epoch_length, 5))
+    # losses = np.zeros((epoch_length, 5))
     rpn_accuracy_rpn_monitor = []
     rpn_accuracy_for_epoch = []
     start_time = time.time()
@@ -209,7 +212,7 @@ def train_rpn (train_path, output_weight_path, num_rois,
     # X2, Y1, Y2, IouS = roi_helpers.calc_iou(R, img_data, C, class_mapping)
     # this will output the binding box axis. [x1,x2,y1,y2].
 
-    Callbacks=keras.callbacks.ModelCheckpoint("./models/rpn/rpn."+network+".weights.{epoch:02d}-{loss:.2f}.hdf5", monitor='loss', verbose=1, save_best_only=True, save_weights_only=True, mode='auto', period=4)
+    Callbacks=keras.callbacks.ModelCheckpoint("../../models/rpn/rpn."+network+".weights.{epoch:02d}-{loss:.2f}.hdf5", monitor='loss', verbose=1, save_best_only=True, save_weights_only=True, mode='auto', period=4)
     callback=[Callbacks]
     if len(val_imgs) == 0:
         # assuming you don't have validation data
@@ -224,3 +227,14 @@ def train_rpn (train_path, output_weight_path, num_rois,
 
     numpy_loss_history = np.array(loss_history)
     np.savetxt(network+"_rpn_loss_history.txt", numpy_loss_history, delimiter=",")
+
+
+if __name__ == '__main__':
+    # a simple test
+    train_rpn ('C:/Users/eleve/Documents/codex/py/keras/8. Object Detection/github/data/fundus/train.txt', 'C:/Users/eleve/Documents/codex/py/keras/8. Object Detection/github/data/fundus/', 
+           'rpn_model_tmp', 3, 
+               network = 'vgg16', input_weight_path = None, # pre-trained weights for transfer learning
+               parser = 'simple', # anno file format
+               config_filename = 'train_rpn.tmp.config',
+               horizontal_flips = False, vertical_flips = False, rot_90 = False, # data augmentation
+               num_epochs = 20)

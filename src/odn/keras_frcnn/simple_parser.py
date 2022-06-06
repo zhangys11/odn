@@ -2,7 +2,7 @@ from unittest import skip
 import cv2
 import numpy as np
 
-def get_data(input_path, cat = None, skip_header = True):
+def get_data(input_path, cat = None, skip_header = True, path_prefix = ""):
 
 	found_bg = False
 	all_imgs = {}
@@ -38,11 +38,12 @@ def get_data(input_path, cat = None, skip_header = True):
 
 			if filename not in all_imgs:
 				all_imgs[filename] = {}
-				
-				print(filename)
-				
-				img = cv2.imread(filename)
+				# print(path_prefix + filename)
+				img = cv2.imread(path_prefix + filename)
+
 				(rows,cols) = img.shape[:2]
+				# print(rows, cols)
+
 				all_imgs[filename]['filepath'] = filename
 				all_imgs[filename]['width'] = cols
 				all_imgs[filename]['height'] = rows
@@ -52,7 +53,7 @@ def get_data(input_path, cat = None, skip_header = True):
 				else:
 					all_imgs[filename]['imageset'] = 'test'
 
-			all_imgs[filename]['bboxes'].append({'class': class_name, 'x1': int(x1), 'x2': int(x2), 'y1': int(y1), 'y2': int(y2)})
+			all_imgs[filename]['bboxes'].append({'class': class_name, 'x1': round(float(x1)), 'x2': round(float(x2)), 'y1': round(float(y1)), 'y2': round(float(y2))})
 
 
 		all_data = []

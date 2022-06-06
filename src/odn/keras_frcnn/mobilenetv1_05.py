@@ -47,7 +47,7 @@ def nn_base(input_tensor=None, trainable=False):
         else:
             img_input = input_tensor
 
-    if K.image_dim_ordering() == 'tf':
+    if K.image_data_format() == 'channels_first':
         bn_axis = 3
     else:
         bn_axis = 1
@@ -259,7 +259,7 @@ def identity_block_td(input_tensor, kernel_size, filters, stage, block, trainabl
     # identity block time distributed
 
     nb_filter1, nb_filter2, nb_filter3 = filters
-    if K.image_dim_ordering() == 'tf':
+    if K.image_data_format() == 'channels_first':
         bn_axis = 3
     else:
         bn_axis = 1

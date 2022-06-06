@@ -24,7 +24,7 @@ def get_weight_path():
         print('pretrained weights not available for VGG with theano backend')
         return
     else:
-        return 'pretrain/vgg16_weights_tf_dim_ordering_tf_kernels.h5'
+        return '../models/rpn/vgg16_weights_tf_dim_ordering_tf_kernels.h5'
 
 
 def get_img_output_length(width, height):
@@ -50,7 +50,7 @@ def nn_base(input_tensor=None, trainable=False):
         else:
             img_input = input_tensor
 
-    if K.image_dim_ordering() == 'tf':
+    if K.image_data_format() == 'channels_first':
         bn_axis = 3
     else:
         bn_axis = 1
