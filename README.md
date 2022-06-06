@@ -2,10 +2,12 @@
 
 We provide a set of object detection neural network training and evaluation functions.  
 We currently support Faster-RCNN. An infant funuds image object detection application is provided.  
+The Faster-RCNN module is based on https://github.com/kentaroy47/frcnn-from-scratch-with-keras. We have updated the code according to the latest keras API change (K..image_dim_ordering () -> K.image_data_format()).  
+We also uses the 3rd-party data augmentation package (https://github.com/Paperspace/DataAugmentationForObjectDetection).  
 
 # Install
 
-pip install tensorflow-gpu >= 2  
+pip install tensorflow-gpu == 1.14.0  
 pip install odn
 
 # How to use
