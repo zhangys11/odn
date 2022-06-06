@@ -229,16 +229,16 @@ def rpn_to_roi(rpn_layer, regr_layer, C, dim_ordering, use_regr=True, max_boxes=
 
 	assert rpn_layer.shape[0] == 1
 
-	if dim_ordering == 'th':
+	if dim_ordering == 'channels_first': #'th':
 		(rows,cols) = rpn_layer.shape[2:]
 
-	elif dim_ordering == 'tf':
+	elif dim_ordering == 'channels_last':
 		(rows, cols) = rpn_layer.shape[1:3]
 
 	curr_layer = 0
-	if dim_ordering == 'tf':
+	if dim_ordering == 'channels_last':
 		A = np.zeros((4, rpn_layer.shape[1], rpn_layer.shape[2], rpn_layer.shape[3]))
-	elif dim_ordering == 'th':
+	elif dim_ordering == 'channels_first':
 		A = np.zeros((4, rpn_layer.shape[2], rpn_layer.shape[3], rpn_layer.shape[1]))
 
 	for anchor_size in anchor_sizes:

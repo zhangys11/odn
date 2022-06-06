@@ -2,7 +2,7 @@ from unittest import skip
 import cv2
 import numpy as np
 
-def get_data(input_path, cat = None, skip_header = True, path_prefix = ""):
+def get_data(input_path, cat = None, skip_header = False, path_prefix = ""):
 
 	found_bg = False
 	all_imgs = {}

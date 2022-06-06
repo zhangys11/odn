@@ -1,0 +1,135 @@
+C:\Users\eleve\Documents\keras\8. Object Detection\keras-frcnn>python train_frcnn.py -o simple -p all.txt --network vgg16 --hf true --rpn ./models/rpn/rpn.vgg.weights.36-1.42.hdf5 --num_epochs 10
+Using TensorFlow backend.
+2019-09-30 11:27:01.769864: I tensorflow/core/platform/cpu_feature_guard.cc:141] Your CPU supports instructions that this TensorFlow binary was not compiled to use: AVX AVX2
+2019-09-30 11:27:02.847521: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1433] Found device 0 with properties:
+name: GeForce GTX 1070 with Max-Q Design major: 6 minor: 1 memoryClockRate(GHz): 1.2655
+pciBusID: 0000:01:00.0
+totalMemory: 8.00GiB freeMemory: 6.63GiB
+2019-09-30 11:27:02.860487: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1512] Adding visible gpu devices: 0
+2019-09-30 11:27:03.333941: I tensorflow/core/common_runtime/gpu/gpu_device.cc:984] Device interconnect StreamExecutor with strength 1 edge matrix:
+2019-09-30 11:27:03.342296: I tensorflow/core/common_runtime/gpu/gpu_device.cc:990]      0
+2019-09-30 11:27:03.346421: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1003] 0:   N
+2019-09-30 11:27:03.350095: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1115] Created TensorFlow device (/job:localhost/replica:0/task:0/device:GPU:0 with 6378 MB memory) -> physical GPU (device: 0, name: GeForce GTX 1070 with Max-Q Design, pci bus id: 0000:01:00.0, compute capability: 6.1)
+Num classes (including bg) = 3
+WARNING:tensorflow:From C:\Users\eleve\Anaconda3\lib\site-packages\tensorflow\python\framework\op_def_library.py:263: colocate_with (from tensorflow.python.framework.ops) is deprecated and will be removed in a future version.
+Instructions for updating:
+Colocations handled automatically by placer.
+WARNING:tensorflow:From C:\Users\eleve\Anaconda3\lib\site-packages\keras\backend\tensorflow_backend.py:3445: calling dropout (from tensorflow.python.ops.nn_ops) with keep_prob is deprecated and will be removed in a future version.
+Instructions for updating:
+Please use `rate` instead of `keep_prob`. Rate should be set to `rate = 1 - keep_prob`.
+loading weights from pretrain/vgg16_weights_tf_dim_ordering_tf_kernels.h5
+Could not load pretrained model weights. Weights can be found in the keras application folder       https://github.com/fchollet/keras/tree/master/keras/applications
+loading RPN weights from  ./models/rpn/rpn.vgg.weights.36-1.42.hdf5
+Starting training
+Epoch 1/10
+WARNING:tensorflow:From C:\Users\eleve\Anaconda3\lib\site-packages\tensorflow\python\ops\math_ops.py:3066: to_int32 (from tensorflow.python.ops.math_ops) is deprecated and will be removed in a future version.
+Instructions for updating:
+Use tf.cast instead.
+2019-09-30 11:27:17.635148: I tensorflow/stream_executor/dso_loader.cc:152] successfully opened CUDA library cublas64_90.dll locally
+1000/1000 [==============================] - 694s 694ms/step - rpn_cls: 4.7512 - rpn_regr: 0.1537 - detector_cls: 0.4690 - detector_regr: 0.3231 - len of pos: 2.0300
+Mean number of bounding boxes from RPN overlapping ground truth boxes: 2.031
+Classifier accuracy for bounding boxes from RPN: 0.8325999945998191
+Loss RPN classifier: 2.7797749898195687
+Loss RPN regression: 0.08996190702542663
+Loss Detector classifier: 0.41830132879107257
+Loss Detector regression: 0.27372335544717497
+Elapsed time: 694.423157453537
+Total loss decreased from inf to 3.5617615810832426, saving weights
+Epoch 2/10
+Average number of overlapping bounding boxes from RPN = 2.031 for 1000 previous iterations
+1000/1000 [==============================] - 690s 690ms/step - rpn_cls: 1.0679 - rpn_regr: 0.0464 - detector_cls: 0.3132 - detector_regr: 0.2005 - len of pos: 2.2740
+Mean number of bounding boxes from RPN overlapping ground truth boxes: 2.275
+Classifier accuracy for bounding boxes from RPN: 0.8672999925613404
+Loss RPN classifier: 1.0265677741572872
+Loss RPN regression: 0.04572371233394369
+Loss Detector classifier: 0.29583830052800475
+Loss Detector regression: 0.19165190422348677
+Elapsed time: 691.176572561264
+Total loss decreased from 3.5617615810832426 to 1.5597816912427225, saving weights
+Epoch 3/10
+Average number of overlapping bounding boxes from RPN = 2.275 for 1000 previous iterations
+1000/1000 [==============================] - 690s 690ms/step - rpn_cls: 0.8701 - rpn_regr: 0.0383 - detector_cls: 0.2593 - detector_regr: 0.1632 - len of pos: 2.2940
+Mean number of bounding boxes from RPN overlapping ground truth boxes: 2.296
+Classifier accuracy for bounding boxes from RPN: 0.8878999931812286
+Loss RPN classifier: 0.81712477742802
+Loss RPN regression: 0.03786203143442981
+Loss Detector classifier: 0.2521327610365115
+Loss Detector regression: 0.16092639353661797
+Elapsed time: 691.4922370910645
+Total loss decreased from 1.5597816912427225 to 1.2680459634355792, saving weights
+Epoch 4/10
+Average number of overlapping bounding boxes from RPN = 2.296 for 1000 previous iterations
+1000/1000 [==============================] - 685s 685ms/step - rpn_cls: 1.0319 - rpn_regr: 0.0446 - detector_cls: 0.2579 - detector_regr: 0.1685 - len of pos: 2.2510
+Mean number of bounding boxes from RPN overlapping ground truth boxes: 2.251
+Classifier accuracy for bounding boxes from RPN: 0.8847999940514565
+Loss RPN classifier: 0.9106578058943269
+Loss RPN regression: 0.03935263305390253
+Loss Detector classifier: 0.2563355354005471
+Loss Detector regression: 0.16324098080722615
+Elapsed time: 686.4962666034698
+Epoch 5/10
+Average number of overlapping bounding boxes from RPN = 2.251 for 1000 previous iterations
+1000/1000 [==============================] - 686s 686ms/step - rpn_cls: 0.7944 - rpn_regr: 0.0351 - detector_cls: 0.2287 - detector_regr: 0.1511 - len of pos: 2.3330
+Mean number of bounding boxes from RPN overlapping ground truth boxes: 2.335
+Classifier accuracy for bounding boxes from RPN: 0.8972999925613403
+Loss RPN classifier: 0.7391977336998266
+Loss RPN regression: 0.03508164935815148
+Loss Detector classifier: 0.2288099570538616
+Loss Detector regression: 0.14949868845287712
+Elapsed time: 685.5775558948517
+Total loss decreased from 1.2680459634355792 to 1.1525880285647168, saving weights
+Epoch 6/10
+Average number of overlapping bounding boxes from RPN = 2.335 for 1000 previous iterations
+1000/1000 [==============================] - 680s 680ms/step - rpn_cls: 0.5403 - rpn_regr: 0.0319 - detector_cls: 0.2039 - detector_regr: 0.1400 - len of pos: 2.3080
+Mean number of bounding boxes from RPN overlapping ground truth boxes: 2.31
+Classifier accuracy for bounding boxes from RPN: 0.9147999923229218
+Loss RPN classifier: 0.6024459582993015
+Loss RPN regression: 0.032411550833145154
+Loss Detector classifier: 0.20189423552679364
+Loss Detector regression: 0.13740129090519623
+Elapsed time: 680.9199457168579
+Total loss decreased from 1.1525880285647168 to 0.9741530355644366, saving weights
+Epoch 7/10
+Average number of overlapping bounding boxes from RPN = 2.31 for 1000 previous iterations
+1000/1000 [==============================] - 679s 679ms/step - rpn_cls: 0.5656 - rpn_regr: 0.0300 - detector_cls: 0.1807 - detector_regr: 0.1227 - len of pos: 2.2920
+Mean number of bounding boxes from RPN overlapping ground truth boxes: 2.293
+Classifier accuracy for bounding boxes from RPN: 0.9216999922990798
+Loss RPN classifier: 0.5551620000099919
+Loss RPN regression: 0.029570422103861346
+Loss Detector classifier: 0.17619971085136057
+Loss Detector regression: 0.12175299687276128
+Elapsed time: 680.2370727062225
+Total loss decreased from 0.9741530355644366 to 0.8826851298379751, saving weights
+Epoch 8/10
+Average number of overlapping bounding boxes from RPN = 2.293 for 1000 previous iterations
+1000/1000 [==============================] - 682s 682ms/step - rpn_cls: 0.4483 - rpn_regr: 0.0283 - detector_cls: 0.1619 - detector_regr: 0.1138 - len of pos: 2.3060
+Mean number of bounding boxes from RPN overlapping ground truth boxes: 2.306
+Classifier accuracy for bounding boxes from RPN: 0.9352999929785728
+Loss RPN classifier: 0.4406609024585723
+Loss RPN regression: 0.027925515016075222
+Loss Detector classifier: 0.15810962171724532
+Loss Detector regression: 0.11113670803187416
+Elapsed time: 683.0928750038147
+Total loss decreased from 0.8826851298379751 to 0.737832747223767, saving weights
+Epoch 9/10
+Average number of overlapping bounding boxes from RPN = 2.306 for 1000 previous iterations
+1000/1000 [==============================] - 684s 684ms/step - rpn_cls: 0.4678 - rpn_regr: 0.0286 - detector_cls: 0.1512 - detector_regr: 0.1073 - len of pos: 2.2550
+Mean number of bounding boxes from RPN overlapping ground truth boxes: 2.256
+Classifier accuracy for bounding boxes from RPN: 0.9388999936580658
+Loss RPN classifier: 0.4742627322515227
+Loss RPN regression: 0.028268755042459816
+Loss Detector classifier: 0.14890585847309556
+Loss Detector regression: 0.10440541738644242
+Elapsed time: 685.1276152133942
+Epoch 10/10
+Average number of overlapping bounding boxes from RPN = 2.256 for 1000 previous iterations
+1000/1000 [==============================] - 702s 702ms/step - rpn_cls: 0.4332 - rpn_regr: 0.0275 - detector_cls: 0.1361 - detector_regr: 0.0978 - len of pos: 2.2700
+Mean number of bounding boxes from RPN overlapping ground truth boxes: 2.272
+Classifier accuracy for bounding boxes from RPN: 0.9463999934792519
+Loss RPN classifier: 0.4147988031325393
+Loss RPN regression: 0.026993709954898804
+Loss Detector classifier: 0.13374476807413158
+Loss Detector regression: 0.09462021564808674
+Elapsed time: 702.4493336677551
+Total loss decreased from 0.737832747223767 to 0.6701574968096564, saving weights
+Training complete, exiting.
