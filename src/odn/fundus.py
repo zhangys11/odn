@@ -1,3 +1,4 @@
+from http.client import UnimplementedFileMode
 import numpy as np
 import os
 import os.path
@@ -7,11 +8,11 @@ import pickle
 import matplotlib
 from matplotlib import pyplot as plt
 import matplotlib.patches as patches
-import shutil
 from tqdm import tqdm
 from PIL import Image
 import pandas as pd
 import random
+import cv2
 
 from sklearn.utils import shuffle
 from sklearn.model_selection import train_test_split
@@ -161,9 +162,169 @@ class annotation():
         if showimg == False:
             plt.close(fig)
 
+
+    def rule_filter_rois(input_file = '../src/odn/candidate_rois.txt', 
+    output_file = '../src/odn/rois.txt',
+    verbose = True):
+
+        rois_raw = pd.read_csv(input_file)
+    
+        if verbose:
+            print('\n-------- \nInput file: ' + input_file)
+            print(rois_raw.head())
+
+        rois = rois_raw.copy()
+        pd.options.mode.chained_assignment = None  # disable the "A value is trying to be set on a copy of a slice from a DataFrame" warning
+
+        Dod = 0.1 # diameter of optic disc
+        Dma = 0.16 # diameter of macula
+        Dom = 0.32 # distance between optic disc and macula
+
+        uniquefiles = set(rois['filename'].values)
+        all_to_be_removed = []
+
+        for index, fn in enumerate(uniquefiles):
+            # print(fn)
+            # filepath = DIR_IMAGES + '/' + fn
+            rows = rois.loc[rois.filename == fn]
+            ods = rows.loc[rows['class'] == 'OpticDisk']
+            mas = rows.loc[rows['class'] == 'Macula']    
+            to_be_removed = []
+            
+            if (len(ods) > 0):
+                # use the max-probability optic disc
+                od = ods.loc[ods['prob'].idxmax()]
+                # rois.drop(ods.index[ods.index != ods['prob'].idxmax()]) # remove non-max prob bboxes
+                to_be_removed = np.append(to_be_removed, ods[ods.index != ods['prob'].idxmax()].seq.values.flatten()) 
+                d_od = (od['xmax'] - od['xmin']) / od['width']
+                
+                assert (abs(d_od - Dod) <= Dod * 0.5)
+                cx_od = (od['xmax'] + od['xmin']) / 2
+                cy_od = (od['ymax'] + od['ymin']) / 2
+                
+                if len(mas) > 0:
+                
+                    ma_dict={}
+                    idx_least_error = -1
+                    for idx,ma in mas.iterrows():            
+                        cx_ma = (ma['xmax'] + ma['xmin']) / 2
+                        cy_ma = (ma['ymax'] + ma['ymin']) / 2
+
+                        dom = abs((cx_ma - cx_od) / od['width'])
+                        err_dom = abs(dom - Dom)
+                        if idx_least_error == -1:                
+                            idx_least_error = idx
+                        else:
+                            if (ma_dict[idx_least_error] > err_dom):
+                                idx_least_error = idx
+
+                        ma_dict[idx] = err_dom            
+                    
+                    # print(ma_dict)
+                    to_be_removed = np.append(to_be_removed, mas[mas.index != idx_least_error].seq.values.flatten())
+                    # rois.drop(mas.index[mas.index != idx_least_error]) # only keep the region with the least error     
+                    
+                    ma = mas.loc[idx_least_error]
+                    cx_ma = (ma['xmax'] + ma['xmin']) / 2
+                    cy_ma = (ma['ymax'] + ma['ymin']) / 2           
+                    dom = abs((cx_ma - cx_od) / od['width'])
+                    err_dom = abs(dom - Dom)
+                    
+                    
+                    if ('laterality' in od):
+                    
+                        if ((od['laterality'] == 'L001' and cx_ma >= cx_od) #  For right eye (OD) image, macula should locate on the left side of optic disc
+                            or (od['laterality'] == 'L002' and cx_ma <= cx_od)): # For left eye (OS) image, macula should locate on the right side of optic disc
+                            to_be_removed = np.append(to_be_removed, ma.seq)
+                        
+                    
+                    delta_y = abs(cy_ma - cy_od) / od['width']
+                    
+                    if (err_dom > 0.2 or delta_y > 0.2): # max allowed error 20%
+                        to_be_removed = np.append(to_be_removed, ma.seq)
+                        
+                
+            else:
+                # no optic disc is detected. Keep the maximum-prob macula 
+                if (len(mas) > 0):
+                    # print(mas.index[mas.index != mas['prob'].idxmax()])
+                    # rois.drop(mas.index[mas.index != mas['prob'].idxmax()]) # remove non-max prob bboxes
+                    to_be_removed = np.append(to_be_removed, mas[mas.index != mas['prob'].idxmax()].seq.values.flatten())
+            
+            rows.drop(rows.loc[rows.seq.isin(to_be_removed)].index, inplace=True)
+            all_to_be_removed = np.concatenate((all_to_be_removed, to_be_removed))
+            
+            #d_od = row['xmax'] - row['xmin']
+            #show_anno(filepath, all, './fundus_image_dataset/ground_truth/', savefile = False, showimg = True)
+            #show_anno(filepath, rows, './fundus_image_dataset/odn_10e/', savefile = True, showimg = False)
+
+        if verbose:
+            print('\n-------- \nIndices of removed annos: ', all_to_be_removed)
+
+        rois.drop(rois.loc[rois.seq.isin(all_to_be_removed)].index, inplace=True)
+        rois.to_csv(output_file)
+
+        if verbose:
+            print('\n-------- \nSaved to ', output_file)
+            rois= pd.read_csv(output_file)
+            print(rois.head())
+
+        return rois
+
+
+    def naive_filter_rois(input_file = '../src/odn/candidate_rois.txt', 
+    output_file = '../src/odn/rois_naive.txt',
+    verbose = True):
+
+        rois_raw = pd.read_csv(input_file)
+    
+        if verbose:
+            print('\n-------- \nInput file: ' + input_file)
+            print(rois_raw.head())
+
+        rois = rois_raw.copy()
+        pd.options.mode.chained_assignment = None  # disable the "A value is trying to be set on a copy of a slice from a DataFrame" warning
+
+        Dod = 0.1 # diameter of optic disc
+        Dma = 0.16 # diameter of macula
+        Dom = 0.32 # distance between optic disc and macula
+
+        uniquefiles = set(rois['filename'].values)
+        all_to_be_removed = []
+
+        for index, fn in enumerate(uniquefiles):
+            # print(fn)
+    
+            rows = rois.loc[rois.filename == fn]
+            ods = rows.loc[rows['class'] == 'OpticDisk']
+            mas = rows.loc[rows['class'] == 'Macula']    
+            to_be_removed = []
+            
+            if (len(ods) > 0):
+                to_be_removed = np.append(to_be_removed, ods[ods.index != ods['prob'].idxmax()].seq.values.flatten()) 
+
+            if (len(mas) > 0):
+                to_be_removed = np.append(to_be_removed, mas[mas.index != mas['prob'].idxmax()].seq.values.flatten())
+            
+            rows.drop(rows.loc[rows.seq.isin(to_be_removed)].index, inplace=True)
+            all_to_be_removed = np.concatenate((all_to_be_removed, to_be_removed))
+
+        if verbose:
+            print('\n-------- \nIndices of removed annos: ', all_to_be_removed)
+
+        rois.drop(rois.loc[rois.seq.isin(all_to_be_removed)].index, inplace=True)
+        rois.to_csv(output_file)
+
+        if verbose:
+            print('\n-------- \nSaved to ', output_file)
+            rois= pd.read_csv(output_file)
+            print(rois.head())
+
+        return rois
+
 class dataset():
 
-    def synthesize_gt(label_file, 
+    def synthesize_anno(label_file, 
     dir_images, 
     dir_output = None,    
     verbose = True,
@@ -208,13 +369,13 @@ class dataset():
             print( df['class'].value_counts() )
         
         i = 0
-        for f in tqdm(unique_files):            
+        for f in unique_files:            
             filepath = dir_images + '/' + f
             annotation.show_anno (filepath, df, dir_output, showimg = (i < display) )
             i = i+1
 
 
-    def split(label_file, dir_images, train_output = '../data/fundus/train.txt', test_output = '../data/fundus/test.txt',
+    def split(label_file, dir_images, train_output, test_output,
     test_size = 0.2, verbose = True):
         '''
         Split the dataset into training and test sets.
@@ -283,3 +444,130 @@ class dataset():
             data['format'][i] = '../' + dir_images + data['format'][i] + ',' + str(test_set['xmin'][i]) + ',' + str(test_set['ymin'][i]) + ',' + str(test_set['xmax'][i]) + ',' + str(test_set['ymax'][i]) + ',' + test_set['class'][i]
 
         data.to_csv(test_output, header=None, index=None, sep=' ')
+
+    def add_new_row(img_, bboxes_, row, idx, 
+    old_image_path_seg = '/images', 
+    new_image_path_seg = '/images_public'):
+    
+        new_path = row[0].replace(old_image_path_seg, new_image_path_seg, 1) # .replace('.jpg', '.' + str(idx) + '.jpg', 1)
+        status = cv2.imwrite(new_path, img_[:,:,::-1]) # bgr -> rgb
+        
+        s = new_path + \
+        ',' + str(round( bboxes_[0][0], 1)) + \
+        ',' + str(round( bboxes_[0][1], 1)) + \
+        ',' + str(round( bboxes_[0][2], 1)) + \
+        ',' + str(round( bboxes_[0][3], 1)) + \
+        ',' + row[5]
+        
+        return s
+
+    def deidentify(input_file = '../data/fundus/train.txt',
+            output_file = '../data/fundus/train_public.txt', 
+            old_image_path_seg = '/images', 
+            new_image_path_seg = '/images_public'):
+
+        # thanks to "https://github.com/Paperspace/DataAugmentationForObjectDetection"
+
+        # %run ../src/odn/data_aug/data_aug.py
+        # %run ../src/odn/data_aug/bbox_util.py
+
+        # from data_aug.data_aug import *
+        # from data_aug.bbox_util import *
+
+        df = pd.read_csv(input_file, header=None, sep=',')
+
+        datax = []
+
+        DEID = True
+        AUG_FLIP = False # always disabled for test
+        AUG_COMBO = False # always disabled for test
+
+        for index, row in df.iterrows():
+            
+            path = row[0][1:]
+            # print([[row[1],row[2],row[3],row[4]]])
+            img = cv2.imread(path)[:,:,::-1] #opencv loads images in bgr. the [:,:,::-1] does bgr -> rgb    
+            
+            bboxes = np.array([[row[1],row[2],row[3],row[4]]], dtype = float)
+            
+            # 
+            # De-identify
+            
+            if DEID:
+            
+                w = img.shape[1]
+                h = img.shape[0]
+
+                # crop the right bottom section to detect text
+                crop_img = img[round(h*0.93) : h, round(w * 0.93): w]
+                gray = cv2.cvtColor(crop_img, cv2.COLOR_BGR2GRAY) 
+                _, thresh = cv2.threshold(gray, 127, 255,  cv2.THRESH_BINARY_INV)  # cv2.THRESH_OTSU |
+
+                if (thresh.min() < 127):
+
+                    img[ round(h*0.8) : h, round(w * 0.8): w] = 0 # de-identify
+
+                    if (index < 5):
+                        plt.figure()
+                        plt.imshow(img)
+                        plt.title( path )
+                        plt.show()
+
+                        plt.figure()
+                        plt.imshow(gray)
+                        plt.title( str(thresh.mean()) )
+                        plt.show()
+
+                s = dataset.add_new_row(
+                    img, bboxes, row, 0, 
+                    old_image_path_seg,
+                    new_image_path_seg)
+                datax.append(s)
+
+            # 
+            # DATA AUG
+            
+            if AUG_FLIP:
+                
+                raise NotImplementedError(__class__.__name__ + ' TODO: 把多个bbox和标签放到一起做aug操作')
+
+                # FLIP
+                img_, bboxes_ = RandomHorizontalFlip(1)(img.copy(), bboxes.copy())
+                s = add_new_row(img_, bboxes_, row, 1)
+                datax.append(s)
+            
+            if AUG_COMBO: # FLIP + SCALE + TRANSLATE + ROTATE   
+                
+                raise NotImplementedError(__class__.__name__ + ' TODO: 把多个bbox和标签放到一起做aug操作')
+
+                for idx in range(2, 7):
+                    try:
+                        img_, bboxes_ = RandomHorizontalFlip(0.5)(img.copy(), bboxes.copy())
+                        img_, bboxes_ = RandomScale(0.1, diff = False)(img_, bboxes_)
+                        img_, bboxes_ = RandomTranslate(0.1, diff = False)(img_, bboxes_)
+                        img_, bboxes_ = RandomRotate(8)(img_, bboxes_)
+
+                        s = add_new_row(img_, bboxes_, row, idx)
+                        datax.append(s)
+
+                    except Exception as err:
+                        # print(row)
+                        pass
+            
+                # show the first N examples
+                if (index < 5):
+                    plotted_img = draw_rect(img_, bboxes_)
+                    plt.figure()
+                    plt.imshow(plotted_img)
+                    plt.title(row[5])
+                    plt.show()
+                
+        sx = ''
+        for d in datax:
+            sx = sx + d + '\n'
+
+        with open(output_file, "w") as f:
+            f.write(sx)
+            
+        # finally, combine trainx.txt with train.txt
+    

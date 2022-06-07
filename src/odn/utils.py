@@ -1,6 +1,78 @@
 import numpy as np
 from keras_frcnn import roi_helpers
 import cv2
+import re
+from matplotlib import pyplot as plt
+import numpy as np
+import matplotlib.ticker as ticker
+
+def moving_average_3(a):    
+	return np.concatenate(([a[0]], np.convolve(a, np.ones(3), 'valid') / 3, [a[-1]]))
+
+def plot_training_curves(input_file = '../src/odn/training_log.txt', output_file = '../src/odn/training_curves.png'):
+	'''
+	Parameter
+	---------
+	input_file : the log file path. The log file is created from the commandline window output.
+	'''
+
+	L1={}
+	L2={}
+	L3={}
+	L4={}
+	ACC ={}
+
+	epoch = 0
+
+	with open(input_file) as f:
+		content = f.readlines()
+		for l in content:
+			if l.startswith("Epoch"):
+				arr = re.split('[: /]',l)
+				epoch = int(arr[1])
+			elif l.startswith("Classifier accuracy for bounding boxes from RPN"):
+				arr = re.split('[:]',l)
+				ACC[epoch] = float(arr[1])
+			elif l.startswith("Loss RPN classifier"):
+				arr = re.split('[:]',l)
+				L1[epoch] = float(arr[1])
+			elif l.startswith("Loss RPN regression"):
+				arr = re.split('[:]',l)
+				L2[epoch] = float(arr[1])
+			elif l.startswith("Loss Detector classifier"):
+				arr = re.split('[:]',l)
+				L3[epoch] = float(arr[1])
+			elif l.startswith("Loss Detector regression"):
+				arr = re.split('[:]',l)
+				L4[epoch] = float(arr[1])    
+
+	fig, ax = plt.subplots(3,2, figsize = (40, 40))
+	plt.rcParams.update({'font.size': 32})
+	#plt.tick_params(axis='both', which='major', labelsize=24)
+	#plt.tick_params(axis='both', which='minor', labelsize=24)
+	plt.rcParams['xtick.labelsize'] = 32
+	plt.rcParams['ytick.labelsize'] = 32
+
+	labels = ['RPN Classification Error','RPN Regression Error','Region Classifier Classification Error',
+			'Region Classifier Regression Error','Overall Classification Accuracy']
+
+	M = [L1, L2, L3, L4, ACC]
+
+	for idx in range(5):
+		row = idx//2
+		col = idx%2
+		
+		m = M[idx]
+		
+		ax[row, col].plot(list(m.keys()), moving_average_3(list(m.values())),label = labels[idx], color = 'gray', linewidth = 2)
+		ax[row, col].scatter(list(m.keys()), moving_average_3(list(m.values())), s=240, facecolors='none', edgecolors='gray')
+		ax[row, col].xaxis.set_major_locator(ticker.MultipleLocator(1))
+		ax[row, col].legend(loc='upper center')
+
+	ax[2, 1].set_axis_off()
+
+	plt.savefig(output_file)
+	plt.close(fig)
 
 def get_bbox(R, C, model_classifier, class_mapping, F, ratio, bbox_threshold = 0.8):
 	# convert from (x1,y1,x2,y2) to (x,y,w,h)

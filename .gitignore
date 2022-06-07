@@ -16,3 +16,9 @@ flower_customEfficientNetB0_model_best.hdf5
 *.pyc
 src/odn/models/rpn/pretrained_rpn_vgg_model.36-1.42.hdf5
 notebooks/.ipynb_checkpoints/8.7 Object Detection -Fundus - Clean-checkpoint.ipynb
+data/fundus/odn_19e
+data/fundus/odn_19e_raw
+data/fundus/odn_19e_naive
+src/odn/results_10e
+src/odn/results_19e
+data/fundus/odn_19e_raw/f73e60833735a6f8925d46f2a61412d0.jpg
