@@ -38,7 +38,7 @@ def get_data(input_path, cat = None, skip_header = False, path_prefix = ""):
 
 			if filename not in all_imgs:
 				all_imgs[filename] = {}
-				# print(path_prefix + filename)
+				print(path_prefix + filename)
 				img = cv2.imread(path_prefix + filename)
 
 				(rows,cols) = img.shape[:2]

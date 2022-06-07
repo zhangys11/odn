@@ -10,6 +10,8 @@ import matplotlib.patches as patches
 import shutil
 from tqdm import tqdm
 from PIL import Image
+import pandas as pd
+import random
 
 from sklearn.utils import shuffle
 from sklearn.model_selection import train_test_split
@@ -159,3 +161,125 @@ class annotation():
         if showimg == False:
             plt.close(fig)
 
+class dataset():
+
+    def synthesize_gt(label_file, 
+    dir_images, 
+    dir_output = None,    
+    verbose = True,
+    display = 5 ):
+        '''
+        Synthesize the ground-truth images with annotations.
+
+        Parameters
+        ----------
+        label_file : a csv file containing all image path and ROIs. e.g.,  '../data/fundus/all_labels.csv'
+
+            The label file extends the VIA annotation format:
+
+                filename: file name of the image
+                class: denotes the class label of the ROI (region of interest)
+                cx: image width
+                cy: image height
+                xmin: x-coordinate of the bottom left part of the ROI
+                xmax: x-coordinate of the top right part of the ROI
+                ymin: y-coordinate of the bottom left part of the ROI
+                ymax: y-coordinate of the top right part of the ROI  
+                laterality: L001 = OD, L002 = OS
+
+        dir_images : The folder path containing all images, e.g.,  '../data/fundus/images/'
+
+        dir_output : The generated images will be saved to this folder. e.g., '../data/fundus/ground_truth/'.
+            If None, will not output images.
+        '''
+        
+        df = pd.read_csv(label_file)
+
+        if verbose:
+            print('\n----------- \nContent of ', label_file)
+            print(df.head())
+
+        unique_files = list(set(df['filename'].values))
+        if verbose:
+            print('\n----------- \nUnique image files: ', len(unique_files))
+
+        if verbose:
+            print('\n----------- \ndistribution of ROI labels:')
+            print( df['class'].value_counts() )
+        
+        i = 0
+        for f in tqdm(unique_files):            
+            filepath = dir_images + '/' + f
+            annotation.show_anno (filepath, df, dir_output, showimg = (i < display) )
+            i = i+1
+
+
+    def split(label_file, dir_images, train_output = '../data/fundus/train.txt', test_output = '../data/fundus/test.txt',
+    test_size = 0.2, verbose = True):
+        '''
+        Split the dataset into training and test sets.
+
+        Parameters
+        ----------
+        label_file : a csv file containing all image path and ROIs. e.g.,  '../data/fundus/all_labels.csv'
+
+            The label file extends the VIA annotation format:
+
+                filename: file name of the image
+                class: denotes the class label of the ROI (region of interest)
+                cx: image width
+                cy: image height
+                xmin: x-coordinate of the bottom left part of the ROI
+                xmax: x-coordinate of the top right part of the ROI
+                ymin: y-coordinate of the bottom left part of the ROI
+                ymax: y-coordinate of the top right part of the ROI  
+                laterality: L001 = OD, L002 = OS
+
+        dir_images : The folder path containing all images, e.g.,  '../data/fundus/images/'
+
+        train_output, test_output : Target paths of generated train and test csv files.
+
+        test_size : percentage of test set, in the range (0, 1.0)
+        '''
+
+        df = pd.read_csv(label_file)
+
+        if verbose:
+            print('\n----------- \nContent of ', label_file)
+            print(df.head())
+
+        unique_files = list(set(df['filename'].values))
+        if verbose:
+            print('\n----------- \nUnique image files: ', len(unique_files))
+
+        m = len(unique_files)
+        m_t = round(m * test_size)
+        test_files = random.choices(unique_files, k = m_t)
+
+        # Split to training set and test set
+
+        test_set = df.loc[df['filename'].isin(test_files)].copy().sort_values(by=['filename']).reset_index(drop=True)
+        train_set = df.loc[df['filename'].isin(test_files) == False].copy().sort_values(by=['filename']).reset_index(drop=True)
+
+        # training set
+
+        data = pd.DataFrame()
+        data['format'] = train_set['filename']
+
+        for i in range(data.shape[0]):
+            # the path is relative to /src/odn/..py
+            data['format'][i] = '../' + dir_images + data['format'][i] + ',' + str(train_set['xmin'][i]) + ',' + str(train_set['ymin'][i]) + ',' + str(train_set['xmax'][i]) + ',' + str(train_set['ymax'][i]) + ',' + train_set['class'][i]
+            # print(data['format'][i])
+            
+        data.to_csv(train_output, header=None, index=None, sep=' ')
+
+
+        # test set. We only need the filenames. The bbox of ROIs are not used.
+
+        data = pd.DataFrame()
+        data['format'] = test_set['filename']
+
+        for i in range(data.shape[0]):
+            data['format'][i] = '../' + dir_images + data['format'][i] + ',' + str(test_set['xmin'][i]) + ',' + str(test_set['ymin'][i]) + ',' + str(test_set['xmax'][i]) + ',' + str(test_set['ymax'][i]) + ',' + test_set['class'][i]
+
+        data.to_csv(test_output, header=None, index=None, sep=' ')

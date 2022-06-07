@@ -132,7 +132,7 @@ else:
 	print("backbone is not resnet50. number of features chosen is 512")
 	num_features = 512
 
-if K.image_dim_ordering() == 'th':
+if K.image_data_format() == 'channels_first':  # K.image_dim_ordering() == 'th':
 	input_shape_img = (3, None, None)
 	input_shape_features = (num_features, None, None)
 else:
@@ -189,7 +189,7 @@ if len(val_imgs) == 0:
     val_imgs = [s for s in all_imgs if s['imageset'] == 'trainval'] # for test purpose
     
 print('Num val samples {}'.format(len(val_imgs)))
-data_gen_val = data_generators.get_anchor_gt(val_imgs, classes_count, C, nn.get_img_output_length,K.image_dim_ordering(), mode='val')
+data_gen_val = data_generators.get_anchor_gt(val_imgs, classes_count, C, nn.get_img_output_length,K.image_data_format(), mode='val')
 
 img_pathes = [x["filepath"] for x in val_imgs]
 
@@ -208,14 +208,14 @@ for idx, img_name in enumerate(sorted(img_pathes)):
 	X, ratio = format_img(img, C)
 	img_scaled = (np.transpose(X[0,:,:,:],(1,2,0)) + 127.5).astype('uint8')
 
-	if K.image_dim_ordering() == 'tf':
+	if K.image_data_format() == 'channels_last': # K.image_dim_ordering() == 'tf':
 		X = np.transpose(X, (0, 2, 3, 1))
 
 	# get the feature maps and output from the RPN
 	[Y1, Y2, F] = model_rpn.predict(X)
 	
     # infer roi
-	R = roi_helpers.rpn_to_roi(Y1, Y2, C, K.image_dim_ordering(), overlap_thresh=0.7)
+	R = roi_helpers.rpn_to_roi(Y1, Y2, C, K.image_data_format(), overlap_thresh=0.7)
     # get bbox
 #	all_dets, bboxes, probs = get_bbox(R, C, model_classifier, class_mapping, F, ratio, bbox_threshold=0.5)
     # convert from (x1,y1,x2,y2) to (x,y,w,h)
