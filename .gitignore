@@ -21,4 +21,5 @@ data/fundus/odn_19e_raw
 data/fundus/odn_19e_naive
 src/odn/results_10e
 src/odn/results_19e
-data/fundus/odn_19e_raw/f73e60833735a6f8925d46f2a61412d0.jpg
+notebooks/comparison_separate
+notebooks/.ipynb_checkpoints/8.7 Object Detection -Fundus - FRCNN DELETE-checkpoint.ipynb
