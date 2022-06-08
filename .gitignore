@@ -23,3 +23,5 @@ src/odn/results_10e
 src/odn/results_19e
 notebooks/comparison_separate
 notebooks/.ipynb_checkpoints/8.7 Object Detection -Fundus - FRCNN DELETE-checkpoint.ipynb
+notebooks/.ipynb_checkpoints/8.7 Object Detection -Fundus-checkpoint.ipynb
+notebooks/8.7 Object Detection -Fundus - Clean.ipynb
