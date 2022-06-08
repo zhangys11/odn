@@ -25,3 +25,7 @@ notebooks/comparison_separate
 notebooks/.ipynb_checkpoints/8.7 Object Detection -Fundus - FRCNN DELETE-checkpoint.ipynb
 notebooks/.ipynb_checkpoints/8.7 Object Detection -Fundus-checkpoint.ipynb
 notebooks/8.7 Object Detection -Fundus - Clean.ipynb
+notebooks/.ipynb_checkpoints/8.4 Object Detection - Fundus - TF-SSD-checkpoint.ipynb
+notebooks/.ipynb_checkpoints/8.8 Object Detection -Fundus - II-checkpoint.ipynb
+src/odn.egg-info
+dist

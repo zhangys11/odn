@@ -77,6 +77,30 @@ class demographics():
 
 class annotation():
 
+    def get_bbox_of_circle(cx, cy, h, c):
+
+        '''
+        Parameters
+        ----------
+        cx, cy : center of circle
+        h : image height
+        c : "opticDisk" or "Macula"
+
+        Remarks
+        -------
+        The fundus images are fixed in 4:3 ratio.
+        On a 512-pixel-high image, macula radius is 55, optic disk radius is 35
+        '''
+        if (c =='OpticDisk'):
+            r = 35./512*h
+        elif c == 'Macula':
+            r = 55./512*h
+        xmin = round(cx - r)
+        xmax = round(cx + r)
+        ymin = round(cy -r)
+        ymax = round(cy + r)
+        return xmin,ymin,xmax,ymax  
+
     def show_anno(filepath, df, savefolder = None, showimg = True):    
         '''
         Display an image with the annotations. 

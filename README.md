@@ -1,16 +1,25 @@
 # About
 
-[TODO] a include-all function to detect | zone draws
-
 We provide a set of object detection neural network training and evaluation functions.  
-We currently support Faster-RCNN. An infant funuds image object detection application is provided.  
-The Faster-RCNN module is based on https://github.com/kentaroy47/frcnn-from-scratch-with-keras. We have updated the code according to the latest keras API change (K..image_dim_ordering () -> K.image_data_format()).  
-We also uses the 3rd-party data augmentation package (https://github.com/Paperspace/DataAugmentationForObjectDetection).  
+We currently support Faster-RCNN, SSD and YOLO(todo). An infant funuds image object detection application is provided.  
+
+# Credit
+
+The following 3rd-party packages are used: 
+1. The Faster-RCNN module is based on https://github.com/kentaroy47/frcnn-from-scratch-with-keras. We have updated the code according to the latest keras API change (K..image_dim_ordering () -> K.image_data_format()).   
+2. Data augmentation package (https://github.com/Paperspace/DataAugmentationForObjectDetection).   
+3. https://github.com/tensorflow/models/research/object_detection  
+
 
 # Install
 
-pip install tensorflow-gpu == 1.14.0  
-pip install odn
+    pip install tensorflow-gpu == 1.14.0  
+    pip install tf-slim 
+    pip install odn
+
+For tf_ssd, we need to add odn\tf_ssd\protoc-3.4.0-win32\bin to PATH, then run:
+    cd tf_ssd  
+    protoc object_detection/protos/*.proto --python_out=.
 
 # How to use
 

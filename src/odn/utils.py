@@ -1,5 +1,5 @@
 import numpy as np
-from keras_frcnn import roi_helpers
+from .keras_frcnn import roi_helpers
 import cv2
 import re
 from matplotlib import pyplot as plt
@@ -150,3 +150,116 @@ def get_real_coordinates(ratio, x1, y1, x2, y2):
 	real_y2 = int(round(y2 // ratio))
 
 	return (real_x1, real_y1, real_x2 ,real_y2)
+
+
+################ Below are used by tf-ssd ##################
+import json
+from PIL import Image
+import imghdr
+import matplotlib.patches as patches
+
+def get_img_dims(path):
+    if imghdr.what(path) is None:
+        return None
+    img = Image.open(path)
+    return img.size
+
+
+def parse_json_anno_file(path, imgdir):
+    l = []
+    with open(path, 'rb') as jf:                
+        data = json.load(jf)
+        for k,v in data.items():                    
+            for p,q in v['regions'].items():
+                new_item = {}
+                new_item['filename'] = v['filename']
+                for r,s in q['region_attributes'].items():
+                    if ((s == 'OpticDisk' or s == 'Macula') and 'cx' in q['shape_attributes'].keys() and 'cy' in q['shape_attributes'].keys()):
+                        imgfile = os.path.join(imgdir, new_item['filename'])
+                        if os.path.isfile(imgfile):
+                            dims = get_img_dims(imgfile)
+                            if (dims is not None):
+                                new_item['width'] = dims[0]
+                                new_item['height'] = dims[1]
+                                new_item['class'] = s
+                                new_item['cx'] = q['shape_attributes']['cx']
+                                new_item['cy'] = q['shape_attributes']['cy']
+
+                if 'class' in new_item.keys():
+                    # L001 - OD, L002 - OS
+                    if 'labels8' in v['image_labels']:
+                        new_item['laterality'] = v['image_labels']['labels8']
+                    l.append(new_item)
+                    
+    return l
+	
+
+def visualize_bbox(img, xmin,ymin,xmax,ymax):
+    im = np.array(Image.open(img))
+    fig,ax = plt.subplots(1)
+    ax.imshow(im)
+    rc = patches.Rectangle((xmin, ymin),xmax-xmin,ymax-ymin,facecolor='none', edgecolor='b')
+    ax.add_patch(rc)
+    plt.show()
+    
+
+def visualize_bbox_center(img, cx, cy):
+    im = np.array(Image.open(img))
+    fig,ax = plt.subplots(1)
+    ax.imshow(im)
+    c = patches.Circle((cx,cy),10, color = 'r')
+    ax.add_patch(c)
+    plt.show()
+
+from PIL import Image
+
+def convert_rgba_to_rgb(fname, folder):
+    if (fname.endswith('.png')):
+        jpgfile = os.path.join(folder, fname.replace('.png','.jpg'))
+                
+        png = Image.open(os.path.join(folder, fname))
+        rgb_im = png.convert('RGB')
+        rgb_im.save(jpgfile)
+        
+        #png.load() # required for png.split()
+        #background = Image.new("RGB", png.size, (255, 255, 255))
+        #background.paste(png, mask=png.split()[3]) # 3 is the alpha channel
+        #background.save(jpgfile, 'JPEG', quality=80)
+        
+        #png = Image.open(os.path.join(folder, fname)).convert('RGBA')
+        #background = Image.new('RGBA', png.size, (255,255,255))
+        #alpha_composite = Image.alpha_composite(background, png)
+        #alpha_composite.save(jpgfile, 'JPEG', quality=80)
+        os.remove(os.path.join(folder, fname))
+        return jpgfile
+    return None
+        
+
+import imghdr
+def get_img_mode(path):
+    if imghdr.what(path) is None:
+        return None
+    img = Image.open(path)    
+    return img.mode
+
+import os
+def search_file(folder, fname):
+    for root, dirs, files in os.walk(folder):
+        for file in files:
+            if file == fname:
+                return (os.path.join(root, file))
+    return None
+
+
+def replace_image_in_list(l, file, newfile):
+    for idx, item in enumerate(l):
+        if(item['filename'] == file):
+            item['filename'] = newfile
+            print('R',  newfile)
+        
+def remove_image_in_list(l, file):
+    for idx, item in enumerate(l):
+        if(item['filename'] == file):
+            l.pop(idx)
+            print('D', file)
+            return
