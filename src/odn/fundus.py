@@ -6,6 +6,7 @@ import pathlib
 import time
 import pickle
 import matplotlib
+import shutil
 from matplotlib import pyplot as plt
 import matplotlib.patches as patches
 from math import sqrt
@@ -161,6 +162,11 @@ class annotation():
 
         # print(df.iloc[idxs])
 
+        cx = -1
+        cy = -1
+        cx_m = -1
+        cy_m = -1
+
         for _, row in df.iloc[idxs].iterrows():
             # print(row)
             xmin = row.xmin
@@ -178,10 +184,24 @@ class annotation():
             
             # assign different color to different classes of objects
             if row['class'] == 'OpticDisk':
+                cx = (xmin + xmax) / 2.0
+                cy = (ymin + ymax) / 2.0
                 edgecolor = 'white'
             elif row['class'] == 'Macula':
-                edgecolor = 'lavender' #'azure'
-                
+                cx_m = (xmin + xmax) / 2.0
+                cy_m = (ymin + ymax) / 2.0
+                edgecolor = 'lavender' #'azure' 
+            
+            radius = 0.5
+            if (cx_m != -1):
+                radius = 2*( sqrt((cx-cx_m)**2 + (cy-cy_m)**2) )            
+        
+            # (xmin, xmax, ymin, ymax) 
+            zone1 = [cx-radius, cx+radius, cy-radius*4/3, cy+radius*4/3]
+            zone2p = [cx-1.3*radius, cx+1.3*radius, cy-1.3*radius*4/3, cy+1.3*radius*4/3]
+            zone2 = [cx-2*radius, cx+2*radius, cy-2*radius*4/3, cy+2*radius*4/3]
+
+            # calculate the position of anno labels
             xy = (max(1, xmin),ymin-5)
             if (ymin < 5):
                 xy = (max(1, xmin),ymax)
@@ -191,6 +211,11 @@ class annotation():
             rect = patches.Rectangle((xmin,ymin), width, height, edgecolor = edgecolor, facecolor = 'none')
 
             ax.add_patch(rect)
+
+        
+        image = Image.frombytes('RGB', fig.canvas.get_width_height(),fig.canvas.tostring_rgb())
+        annotation.draw_fundus_zones_on_image_array(image, zones = [zone1, zone2p, zone2])
+        plt.imshow(image)
 
         if savefolder:
             if (os.path.isdir(savefolder) == False):
@@ -363,6 +388,15 @@ class annotation():
     #------------------ region tf_ssd --------------------#
 
     def calculate_fundus_zones(classes, scores, boxes, threshold):
+        '''
+        Parameters
+        ----------
+        classes : a list of optic disc of OD, optic disc of OS, macula
+
+        Return
+        ------
+        Three bbox : Zone I, Posterior Zone II, Zone II
+        '''
 
         idxOD = -1
         idxOS = -1
@@ -405,9 +439,10 @@ class annotation():
     
         # (xmin, xmax, ymin, ymax) 
         zone1 = [cx-radius, cx+radius, cy-radius*4/3, cy+radius*4/3]
+        zone2p = [cx-1.3*radius, cx+1.3*radius, cy-1.3*radius*4/3, cy+1.3*radius*4/3]
         zone2 = [cx-2*radius, cx+2*radius, cy-2*radius*4/3, cy+2*radius*4/3]
         
-        return [zone1, zone2]     
+        return [zone1, zone2p, zone2]
 
     def draw_fundus_zones_on_image_array(image, zones, text ='', use_normalized_coordinates=True):
         
@@ -416,7 +451,7 @@ class annotation():
         draw = ImageDraw.Draw(image_pil)
         im_width, im_height = image_pil.size
         
-        colors = ["orange", "yellow"]
+        colors = ["orange", "gold", "yellow"]
         idx = 0
         
         for zone in zones:
@@ -921,7 +956,62 @@ class dataset():
             
         # finally, combine trainx.txt with train.txt
 
+    # NOTE: images in the target folder will be overwritten if prefix is empty
+    def batch_resize_fundus_image(folder, target, prefix = '', w=480, h=360):
+        os.makedirs(target, exist_ok=True)
+        
+        imgExts = ["png", "bmp", "jpg"]
+        for root, dirs, files in os.walk(folder):
+            for f in files:
+                ext = f[-3:].lower()
+                if ext not in imgExts:
+                    continue
+                if prefix!='' and prefix is not None and f.startswith(prefix):
+                    continue
+                resize_fundus_image(root, f, target = target, prefix=prefix, w = w, h = h)
+
+    def split_images_by_laterality(source_dir, target_dir, json_annos):
+        '''
+        Parameters
+        ----------
+        json_annos : a json object that contains a list of dict objects. 
+            We will use its 'laterality' key to sperate images into OD and OS.
+        '''
+            
+        IMAGEDIR = source_dir #'../data/fundus/images/'
+        L2DIR = target_dir # '../data/fundus/L2'
+
+        if os.path.exists(L2DIR):
+            shutil.rmtree(L2DIR)
+        os.makedirs(L2DIR)
+        os.makedirs(L2DIR+'/L001')
+        os.makedirs(L2DIR+'/L002')
+
+        for idx, item in enumerate(json_annos):
+            if 'laterality' in item.keys():
+                lcode = item['laterality']    
+                if lcode and not lcode.isspace():
+                    file = item['filename']
+                    shutil.copyfile(os.path.join(IMAGEDIR,file), os.path.join(L2DIR,lcode,file))
+
+    def expand_images_by_flipping(imagedir):
+        '''
+        Create a flip copy for each image. The new image is named as filename_FLIP.jpg
+        '''
+
+        for root, dirs, files in os.walk(imagedir):
+            for f in files:
+                if f.endswith('.jpg'):
+                    im = Image.open(os.path.join(root, f)).transpose(Image.FLIP_LEFT_RIGHT)                
+                    im.save(os.path.join(root, f.replace('.jpg','_FLIP.jpg')))
+
 def load_image_into_numpy_array(image):
     (im_width, im_height) = image.size
     return np.array(image.getdata()).reshape((im_height, im_width, 3)).astype(np.uint8)
     
+# All fundus images are 4:3 ratio. 
+def resize_fundus_image(root, f, target, prefix='', w=480, h=360):
+    filePath = os.path.join(root, f)
+    newfilePath = os.path.join(target, prefix + f)    
+    im = Image.open(filePath).resize((w,h)) 
+    im.save(newfilePath)

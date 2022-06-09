@@ -5,6 +5,8 @@ import re
 from matplotlib import pyplot as plt
 import numpy as np
 import matplotlib.ticker as ticker
+import shutil
+import os
 
 def moving_average_3(a):    
 	return np.concatenate(([a[0]], np.convolve(a, np.ones(3), 'valid') / 3, [a[-1]]))
@@ -193,15 +195,27 @@ def parse_json_anno_file(path, imgdir):
                     
     return l
 	
-
-def visualize_bbox(img, xmin,ymin,xmax,ymax):
+def visualize_bbox(img, xmin,ymin,xmax,ymax,text = ''):
     im = np.array(Image.open(img))
     fig,ax = plt.subplots(1)
     ax.imshow(im)
     rc = patches.Rectangle((xmin, ymin),xmax-xmin,ymax-ymin,facecolor='none', edgecolor='b')
     ax.add_patch(rc)
+    ax.annotate(text, (xmin, ymin), color='b', weight='bold', fontsize=12, ha='left', va='bottom')
     plt.show()
     
+def visualize_bbox_for_anno_item(imgdir, item):
+    '''
+    Paramgers
+	---------
+	item : a dict object that contains filename, x and y coordinates
+	'''
+    if ('filename' not in item.keys() or 'xmin' not in item.keys() or 'xmax' not in item.keys() or 'ymin' not in item.keys() or 'ymax' not in item.keys()):
+        print('Warning: item is invalid. It doesnot contain needed keys.')
+        return
+    imgfile = os.path.join(imgdir, item['filename'])
+    if(imgfile is not None):
+        visualize_bbox(imgfile, item['xmin'],item['ymin'],item['xmax'],item['ymax'],item['class'])
 
 def visualize_bbox_center(img, cx, cy):
     im = np.array(Image.open(img))
@@ -263,3 +277,59 @@ def remove_image_in_list(l, file):
             l.pop(idx)
             print('D', file)
             return
+
+def convert_to_rgb(folder, json_annos):
+	'''
+	确保所有图片为RGB模式，不是RGBA模式；将RGBA模式的PNG文件转换为JPG
+	'''
+
+	to_del = []
+	to_replace = []
+
+	for root, dirs, files in os.walk(folder):
+			for file in files:
+				if( not file.endswith('.db')):
+					if (search_file(root, file) is not None):
+						mode = get_img_mode(os.path.join(root, file))
+						if mode is None:
+							remove_image_in_list(json_annos, file)
+							to_del.append(file)
+						elif mode == 'RGBA' and file.endswith('png'): #there are also RGB mode png files!
+							jf = convert_rgba_to_rgb(file, root)
+							if(jf is not None):
+								replace_image_in_list(json_annos, file, file.replace('.png','.jpg'))
+								to_replace.append(file)
+					else:
+						print(file,' Not Found.')
+
+def move_images_to_one_folder(source, target):
+	'''
+	Move all images (including subfolders) in the source folder to the target folder.
+	'''
+	os.makedirs(target, exist_ok=True)
+
+	for root, dirs, files in os.walk(source):
+		for file in files:
+			if( not file.endswith('.db') and not file.endswith('.json')):
+				shutil.move(os.path.join(root, file),os.path.join(target, file)) 
+
+
+def merge_json_anno_files(source_folder, target_file):
+	'''
+	Merge all json anno files in the source folder to one single target json file.
+	'''
+	
+	s = ''
+
+	with open(target_file, 'w') as outfile:
+		outfile.write('{')
+		for root, dirs, files in os.walk(source_folder):
+			for f in files:
+				if f.endswith('.json'):
+					with open(os.path.join(root, f), 'r') as jf:
+						# outfile.write(jf.read()[1:-1])
+						# outfile.write(',')
+						s = s + jf.read()[1:-1] + ','
+		s = s[:-1]
+		outfile.write(s)
+		outfile.write('}')   
