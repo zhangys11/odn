@@ -8,7 +8,7 @@ We currently support Faster-RCNN, SSD and YOLO(todo). An infant funuds image obj
 The following 3rd-party packages are used: 
 1. The Faster-RCNN module is based on https://github.com/kentaroy47/frcnn-from-scratch-with-keras. We have updated the code according to the latest keras API change (K..image_dim_ordering () -> K.image_data_format()).   
 2. Data augmentation package (https://github.com/Paperspace/DataAugmentationForObjectDetection).   
-3. https://github.com/tensorflow/models/research/object_detection  
+3. https://github.com/tensorflow/models/research/object_detection and https://github.com/tensorflow/models/research/slim  
 
 
 # Install

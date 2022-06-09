@@ -22,12 +22,12 @@ import tensorflow.compat.v1 as tf
 
 from google.protobuf import text_format
 
-from object_detection.builders import input_reader_builder
-from object_detection.core import standard_fields as fields
-from object_detection.dataset_tools import seq_example_util
-from object_detection.protos import input_reader_pb2
-from object_detection.utils import dataset_util
-from object_detection.utils import tf_version
+from ..builders import input_reader_builder
+from ..core import standard_fields as fields
+from ..dataset_tools import seq_example_util
+from ..protos import input_reader_pb2
+from ..utils import dataset_util
+from ..utils import tf_version
 
 
 def _get_labelmap_path():

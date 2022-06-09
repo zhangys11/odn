@@ -17,12 +17,12 @@ import unittest
 from absl.testing import parameterized
 import tensorflow.compat.v1 as tf
 
-from object_detection.builders import model_builder
-from object_detection.builders import model_builder_test
-from object_detection.meta_architectures import context_rcnn_meta_arch
-from object_detection.meta_architectures import ssd_meta_arch
-from object_detection.protos import losses_pb2
-from object_detection.utils import tf_version
+from ..builders import model_builder
+from ..builders import model_builder_test
+from ..meta_architectures import context_rcnn_meta_arch
+from ..meta_architectures import ssd_meta_arch
+from ..protos import losses_pb2
+from ..utils import tf_version
 
 
 @unittest.skipIf(tf_version.is_tf2(), 'Skipping TF1.X only test.')

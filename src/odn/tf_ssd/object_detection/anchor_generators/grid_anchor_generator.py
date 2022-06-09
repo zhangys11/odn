@@ -22,9 +22,9 @@ Shaoqing Ren, Kaiming He, Ross Girshick, and Jian Sun.
 
 import tensorflow.compat.v1 as tf
 
-from object_detection.core import anchor_generator
-from object_detection.core import box_list
-from object_detection.utils import ops
+from ..core import anchor_generator
+from ..core import box_list
+from ..utils import ops
 
 
 class GridAnchorGenerator(anchor_generator.AnchorGenerator):

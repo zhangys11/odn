@@ -30,3 +30,4 @@ notebooks/.ipynb_checkpoints/8.8 Object Detection -Fundus - II-checkpoint.ipynb
 src/odn.egg-info
 dist
 data/fundus/ssd
+data/fundus/frcnn_19e_zones

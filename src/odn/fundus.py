@@ -3,6 +3,7 @@ import numpy as np
 import os
 import os.path
 import pathlib
+import io
 import time
 import pickle
 import matplotlib
@@ -116,7 +117,7 @@ class annotation():
         ymax = round(cy + r)
         return xmin,ymin,xmax,ymax  
 
-    def show_anno(filepath, df, savefolder = None, showimg = True):    
+    def show_anno(filepath, df, savefolder = None, drawzones = False, showimg = True):    
         '''
         Display an image with the annotations. 
 
@@ -212,10 +213,24 @@ class annotation():
 
             ax.add_patch(rect)
 
-        
-        image = Image.frombytes('RGB', fig.canvas.get_width_height(),fig.canvas.tostring_rgb())
-        annotation.draw_fundus_zones_on_image_array(image, zones = [zone1, zone2p, zone2])
-        plt.imshow(image)
+        if drawzones:
+            # buf = io.BytesIO()
+            # fig.savefig(buf)
+            # buf.seek(0)
+            # image = Image.open(buf)
+            # # image = Image.frombytes('RGB', fig.canvas.get_width_height(),fig.canvas.tostring_rgb())
+            # annotation.draw_fundus_zones_on_image_array(image, zones = [zone1, zone2p, zone2])
+            # plt.imshow(image)
+            
+            for zone, color in zip([zone1, zone2p, zone2], ["orange", "gold", "yellow"]):
+                # (ymin, xmin, ymax, xmax)
+                xmin = zone[0]
+                ymin = zone[2]
+                xmax = zone[1]
+                ymax = zone[3]               
+            
+                ellipse = patches.Ellipse((cx, cy), xmax-xmin , ymax-ymin, edgecolor = color, facecolor = 'none')   # (255,255,255)
+                ax.add_patch(ellipse)
 
         if savefolder:
             if (os.path.isdir(savefolder) == False):
@@ -711,7 +726,8 @@ class dataset():
 
     def synthesize_anno(label_file, 
     dir_images, 
-    dir_output = None,    
+    dir_output = None, 
+    drawzones = False,   
     verbose = True,
     display = 5 ):
         '''
@@ -756,7 +772,8 @@ class dataset():
         i = 0
         for f in unique_files:            
             filepath = dir_images + '/' + f
-            annotation.show_anno (filepath, df, dir_output, showimg = (i < display) )
+            annotation.show_anno (filepath, df, dir_output, 
+            drawzones = drawzones, showimg = (i < display) )
             i = i+1
 
 
