@@ -27,24 +27,24 @@ import tf_slim as slim
 
 from google.protobuf import text_format
 
-from object_detection.anchor_generators import grid_anchor_generator
-from object_detection.builders import box_predictor_builder
-from object_detection.builders import hyperparams_builder
-from object_detection.builders import post_processing_builder
-from object_detection.core import balanced_positive_negative_sampler as sampler
-from object_detection.core import losses
-from object_detection.core import post_processing
-from object_detection.core import standard_fields as fields
-from object_detection.core import target_assigner
-from object_detection.meta_architectures import context_rcnn_meta_arch
-from object_detection.meta_architectures import faster_rcnn_meta_arch
-from object_detection.protos import box_predictor_pb2
-from object_detection.protos import hyperparams_pb2
-from object_detection.protos import post_processing_pb2
-from object_detection.utils import spatial_transform_ops as spatial_ops
-from object_detection.utils import test_case
-from object_detection.utils import test_utils
-from object_detection.utils import tf_version
+from ..anchor_generators import grid_anchor_generator
+from ..builders import box_predictor_builder
+from ..builders import hyperparams_builder
+from ..builders import post_processing_builder
+from ..core import balanced_positive_negative_sampler as sampler
+from ..core import losses
+from ..core import post_processing
+from ..core import standard_fields as fields
+from ..core import target_assigner
+from ..meta_architectures import context_rcnn_meta_arch
+from ..meta_architectures import faster_rcnn_meta_arch
+from ..protos import box_predictor_pb2
+from ..protos import hyperparams_pb2
+from ..protos import post_processing_pb2
+from ..utils import spatial_transform_ops as spatial_ops
+from ..utils import test_case
+from ..utils import test_utils
+from ..utils import tf_version
 
 
 class FakeFasterRCNNFeatureExtractor(

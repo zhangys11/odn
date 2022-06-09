@@ -27,11 +27,11 @@ import numpy as np
 from six.moves import zip
 import tensorflow.compat.v1 as tf
 from tf_slim import tfexample_decoder as slim_example_decoder
-from object_detection.core import data_decoder
-from object_detection.core import standard_fields as fields
-from object_detection.protos import input_reader_pb2
-from object_detection.utils import label_map_util
-from object_detection.utils import shape_utils
+from ..core import data_decoder
+from ..core import standard_fields as fields
+from ..protos import input_reader_pb2
+from ..utils import label_map_util
+from ..utils import shape_utils
 
 # pylint: disable=g-import-not-at-top
 try:

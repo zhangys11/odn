@@ -19,9 +19,9 @@ import tensorflow.compat.v1 as tf
 
 from google.protobuf import text_format
 
-from object_detection.builders import preprocessor_builder
-from object_detection.core import preprocessor
-from object_detection.protos import preprocessor_pb2
+from ..builders import preprocessor_builder
+from ..core import preprocessor
+from ..protos import preprocessor_pb2
 
 
 class PreprocessorBuilderTest(tf.test.TestCase):

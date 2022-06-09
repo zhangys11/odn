@@ -23,7 +23,7 @@ import numpy as np
 from six.moves import range
 import tensorflow.compat.v1 as tf
 
-from object_detection.utils import per_image_evaluation
+from ..utils import per_image_evaluation
 
 
 class SingleClassTpFpWithDifficultBoxesTest(tf.test.TestCase):

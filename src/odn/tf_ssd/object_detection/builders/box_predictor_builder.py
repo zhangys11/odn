@@ -17,19 +17,19 @@
 
 import collections
 import tensorflow.compat.v1 as tf
-from object_detection.predictors import convolutional_box_predictor
-from object_detection.predictors import convolutional_keras_box_predictor
-from object_detection.predictors import mask_rcnn_box_predictor
-from object_detection.predictors import mask_rcnn_keras_box_predictor
-from object_detection.predictors import rfcn_box_predictor
-from object_detection.predictors import rfcn_keras_box_predictor
-from object_detection.predictors.heads import box_head
-from object_detection.predictors.heads import class_head
-from object_detection.predictors.heads import keras_box_head
-from object_detection.predictors.heads import keras_class_head
-from object_detection.predictors.heads import keras_mask_head
-from object_detection.predictors.heads import mask_head
-from object_detection.protos import box_predictor_pb2
+from ..predictors import convolutional_box_predictor
+from ..predictors import convolutional_keras_box_predictor
+from ..predictors import mask_rcnn_box_predictor
+from ..predictors import mask_rcnn_keras_box_predictor
+from ..predictors import rfcn_box_predictor
+from ..predictors import rfcn_keras_box_predictor
+from ..predictors.heads import box_head
+from ..predictors.heads import class_head
+from ..predictors.heads import keras_box_head
+from ..predictors.heads import keras_class_head
+from ..predictors.heads import keras_mask_head
+from ..predictors.heads import mask_head
+from ..protos import box_predictor_pb2
 
 
 def build_convolutional_box_predictor(is_training,

@@ -17,8 +17,8 @@
 import unittest
 import tensorflow.compat.v1 as tf
 
-from object_detection.models import faster_rcnn_pnas_feature_extractor as frcnn_pnas
-from object_detection.utils import tf_version
+from ..models import faster_rcnn_pnas_feature_extractor as frcnn_pnas
+from ..utils import tf_version
 
 
 @unittest.skipIf(tf_version.is_tf2(), 'Skipping TF1.X only test.')

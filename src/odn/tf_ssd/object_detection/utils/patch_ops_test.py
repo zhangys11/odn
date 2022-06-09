@@ -23,8 +23,8 @@ from absl.testing import parameterized
 import numpy as np
 import tensorflow.compat.v1 as tf
 
-from object_detection.utils import patch_ops
-from object_detection.utils import test_case
+from ..utils import patch_ops
+from ..utils import test_case
 
 
 class GetPatchMaskTest(test_case.TestCase, parameterized.TestCase):

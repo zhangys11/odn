@@ -23,11 +23,11 @@ from six.moves import range
 from six.moves import zip
 import tensorflow.compat.v1 as tf
 
-from object_detection.meta_architectures import ssd_meta_arch
-from object_detection.models import feature_map_generators
-from object_detection.models.keras_models import resnet_v1
-from object_detection.utils import ops
-from object_detection.utils import shape_utils
+from ..meta_architectures import ssd_meta_arch
+from ..models import feature_map_generators
+from ..models.keras_models import resnet_v1
+from ..utils import ops
+from ..utils import shape_utils
 
 _RESNET_MODEL_OUTPUT_LAYERS = {
     'resnet_v1_50': ['conv2_block3_out', 'conv3_block4_out',

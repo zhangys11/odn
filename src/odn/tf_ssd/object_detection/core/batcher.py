@@ -23,7 +23,7 @@ import collections
 from six.moves import range
 import tensorflow.compat.v1 as tf
 
-from object_detection.core import prefetcher
+from ..core import prefetcher
 
 rt_shape_str = '_runtime_shapes'
 

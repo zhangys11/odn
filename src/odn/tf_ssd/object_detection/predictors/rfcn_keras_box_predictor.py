@@ -15,8 +15,8 @@
 
 """RFCN Box Predictor."""
 import tensorflow.compat.v1 as tf
-from object_detection.core import box_predictor
-from object_detection.utils import ops
+from ..core import box_predictor
+from ..utils import ops
 
 BOX_ENCODINGS = box_predictor.BOX_ENCODINGS
 CLASS_PREDICTIONS_WITH_BACKGROUND = (

@@ -24,10 +24,10 @@ import numpy as np
 from six.moves import zip
 import tensorflow.compat.v1 as tf
 
-from object_detection.core import box_list
-from object_detection.core import losses
-from object_detection.core import matcher
-from object_detection.utils import test_case
+from ..core import box_list
+from ..core import losses
+from ..core import matcher
+from ..utils import test_case
 
 
 class WeightedL2LocalizationLossTest(test_case.TestCase):

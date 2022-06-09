@@ -20,9 +20,9 @@ from __future__ import print_function
 
 import tensorflow.compat.v1 as tf
 
-from object_detection.core import freezable_batch_norm
-from object_detection.models.keras_models import model_utils
-from object_detection.utils import ops
+from ..core import freezable_batch_norm
+from ..models.keras_models import model_utils
+from ..utils import ops
 
 
 # pylint: disable=invalid-name

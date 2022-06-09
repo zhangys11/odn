@@ -16,7 +16,7 @@
 """Tensorflow ops to calibrate class predictions and background class."""
 
 import tensorflow.compat.v1 as tf
-from object_detection.utils import shape_utils
+from ..utils import shape_utils
 
 
 def _find_interval_containing_new_value(x, new_value):

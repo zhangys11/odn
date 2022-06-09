@@ -24,7 +24,7 @@ from six.moves import range
 from six.moves import zip
 import tensorflow as tf
 
-from object_detection.utils import bifpn_utils
+from ..utils import bifpn_utils
 
 
 def _create_bifpn_input_config(fpn_min_level,

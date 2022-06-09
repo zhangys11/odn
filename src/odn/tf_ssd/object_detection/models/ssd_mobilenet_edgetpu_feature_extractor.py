@@ -14,7 +14,7 @@
 # ==============================================================================
 """SSDFeatureExtractor for MobileNetEdgeTPU features."""
 
-from object_detection.models import ssd_mobilenet_v3_feature_extractor
+from ..models import ssd_mobilenet_v3_feature_extractor
 from nets.mobilenet import mobilenet_v3
 
 

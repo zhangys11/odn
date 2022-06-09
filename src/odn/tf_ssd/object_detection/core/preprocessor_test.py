@@ -27,11 +27,11 @@ from six.moves import range
 from six.moves import zip
 import tensorflow.compat.v1 as tf
 
-from object_detection.core import preprocessor
-from object_detection.core import preprocessor_cache
-from object_detection.core import standard_fields as fields
-from object_detection.utils import test_case
-from object_detection.utils import tf_version
+from ..core import preprocessor
+from ..core import preprocessor_cache
+from ..core import standard_fields as fields
+from ..utils import test_case
+from ..utils import tf_version
 
 if six.PY2:
   import mock  # pylint: disable=g-import-not-at-top

@@ -20,8 +20,8 @@
 """
 import tensorflow.compat.v1 as tf
 
-from object_detection.meta_architectures.center_net_meta_arch import CenterNetFeatureExtractor
-from object_detection.models.keras_models import resnet_v1
+from ..meta_architectures.center_net_meta_arch import CenterNetFeatureExtractor
+from ..models.keras_models import resnet_v1
 
 
 _RESNET_MODEL_OUTPUT_LAYERS = {

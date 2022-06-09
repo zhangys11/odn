@@ -22,10 +22,10 @@ import os
 import numpy as np
 import tensorflow.compat.v1 as tf
 
-from object_detection.core import standard_fields as fields
-from object_detection.data_decoders import tf_sequence_example_decoder
-from object_detection.dataset_tools import seq_example_util
-from object_detection.utils import test_case
+from ..core import standard_fields as fields
+from ..data_decoders import tf_sequence_example_decoder
+from ..dataset_tools import seq_example_util
+from ..utils import test_case
 
 
 class TfSequenceExampleDecoderTest(test_case.TestCase):

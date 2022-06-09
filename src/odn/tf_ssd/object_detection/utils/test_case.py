@@ -20,7 +20,7 @@ from __future__ import print_function
 from six.moves import zip
 import tensorflow.compat.v1 as tf
 from tensorflow.python import tf2  # pylint: disable=import-outside-toplevel
-from object_detection.utils import tf_version
+from ..utils import tf_version
 if not tf2.enabled():
   from tensorflow.contrib import tpu as contrib_tpu  # pylint: disable=g-import-not-at-top, line-too-long
 

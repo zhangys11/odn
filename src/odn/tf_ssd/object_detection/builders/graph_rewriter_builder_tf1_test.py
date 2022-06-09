@@ -18,9 +18,9 @@ from unittest import mock  # pylint: disable=g-importing-member
 import tensorflow.compat.v1 as tf
 import tf_slim as slim
 
-from object_detection.builders import graph_rewriter_builder
-from object_detection.protos import graph_rewriter_pb2
-from object_detection.utils import tf_version
+from ..builders import graph_rewriter_builder
+from ..protos import graph_rewriter_pb2
+from ..utils import tf_version
 
 
 if tf_version.is_tf1():

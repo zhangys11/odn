@@ -16,9 +16,9 @@
 import unittest
 import tensorflow.compat.v1 as tf
 
-from object_detection.models import ssd_feature_extractor_test
-from object_detection.models import ssd_mobiledet_feature_extractor
-from object_detection.utils import tf_version
+from ..models import ssd_feature_extractor_test
+from ..models import ssd_mobiledet_feature_extractor
+from ..utils import tf_version
 
 try:
   from tensorflow.contrib import quantize as contrib_quantize  # pylint: disable=g-import-not-at-top

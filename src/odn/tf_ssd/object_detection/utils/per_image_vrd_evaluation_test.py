@@ -21,7 +21,7 @@ from __future__ import print_function
 import numpy as np
 import tensorflow.compat.v1 as tf
 
-from object_detection.utils import per_image_vrd_evaluation
+from ..utils import per_image_vrd_evaluation
 
 
 class SingleClassPerImageVrdEvaluationTest(tf.test.TestCase):

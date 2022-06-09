@@ -9,9 +9,9 @@ import tensorflow.compat.v1 as tf
 import tf_slim as slim
 
 from tensorflow.python.training import moving_averages
-from object_detection.meta_architectures import ssd_meta_arch
-from object_detection.utils import ops
-from object_detection.utils import shape_utils
+from ..meta_architectures import ssd_meta_arch
+from ..utils import ops
+from ..utils import shape_utils
 
 IbnOp = collections.namedtuple(
     'IbnOp', ['kernel_size', 'expansion_rate', 'stride', 'has_residual'])

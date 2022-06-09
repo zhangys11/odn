@@ -34,8 +34,8 @@ the input images are not distorted via resizing.
 
 import tensorflow.compat.v1 as tf
 
-from object_detection.core import box_coder
-from object_detection.core import box_list
+from ..core import box_coder
+from ..core import box_list
 
 EPSILON = 1e-8
 

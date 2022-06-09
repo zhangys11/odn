@@ -38,9 +38,9 @@ from six.moves import range
 from six.moves import zip
 import tensorflow.compat.v1 as tf
 
-from object_detection.core import keypoint_ops
-from object_detection.core import standard_fields as fields
-from object_detection.utils import shape_utils
+from ..core import keypoint_ops
+from ..core import standard_fields as fields
+from ..utils import shape_utils
 
 _TITLE_LEFT_MARGIN = 10
 _TITLE_TOP_MARGIN = 10

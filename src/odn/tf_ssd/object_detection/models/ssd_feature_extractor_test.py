@@ -27,10 +27,10 @@ import tensorflow.compat.v1 as tf
 import tf_slim as slim
 from google.protobuf import text_format
 
-from object_detection.builders import hyperparams_builder
-from object_detection.protos import hyperparams_pb2
-from object_detection.utils import test_case
-from object_detection.utils import test_utils
+from ..builders import hyperparams_builder
+from ..protos import hyperparams_pb2
+from ..utils import test_case
+from ..utils import test_utils
 
 
 class SsdFeatureExtractorTestBase(test_case.TestCase):

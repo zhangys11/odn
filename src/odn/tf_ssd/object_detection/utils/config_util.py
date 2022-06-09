@@ -25,12 +25,12 @@ import tensorflow.compat.v1 as tf
 
 from tensorflow.python.lib.io import file_io
 
-from object_detection.protos import eval_pb2
-from object_detection.protos import graph_rewriter_pb2
-from object_detection.protos import input_reader_pb2
-from object_detection.protos import model_pb2
-from object_detection.protos import pipeline_pb2
-from object_detection.protos import train_pb2
+from ..protos import eval_pb2
+from ..protos import graph_rewriter_pb2
+from ..protos import input_reader_pb2
+from ..protos import model_pb2
+from ..protos import pipeline_pb2
+from ..protos import train_pb2
 
 
 def get_image_resizer_config(model_config):

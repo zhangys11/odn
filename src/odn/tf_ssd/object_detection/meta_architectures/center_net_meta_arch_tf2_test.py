@@ -23,17 +23,17 @@ from absl.testing import parameterized
 import numpy as np
 import tensorflow.compat.v1 as tf
 
-from object_detection.builders import post_processing_builder
-from object_detection.core import keypoint_ops
-from object_detection.core import losses
-from object_detection.core import preprocessor
-from object_detection.core import standard_fields as fields
-from object_detection.core import target_assigner as cn_assigner
-from object_detection.meta_architectures import center_net_meta_arch as cnma
-from object_detection.models import center_net_resnet_feature_extractor
-from object_detection.protos import post_processing_pb2
-from object_detection.utils import test_case
-from object_detection.utils import tf_version
+from ..builders import post_processing_builder
+from ..core import keypoint_ops
+from ..core import losses
+from ..core import preprocessor
+from ..core import standard_fields as fields
+from ..core import target_assigner as cn_assigner
+from ..meta_architectures import center_net_meta_arch as cnma
+from ..models import center_net_resnet_feature_extractor
+from ..protos import post_processing_pb2
+from ..utils import test_case
+from ..utils import tf_version
 
 
 @unittest.skipIf(tf_version.is_tf1(), 'Skipping TF2.X only test.')

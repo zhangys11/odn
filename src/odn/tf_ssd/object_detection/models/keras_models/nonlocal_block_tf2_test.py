@@ -3,9 +3,9 @@ import unittest
 from absl.testing import parameterized
 import tensorflow as tf
 
-from object_detection.models.keras_models import nonlocal_block
-from object_detection.utils import test_case
-from object_detection.utils import tf_version
+from ..models.keras_models import nonlocal_block
+from ..utils import test_case
+from ..utils import tf_version
 
 
 @unittest.skipIf(tf_version.is_tf1(), 'Skipping TF2.X only test.')

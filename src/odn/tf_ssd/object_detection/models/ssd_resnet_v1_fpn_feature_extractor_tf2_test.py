@@ -16,9 +16,9 @@
 import unittest
 import tensorflow.compat.v1 as tf
 
-from object_detection.models import ssd_resnet_v1_fpn_feature_extractor_testbase
-from object_detection.models import ssd_resnet_v1_fpn_keras_feature_extractor
-from object_detection.utils import tf_version
+from ..models import ssd_resnet_v1_fpn_feature_extractor_testbase
+from ..models import ssd_resnet_v1_fpn_keras_feature_extractor
+from ..utils import tf_version
 
 
 @unittest.skipIf(tf_version.is_tf1(), 'Skipping TF2.X only test.')

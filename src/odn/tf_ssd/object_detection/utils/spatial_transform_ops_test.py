@@ -22,8 +22,8 @@ import numpy as np
 from six.moves import range
 import tensorflow.compat.v1 as tf
 
-from object_detection.utils import spatial_transform_ops as spatial_ops
-from object_detection.utils import test_case
+from ..utils import spatial_transform_ops as spatial_ops
+from ..utils import test_case
 
 
 class BoxGridCoordinateTest(test_case.TestCase):

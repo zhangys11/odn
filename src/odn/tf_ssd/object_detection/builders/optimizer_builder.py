@@ -17,8 +17,8 @@
 
 import tensorflow.compat.v1 as tf
 
-from object_detection.utils import learning_schedules
-from object_detection.utils import tf_version
+from ..utils import learning_schedules
+from ..utils import tf_version
 
 # pylint: disable=g-import-not-at-top
 if tf_version.is_tf2():

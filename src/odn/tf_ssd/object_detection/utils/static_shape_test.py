@@ -21,7 +21,7 @@ from __future__ import print_function
 
 import tensorflow.compat.v1 as tf
 
-from object_detection.utils import static_shape
+from ..utils import static_shape
 
 
 class StaticShapeTest(tf.test.TestCase):

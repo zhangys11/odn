@@ -27,14 +27,14 @@ import functools
 
 import tensorflow.compat.v1 as tf
 
-from object_detection.core import box_predictor
-from object_detection.core import standard_fields as fields
-from object_detection.meta_architectures import context_rcnn_lib
-from object_detection.meta_architectures import context_rcnn_lib_tf2
-from object_detection.meta_architectures import faster_rcnn_meta_arch
-from object_detection.protos import faster_rcnn_pb2
-from object_detection.utils import ops
-from object_detection.utils import tf_version
+from ..core import box_predictor
+from ..core import standard_fields as fields
+from ..meta_architectures import context_rcnn_lib
+from ..meta_architectures import context_rcnn_lib_tf2
+from ..meta_architectures import faster_rcnn_meta_arch
+from ..protos import faster_rcnn_pb2
+from ..utils import ops
+from ..utils import tf_version
 
 _UNINITIALIZED_FEATURE_EXTRACTOR = '__uninitialized__'
 

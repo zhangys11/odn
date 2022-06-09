@@ -17,10 +17,10 @@
 
 import tensorflow.compat.v1 as tf
 
-from object_detection.meta_architectures import faster_rcnn_meta_arch
-from object_detection.models import feature_map_generators
-from object_detection.models.keras_models import resnet_v1
-from object_detection.utils import ops
+from ..meta_architectures import faster_rcnn_meta_arch
+from ..models import feature_map_generators
+from ..models.keras_models import resnet_v1
+from ..utils import ops
 
 
 _RESNET_MODEL_OUTPUT_LAYERS = {

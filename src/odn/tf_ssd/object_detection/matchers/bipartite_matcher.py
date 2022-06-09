@@ -18,7 +18,7 @@
 import tensorflow.compat.v1 as tf
 
 from tensorflow.contrib.image.python.ops import image_ops
-from object_detection.core import matcher
+from ..core import matcher
 
 
 class GreedyBipartiteMatcher(matcher.Matcher):

@@ -26,12 +26,12 @@ from six.moves import zip
 import tensorflow as tf
 
 
-from object_detection.core import freezable_batch_norm
-from object_detection.utils import tf_version
+from ..core import freezable_batch_norm
+from ..utils import tf_version
 
 # pylint: disable=g-import-not-at-top
 if tf_version.is_tf2():
-  from object_detection.core import freezable_sync_batch_norm
+  from ..core import freezable_sync_batch_norm
 # pylint: enable=g-import-not-at-top
 
 

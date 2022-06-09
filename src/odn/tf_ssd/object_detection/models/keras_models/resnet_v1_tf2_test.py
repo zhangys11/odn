@@ -27,11 +27,11 @@ from six.moves import zip
 import tensorflow.compat.v1 as tf
 
 from google.protobuf import text_format
-from object_detection.builders import hyperparams_builder
-from object_detection.models.keras_models import resnet_v1
-from object_detection.protos import hyperparams_pb2
-from object_detection.utils import test_case
-from object_detection.utils import tf_version
+from ..builders import hyperparams_builder
+from ..models.keras_models import resnet_v1
+from ..protos import hyperparams_pb2
+from ..utils import test_case
+from ..utils import tf_version
 
 _EXPECTED_SHAPES_224_RESNET50 = {
     'conv2_block3_out': (4, 56, 56, 256),

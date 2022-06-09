@@ -20,8 +20,8 @@ from __future__ import print_function
 
 import tensorflow.compat.v1 as tf
 
-from object_detection.core import model
-from object_detection.utils import test_case
+from ..core import model
+from ..utils import test_case
 
 
 class FakeModel(model.DetectionModel):

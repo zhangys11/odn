@@ -11,7 +11,7 @@ from google.protobuf import symbol_database as _symbol_database
 _sym_db = _symbol_database.Default()
 
 
-from object_detection.protos import hyperparams_pb2 as object__detection_dot_protos_dot_hyperparams__pb2
+from ..protos import hyperparams_pb2 as object__detection_dot_protos_dot_hyperparams__pb2
 
 
 DESCRIPTOR = _descriptor.FileDescriptor(

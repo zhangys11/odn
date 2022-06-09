@@ -27,9 +27,9 @@ import six
 from six.moves import range
 import tensorflow.compat.v1 as tf
 
-from object_detection.core import standard_fields as fields
-from object_detection.utils import test_case
-from object_detection.utils import visualization_utils
+from ..core import standard_fields as fields
+from ..utils import test_case
+from ..utils import visualization_utils
 
 _TESTDATA_PATH = 'object_detection/test_images'
 

@@ -18,8 +18,8 @@ from absl.testing import parameterized
 import numpy as np
 import tensorflow.compat.v1 as tf
 
-from object_detection.models.keras_models import hourglass_network as hourglass
-from object_detection.utils import tf_version
+from ..models.keras_models import hourglass_network as hourglass
+from ..utils import tf_version
 
 
 @unittest.skipIf(tf_version.is_tf1(), 'Skipping TF2.X only test.')

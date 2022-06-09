@@ -16,7 +16,7 @@
 
 import numpy as np
 import tensorflow.compat.v1 as tf
-from object_detection.utils import test_case
+from ..utils import test_case
 
 
 class TestCaseTest(test_case.TestCase):

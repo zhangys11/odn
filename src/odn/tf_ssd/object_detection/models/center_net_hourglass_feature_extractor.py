@@ -18,8 +18,8 @@
 [2]: https://arxiv.org/abs/1904.07850
 """
 
-from object_detection.meta_architectures import center_net_meta_arch
-from object_detection.models.keras_models import hourglass_network
+from ..meta_architectures import center_net_meta_arch
+from ..models.keras_models import hourglass_network
 
 
 class CenterNetHourglassFeatureExtractor(

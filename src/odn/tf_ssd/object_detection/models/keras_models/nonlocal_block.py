@@ -7,7 +7,7 @@ For more information, please see https://arxiv.org/pdf/1711.07971.pdf
 
 import tensorflow as tf
 
-from object_detection.utils import shape_utils
+from ..utils import shape_utils
 
 
 class NonLocalBlock(tf.keras.layers.Layer):

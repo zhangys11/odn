@@ -22,8 +22,8 @@ from __future__ import print_function
 import numpy as np
 import tensorflow.compat.v1 as tf
 
-from object_detection.utils import np_box_list
-from object_detection.utils import np_box_list_ops
+from ..utils import np_box_list
+from ..utils import np_box_list_ops
 
 
 class AreaRelatedTest(tf.test.TestCase):

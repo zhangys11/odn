@@ -10,12 +10,12 @@ import numpy as np
 import tensorflow as tf
 
 from google.protobuf import text_format
-from object_detection.core import losses
-from object_detection.core import preprocessor
-from object_detection.meta_architectures import center_net_meta_arch
-from object_detection.meta_architectures import deepmac_meta_arch
-from object_detection.protos import center_net_pb2
-from object_detection.utils import tf_version
+from ..core import losses
+from ..core import preprocessor
+from ..meta_architectures import center_net_meta_arch
+from ..meta_architectures import deepmac_meta_arch
+from ..protos import center_net_pb2
+from ..utils import tf_version
 
 
 def _logit(probability):

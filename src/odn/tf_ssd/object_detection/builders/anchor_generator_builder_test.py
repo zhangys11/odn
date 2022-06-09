@@ -26,12 +26,12 @@ from six.moves import zip
 import tensorflow.compat.v1 as tf
 
 from google.protobuf import text_format
-from object_detection.anchor_generators import flexible_grid_anchor_generator
-from object_detection.anchor_generators import grid_anchor_generator
-from object_detection.anchor_generators import multiple_grid_anchor_generator
-from object_detection.anchor_generators import multiscale_grid_anchor_generator
-from object_detection.builders import anchor_generator_builder
-from object_detection.protos import anchor_generator_pb2
+from ..anchor_generators import flexible_grid_anchor_generator
+from ..anchor_generators import grid_anchor_generator
+from ..anchor_generators import multiple_grid_anchor_generator
+from ..anchor_generators import multiscale_grid_anchor_generator
+from ..builders import anchor_generator_builder
+from ..protos import anchor_generator_pb2
 
 
 class AnchorGeneratorBuilderTest(tf.test.TestCase):

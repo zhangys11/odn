@@ -11,11 +11,11 @@ from google.protobuf import symbol_database as _symbol_database
 _sym_db = _symbol_database.Default()
 
 
-from object_detection.protos import eval_pb2 as object__detection_dot_protos_dot_eval__pb2
-from object_detection.protos import graph_rewriter_pb2 as object__detection_dot_protos_dot_graph__rewriter__pb2
-from object_detection.protos import input_reader_pb2 as object__detection_dot_protos_dot_input__reader__pb2
-from object_detection.protos import model_pb2 as object__detection_dot_protos_dot_model__pb2
-from object_detection.protos import train_pb2 as object__detection_dot_protos_dot_train__pb2
+from ..protos import eval_pb2 as object__detection_dot_protos_dot_eval__pb2
+from ..protos import graph_rewriter_pb2 as object__detection_dot_protos_dot_graph__rewriter__pb2
+from ..protos import input_reader_pb2 as object__detection_dot_protos_dot_input__reader__pb2
+from ..protos import model_pb2 as object__detection_dot_protos_dot_model__pb2
+from ..protos import train_pb2 as object__detection_dot_protos_dot_train__pb2
 
 
 DESCRIPTOR = _descriptor.FileDescriptor(

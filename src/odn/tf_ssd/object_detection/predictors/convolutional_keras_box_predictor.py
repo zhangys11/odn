@@ -23,9 +23,9 @@ import collections
 from six.moves import range
 import tensorflow.compat.v1 as tf
 
-from object_detection.core import box_predictor
-from object_detection.utils import shape_utils
-from object_detection.utils import static_shape
+from ..core import box_predictor
+from ..utils import shape_utils
+from ..utils import static_shape
 
 keras = tf.keras.layers
 

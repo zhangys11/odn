@@ -21,7 +21,7 @@ https://arxiv.org/abs/1512.00567
 import tensorflow.compat.v1 as tf
 import tf_slim as slim
 
-from object_detection.meta_architectures import faster_rcnn_meta_arch
+from ..meta_architectures import faster_rcnn_meta_arch
 from nets import inception_v2
 
 

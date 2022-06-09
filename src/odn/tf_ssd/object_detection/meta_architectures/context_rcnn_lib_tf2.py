@@ -15,7 +15,7 @@
 """Library functions for Context R-CNN."""
 import tensorflow as tf
 
-from object_detection.core import freezable_batch_norm
+from ..core import freezable_batch_norm
 
 # The negative value used in padding the invalid weights.
 _NEGATIVE_PADDING_VALUE = -100000

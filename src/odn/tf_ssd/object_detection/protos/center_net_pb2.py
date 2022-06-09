@@ -12,10 +12,10 @@ from google.protobuf import symbol_database as _symbol_database
 _sym_db = _symbol_database.Default()
 
 
-from object_detection.protos import image_resizer_pb2 as object__detection_dot_protos_dot_image__resizer__pb2
-from object_detection.protos import losses_pb2 as object__detection_dot_protos_dot_losses__pb2
-from object_detection.protos import post_processing_pb2 as object__detection_dot_protos_dot_post__processing__pb2
-from object_detection.protos import preprocessor_pb2 as object__detection_dot_protos_dot_preprocessor__pb2
+from ..protos import image_resizer_pb2 as object__detection_dot_protos_dot_image__resizer__pb2
+from ..protos import losses_pb2 as object__detection_dot_protos_dot_losses__pb2
+from ..protos import post_processing_pb2 as object__detection_dot_protos_dot_post__processing__pb2
+from ..protos import preprocessor_pb2 as object__detection_dot_protos_dot_preprocessor__pb2
 
 
 DESCRIPTOR = _descriptor.FileDescriptor(

@@ -17,10 +17,10 @@
 import numpy as np
 import tensorflow.compat.v1 as tf
 
-from object_detection.box_coders import keypoint_box_coder
-from object_detection.core import box_list
-from object_detection.core import standard_fields as fields
-from object_detection.utils import test_case
+from ..box_coders import keypoint_box_coder
+from ..core import box_list
+from ..core import standard_fields as fields
+from ..utils import test_case
 
 
 class KeypointBoxCoderTest(test_case.TestCase):

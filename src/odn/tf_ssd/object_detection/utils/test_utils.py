@@ -23,13 +23,13 @@ from six.moves import range
 from six.moves import zip
 import tensorflow.compat.v1 as tf
 
-from object_detection.core import anchor_generator
-from object_detection.core import box_coder
-from object_detection.core import box_list
-from object_detection.core import box_predictor
-from object_detection.core import matcher
-from object_detection.utils import shape_utils
-from object_detection.utils import tf_version
+from ..core import anchor_generator
+from ..core import box_coder
+from ..core import box_list
+from ..core import box_predictor
+from ..core import matcher
+from ..utils import shape_utils
+from ..utils import tf_version
 
 # Default size (both width and height) used for testing mask predictions.
 DEFAULT_MASK_SIZE = 5

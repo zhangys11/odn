@@ -21,15 +21,15 @@ from absl.testing import parameterized
 import tensorflow.compat.v1 as tf
 
 from google.protobuf import text_format
-from object_detection.builders import model_builder
-from object_detection.builders import model_builder_test
-from object_detection.core import losses
-from object_detection.meta_architectures import deepmac_meta_arch
-from object_detection.models import center_net_hourglass_feature_extractor
-from object_detection.models.keras_models import hourglass_network
-from object_detection.protos import center_net_pb2
-from object_detection.protos import model_pb2
-from object_detection.utils import tf_version
+from ..builders import model_builder
+from ..builders import model_builder_test
+from ..core import losses
+from ..meta_architectures import deepmac_meta_arch
+from ..models import center_net_hourglass_feature_extractor
+from ..models.keras_models import hourglass_network
+from ..protos import center_net_pb2
+from ..protos import model_pb2
+from ..utils import tf_version
 
 
 @unittest.skipIf(tf_version.is_tf1(), 'Skipping TF2.X only test.')

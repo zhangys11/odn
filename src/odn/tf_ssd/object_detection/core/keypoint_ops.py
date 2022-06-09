@@ -22,7 +22,7 @@ the coordinates of the keypoint.
 import numpy as np
 import tensorflow.compat.v1 as tf
 
-from object_detection.utils import shape_utils
+from ..utils import shape_utils
 
 
 def scale(keypoints, y_scale, x_scale, scope=None):

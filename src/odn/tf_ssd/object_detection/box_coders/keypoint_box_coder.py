@@ -37,9 +37,9 @@ to box coordinates):
 
 import tensorflow.compat.v1 as tf
 
-from object_detection.core import box_coder
-from object_detection.core import box_list
-from object_detection.core import standard_fields as fields
+from ..core import box_coder
+from ..core import box_list
+from ..core import standard_fields as fields
 
 EPSILON = 1e-8
 

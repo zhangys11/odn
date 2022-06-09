@@ -21,10 +21,10 @@ import tensorflow.compat.v1 as tf
 import tf_slim as slim
 from google.protobuf import text_format
 
-from object_detection.builders import hyperparams_builder
-from object_detection.core import freezable_batch_norm
-from object_detection.protos import hyperparams_pb2
-from object_detection.utils import tf_version
+from ..builders import hyperparams_builder
+from ..core import freezable_batch_norm
+from ..protos import hyperparams_pb2
+from ..utils import tf_version
 
 
 def _get_scope_key(op):

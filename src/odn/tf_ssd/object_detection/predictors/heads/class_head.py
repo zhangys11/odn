@@ -23,8 +23,8 @@ import functools
 import tensorflow.compat.v1 as tf
 import tf_slim as slim
 
-from object_detection.predictors.heads import head
-from object_detection.utils import shape_utils
+from ..predictors.heads import head
+from ..utils import shape_utils
 
 
 class MaskRCNNClassHead(head.Head):

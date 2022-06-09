@@ -22,8 +22,8 @@ import numpy as np
 from six.moves import range
 import tensorflow.compat.v1 as tf
 
-from object_detection.utils import learning_schedules
-from object_detection.utils import test_case
+from ..utils import learning_schedules
+from ..utils import test_case
 
 
 class LearningSchedulesTest(test_case.TestCase):

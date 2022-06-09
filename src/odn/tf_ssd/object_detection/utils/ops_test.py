@@ -25,9 +25,9 @@ import six
 from six.moves import range
 import tensorflow.compat.v1 as tf
 import tf_slim as slim
-from object_detection.core import standard_fields as fields
-from object_detection.utils import ops
-from object_detection.utils import test_case
+from ..core import standard_fields as fields
+from ..utils import ops
+from ..utils import test_case
 
 
 class NormalizedToImageCoordinatesTest(test_case.TestCase):

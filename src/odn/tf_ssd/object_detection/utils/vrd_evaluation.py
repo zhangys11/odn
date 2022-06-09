@@ -38,10 +38,10 @@ import numpy as np
 import six
 from six.moves import range
 
-from object_detection.core import standard_fields
-from object_detection.utils import metrics
-from object_detection.utils import object_detection_evaluation
-from object_detection.utils import per_image_vrd_evaluation
+from ..core import standard_fields
+from ..utils import metrics
+from ..utils import object_detection_evaluation
+from ..utils import per_image_vrd_evaluation
 
 # Below standard input numpy datatypes are defined:
 # box_data_type - datatype of the groundtruth visual relations box annotations;

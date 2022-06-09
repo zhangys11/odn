@@ -19,11 +19,11 @@ from __future__ import absolute_import
 from __future__ import division
 from __future__ import print_function
 from six.moves import zip
-from object_detection.anchor_generators import flexible_grid_anchor_generator
-from object_detection.anchor_generators import grid_anchor_generator
-from object_detection.anchor_generators import multiple_grid_anchor_generator
-from object_detection.anchor_generators import multiscale_grid_anchor_generator
-from object_detection.protos import anchor_generator_pb2
+from ..anchor_generators import flexible_grid_anchor_generator
+from ..anchor_generators import grid_anchor_generator
+from ..anchor_generators import multiple_grid_anchor_generator
+from ..anchor_generators import multiscale_grid_anchor_generator
+from ..protos import anchor_generator_pb2
 
 
 def build(anchor_generator_config):

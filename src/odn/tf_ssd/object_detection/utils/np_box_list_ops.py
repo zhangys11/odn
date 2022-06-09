@@ -26,8 +26,8 @@ from __future__ import print_function
 import numpy as np
 from six.moves import range
 
-from object_detection.utils import np_box_list
-from object_detection.utils import np_box_ops
+from ..utils import np_box_list
+from ..utils import np_box_ops
 
 
 class SortOrder(object):

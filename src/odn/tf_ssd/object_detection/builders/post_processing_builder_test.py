@@ -17,9 +17,9 @@
 
 import tensorflow.compat.v1 as tf
 from google.protobuf import text_format
-from object_detection.builders import post_processing_builder
-from object_detection.protos import post_processing_pb2
-from object_detection.utils import test_case
+from ..builders import post_processing_builder
+from ..protos import post_processing_pb2
+from ..utils import test_case
 
 
 class PostProcessingBuilderTest(test_case.TestCase):

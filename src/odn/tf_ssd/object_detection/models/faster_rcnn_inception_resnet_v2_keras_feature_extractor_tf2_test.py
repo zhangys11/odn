@@ -17,8 +17,8 @@
 import unittest
 import tensorflow.compat.v1 as tf
 
-from object_detection.models import faster_rcnn_inception_resnet_v2_keras_feature_extractor as frcnn_inc_res
-from object_detection.utils import tf_version
+from ..models import faster_rcnn_inception_resnet_v2_keras_feature_extractor as frcnn_inc_res
+from ..utils import tf_version
 
 
 @unittest.skipIf(tf_version.is_tf1(), 'Skipping TF2.X only test.')

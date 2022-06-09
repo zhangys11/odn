@@ -17,14 +17,14 @@
 import tensorflow.compat.v1 as tf
 import tf_slim as slim
 
-from object_detection.core import freezable_batch_norm
-from object_detection.protos import hyperparams_pb2
-from object_detection.utils import context_manager
-from object_detection.utils import tf_version
+from ..core import freezable_batch_norm
+from ..protos import hyperparams_pb2
+from ..utils import context_manager
+from ..utils import tf_version
 
 # pylint: disable=g-import-not-at-top
 if tf_version.is_tf2():
-  from object_detection.core import freezable_sync_batch_norm
+  from ..core import freezable_sync_batch_norm
 # pylint: enable=g-import-not-at-top
 
 

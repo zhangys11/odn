@@ -29,8 +29,8 @@ import functools
 import math
 import tensorflow.compat.v1 as tf
 
-from object_detection.builders import decoder_builder
-from object_detection.protos import input_reader_pb2
+from ..builders import decoder_builder
+from ..protos import input_reader_pb2
 
 
 def make_initializable_iterator(dataset):

@@ -99,18 +99,18 @@ import functools
 import tensorflow.compat.v1 as tf
 import tf_slim as slim
 
-from object_detection.builders import box_predictor_builder
-from object_detection.builders import hyperparams_builder
-from object_detection.core import box_list
-from object_detection.core import box_list_ops
-from object_detection.core import box_predictor
-from object_detection.core import losses
-from object_detection.core import model
-from object_detection.core import standard_fields as fields
-from object_detection.core import target_assigner
-from object_detection.utils import ops
-from object_detection.utils import shape_utils
-from object_detection.utils import variables_helper
+from ..builders import box_predictor_builder
+from ..builders import hyperparams_builder
+from ..core import box_list
+from ..core import box_list_ops
+from ..core import box_predictor
+from ..core import losses
+from ..core import model
+from ..core import standard_fields as fields
+from ..core import target_assigner
+from ..utils import ops
+from ..utils import shape_utils
+from ..utils import variables_helper
 
 
 _UNINITIALIZED_FEATURE_EXTRACTOR = '__uninitialized__'

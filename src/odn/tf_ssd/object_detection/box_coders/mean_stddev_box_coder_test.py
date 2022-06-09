@@ -17,9 +17,9 @@
 import numpy as np
 import tensorflow.compat.v1 as tf
 
-from object_detection.box_coders import mean_stddev_box_coder
-from object_detection.core import box_list
-from object_detection.utils import test_case
+from ..box_coders import mean_stddev_box_coder
+from ..core import box_list
+from ..utils import test_case
 
 
 class MeanStddevBoxCoderTest(test_case.TestCase):

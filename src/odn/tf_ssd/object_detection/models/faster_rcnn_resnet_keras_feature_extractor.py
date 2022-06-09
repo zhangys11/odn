@@ -21,9 +21,9 @@ https://arxiv.org/abs/1512.03385
 
 import tensorflow.compat.v1 as tf
 
-from object_detection.meta_architectures import faster_rcnn_meta_arch
-from object_detection.models.keras_models import resnet_v1
-from object_detection.utils import model_util
+from ..meta_architectures import faster_rcnn_meta_arch
+from ..models.keras_models import resnet_v1
+from ..utils import model_util
 
 
 _RESNET_MODEL_CONV4_LAST_LAYERS = {

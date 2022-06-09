@@ -23,8 +23,8 @@ from six.moves import range
 import tensorflow.compat.v1 as tf
 import tf_slim as slim
 
-from object_detection.core import prefetcher
-from object_detection.utils import tf_version
+from ..core import prefetcher
+from ..utils import tf_version
 
 
 @unittest.skipIf(tf_version.is_tf2(), 'Skipping TF1.X only test.')

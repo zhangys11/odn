@@ -18,8 +18,8 @@
 import numpy as np
 import tensorflow.compat.v1 as tf
 
-from object_detection.core import minibatch_sampler
-from object_detection.utils import test_case
+from ..core import minibatch_sampler
+from ..utils import test_case
 
 
 class MinibatchSamplerTest(test_case.TestCase):

@@ -23,9 +23,9 @@ import os
 import unittest
 import tensorflow.compat.v1 as tf
 
-from object_detection.utils import test_case
-from object_detection.utils import tf_version
-from object_detection.utils import variables_helper
+from ..utils import test_case
+from ..utils import tf_version
+from ..utils import variables_helper
 
 
 @unittest.skipIf(tf_version.is_tf2(), 'Skipping TF1.X only test.')

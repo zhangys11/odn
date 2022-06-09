@@ -87,10 +87,16 @@ FLAGS = flags.FLAGS
 @tf.contrib.framework.deprecated(None, 'Use object_detection/model_main.py.')
 def main(_):
 
-  # import sys
-  
-  # # Adding a new path to the system path variable
-  # sys.path.append('../src/odn/tf_ssd/protoc-3.4.0-win32/bin/')
+
+  ## File "\src\odn\tf_ssd\object_detection\models\faster_rcnn_inception_resnet_v2_feature_extractor.py", line 34, in <module>
+  ##  from nets import inception_resnet_v2
+  ## ModuleNotFoundError: No module named 'nets'
+
+  import sys  
+  # Adding a new path to the system path variable
+  sys.path.append( os.path.abspath('./slim') )
+  print(sys.path) 
+
 
   assert FLAGS.train_dir, '`train_dir` is missing.'
   if FLAGS.task == 0: tf.gfile.MakeDirs(FLAGS.train_dir)

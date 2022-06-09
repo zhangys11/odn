@@ -18,14 +18,14 @@
 import tensorflow.compat.v1 as tf
 
 from google.protobuf import text_format
-from object_detection.builders import matcher_builder
-from object_detection.matchers import argmax_matcher
-from object_detection.protos import matcher_pb2
-from object_detection.utils import test_case
-from object_detection.utils import tf_version
+from ..builders import matcher_builder
+from ..matchers import argmax_matcher
+from ..protos import matcher_pb2
+from ..utils import test_case
+from ..utils import tf_version
 
 if tf_version.is_tf1():
-  from object_detection.matchers import bipartite_matcher  # pylint: disable=g-import-not-at-top
+  from ..matchers import bipartite_matcher  # pylint: disable=g-import-not-at-top
 
 
 class MatcherBuilderTest(test_case.TestCase):

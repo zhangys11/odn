@@ -20,7 +20,7 @@ from __future__ import division
 from __future__ import print_function
 
 import numpy as np
-from object_detection.utils import np_box_list
+from ..utils import np_box_list
 
 
 class BoxMaskList(np_box_list.BoxList):

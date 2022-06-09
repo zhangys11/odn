@@ -32,7 +32,7 @@ when number of examples set to True in indicator is less than batch_size.
 
 import tensorflow.compat.v1 as tf
 
-from object_detection.core import minibatch_sampler
+from ..core import minibatch_sampler
 
 
 class BalancedPositiveNegativeSampler(minibatch_sampler.MinibatchSampler):

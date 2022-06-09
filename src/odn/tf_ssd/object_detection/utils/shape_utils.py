@@ -22,7 +22,7 @@ from __future__ import print_function
 from six.moves import zip
 import tensorflow.compat.v1 as tf
 
-from object_detection.utils import static_shape
+from ..utils import static_shape
 
 
 get_dim_as_int = static_shape.get_dim_as_int

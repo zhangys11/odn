@@ -18,16 +18,16 @@ from absl.testing import parameterized
 import numpy as np
 import tensorflow.compat.v1 as tf
 
-from object_detection.box_coders import keypoint_box_coder
-from object_detection.box_coders import mean_stddev_box_coder
-from object_detection.core import box_list
-from object_detection.core import region_similarity_calculator
-from object_detection.core import standard_fields as fields
-from object_detection.core import target_assigner as targetassigner
-from object_detection.matchers import argmax_matcher
-from object_detection.utils import np_box_ops
-from object_detection.utils import test_case
-from object_detection.utils import tf_version
+from ..box_coders import keypoint_box_coder
+from ..box_coders import mean_stddev_box_coder
+from ..core import box_list
+from ..core import region_similarity_calculator
+from ..core import standard_fields as fields
+from ..core import target_assigner as targetassigner
+from ..matchers import argmax_matcher
+from ..utils import np_box_ops
+from ..utils import test_case
+from ..utils import tf_version
 
 
 class TargetAssignerTest(test_case.TestCase):

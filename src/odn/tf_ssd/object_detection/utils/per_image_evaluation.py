@@ -27,10 +27,10 @@ from __future__ import print_function
 import numpy as np
 from six.moves import range
 
-from object_detection.utils import np_box_list
-from object_detection.utils import np_box_list_ops
-from object_detection.utils import np_box_mask_list
-from object_detection.utils import np_box_mask_list_ops
+from ..utils import np_box_list
+from ..utils import np_box_list_ops
+from ..utils import np_box_mask_list
+from ..utils import np_box_mask_list_ops
 
 
 class PerImageEvaluation(object):

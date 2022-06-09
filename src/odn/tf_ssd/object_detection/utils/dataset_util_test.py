@@ -22,7 +22,7 @@ from __future__ import print_function
 import os
 import tensorflow.compat.v1 as tf
 
-from object_detection.utils import dataset_util
+from ..utils import dataset_util
 
 
 class DatasetUtilTest(tf.test.TestCase):

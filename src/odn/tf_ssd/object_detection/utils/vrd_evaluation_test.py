@@ -21,8 +21,8 @@ from __future__ import print_function
 import numpy as np
 import tensorflow.compat.v1 as tf
 
-from object_detection.core import standard_fields
-from object_detection.utils import vrd_evaluation
+from ..core import standard_fields
+from ..utils import vrd_evaluation
 
 
 class VRDRelationDetectionEvaluatorTest(tf.test.TestCase):

@@ -21,8 +21,8 @@
 
 import tensorflow.compat.v1 as tf
 
-from object_detection.meta_architectures import center_net_meta_arch
-from object_detection.models.keras_models import mobilenet_v2 as mobilenetv2
+from ..meta_architectures import center_net_meta_arch
+from ..models.keras_models import mobilenet_v2 as mobilenetv2
 
 
 _MOBILENET_V2_FPN_SKIP_LAYERS = [

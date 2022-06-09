@@ -20,16 +20,16 @@ models.
 import abc
 import tensorflow.compat.v1 as tf
 from tensorflow.python.util.deprecation import deprecated_args
-from object_detection.core import box_list
-from object_detection.core import box_list_ops
-from object_detection.core import matcher
-from object_detection.core import model
-from object_detection.core import standard_fields as fields
-from object_detection.core import target_assigner
-from object_detection.utils import ops
-from object_detection.utils import shape_utils
-from object_detection.utils import variables_helper
-from object_detection.utils import visualization_utils
+from ..core import box_list
+from ..core import box_list_ops
+from ..core import matcher
+from ..core import model
+from ..core import standard_fields as fields
+from ..core import target_assigner
+from ..utils import ops
+from ..utils import shape_utils
+from ..utils import variables_helper
+from ..utils import visualization_utils
 
 
 # pylint: disable=g-import-not-at-top

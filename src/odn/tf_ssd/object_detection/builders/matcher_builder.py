@@ -15,12 +15,12 @@
 
 """A function to build an object detection matcher from configuration."""
 
-from object_detection.matchers import argmax_matcher
-from object_detection.protos import matcher_pb2
-from object_detection.utils import tf_version
+from ..matchers import argmax_matcher
+from ..protos import matcher_pb2
+from ..utils import tf_version
 
 if tf_version.is_tf1():
-  from object_detection.matchers import bipartite_matcher  # pylint: disable=g-import-not-at-top
+  from ..matchers import bipartite_matcher  # pylint: disable=g-import-not-at-top
 
 
 def build(matcher_config):
