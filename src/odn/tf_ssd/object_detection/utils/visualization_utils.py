@@ -136,7 +136,8 @@ def draw_bounding_box_on_image_array(image,
                                      color='red',
                                      thickness=4,
                                      display_str_list=(),
-                                     use_normalized_coordinates=True):
+                                     use_normalized_coordinates=True,
+                                     fontsize = 24):
   """Adds a bounding box to an image (numpy array).
 
   Bounding box coordinates can be specified in either absolute (pixel) or
@@ -159,7 +160,8 @@ def draw_bounding_box_on_image_array(image,
   image_pil = Image.fromarray(np.uint8(image)).convert('RGB')
   draw_bounding_box_on_image(image_pil, ymin, xmin, ymax, xmax, color,
                              thickness, display_str_list,
-                             use_normalized_coordinates)
+                             use_normalized_coordinates,
+                             fontsize = fontsize)
   np.copyto(image, np.array(image_pil))
 
 
@@ -171,7 +173,8 @@ def draw_bounding_box_on_image(image,
                                color='red',
                                thickness=4,
                                display_str_list=(),
-                               use_normalized_coordinates=True):
+                               use_normalized_coordinates=True,
+                               fontsize = 24):
   """Adds a bounding box to an image.
 
   Bounding box coordinates can be specified in either absolute (pixel) or
@@ -209,7 +212,7 @@ def draw_bounding_box_on_image(image,
               width=thickness,
               fill=color)
   try:
-    font = ImageFont.truetype('arial.ttf', 24)
+    font = ImageFont.truetype('arial.ttf', fontsize) # 24
   except IOError:
     font = ImageFont.load_default()
 
@@ -1120,7 +1123,8 @@ def visualize_boxes_and_labels_on_image_array(
     skip_boxes=False,
     skip_scores=False,
     skip_labels=False,
-    skip_track_ids=False):
+    skip_track_ids=False,
+    fontsize=24):
   """Overlay labeled boxes on an image with formatted scores and label names.
 
   This function groups boxes that correspond to the same location
@@ -1256,7 +1260,8 @@ def visualize_boxes_and_labels_on_image_array(
         color=color,
         thickness=0 if skip_boxes else line_thickness,
         display_str_list=box_to_display_str_map[box],
-        use_normalized_coordinates=use_normalized_coordinates)
+        use_normalized_coordinates=use_normalized_coordinates,
+        fontsize=fontsize)
     if keypoints is not None:
       keypoint_scores_for_box = None
       if box_to_keypoint_scores_map:

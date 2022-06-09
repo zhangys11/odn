@@ -29,3 +29,4 @@ notebooks/.ipynb_checkpoints/8.4 Object Detection - Fundus - TF-SSD-checkpoint.i
 notebooks/.ipynb_checkpoints/8.8 Object Detection -Fundus - II-checkpoint.ipynb
 src/odn.egg-info
 dist
+data/fundus/ssd
