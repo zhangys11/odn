@@ -2,6 +2,13 @@ from unittest import skip
 import cv2
 import numpy as np
 
+## 读取图像，解决imread不能读取中文路径的问题
+def cv_imread(filePath):
+	cv_img=cv2.imdecode(np.fromfile(filePath,dtype=np.uint8),-1)
+	# imdecode读取的是rgb，如果后续需要opencv处理的话，需要转换成bgr，转换后图片颜色会变化
+	# cv_img=cv2.cvtColor(cv_img,cv2.COLOR_RGB2BGR)
+	return cv_img
+
 def get_data(input_path, cat = None, skip_header = False, path_prefix = ""):
 
 	found_bg = False
@@ -38,8 +45,8 @@ def get_data(input_path, cat = None, skip_header = False, path_prefix = ""):
 
 			if filename not in all_imgs:
 				all_imgs[filename] = {}
-				print(path_prefix + filename)
-				img = cv2.imread(path_prefix + filename)
+				# print(path_prefix + filename)
+				img = cv_imread(path_prefix + filename) # cv2.imread(path_prefix + filename)
 
 				(rows,cols) = img.shape[:2]
 				# print(rows, cols)
@@ -54,7 +61,6 @@ def get_data(input_path, cat = None, skip_header = False, path_prefix = ""):
 					all_imgs[filename]['imageset'] = 'test'
 
 			all_imgs[filename]['bboxes'].append({'class': class_name, 'x1': round(float(x1)), 'x2': round(float(x2)), 'y1': round(float(y1)), 'y2': round(float(y2))})
-
 
 		all_data = []
 		for key in all_imgs:

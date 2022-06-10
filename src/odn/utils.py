@@ -334,11 +334,21 @@ def merge_json_anno_files(source_folder, target_file):
 		outfile.write(s)
 		outfile.write('}')   
 
-def get_all_images_in_dir(folder = '../data/fundus/images_public/'):
+def get_all_images_in_dir(folder = '../data/fundus/images_public/', target_file = None):
 
-	FILES=[]
-	for f in os.listdir(folder):
-		if os.path.isfile(folder + f) and (f.endswith('.jpg')):
-			FILES.append(folder + f)
+	FILES=[]	
+	content = ""
+
+	for root, dirs, files in os.walk(folder):
+		for f in files:
+			if( os.path.isfile(os.path.join(root, f)) and f.endswith('.jpg')):
+				fp =  os.path.join(root, f).replace("\\", "/") 
+				FILES.append(fp)
+				content = content + fp + ",-1,-1,-1,-1,UNKNOWN" + "\n" # filename,x1,y1,x2,y2,class_name
+
+	if target_file:
+		file = open(target_file, 'w')
+		file.write(content)
+		file.close()
 
 	return FILES

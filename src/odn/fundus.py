@@ -33,10 +33,11 @@ from distutils.version import StrictVersion
 if StrictVersion(tf.__version__) < StrictVersion('1.4.0'):
   raise ImportError('Please upgrade your tensorflow installation to v1.4.* or later!')
 
+from . import utils
 from odn.tf_ssd.object_detection.utils import label_map_util
 from odn.tf_ssd.object_detection.utils import visualization_utils as vis_util
-import importlib
-importlib.reload(vis_util) # reflect changes in the source file immediately
+# import importlib
+# importlib.reload(vis_util) # reflect changes in the source file immediately
 
 class demographics():
     '''
@@ -118,7 +119,7 @@ class annotation():
         ymax = round(cy + r)
         return xmin,ymin,xmax,ymax  
 
-    def show_anno(filepath, df, savefolder = None, drawzones = False, showimg = True):    
+    def show_anno(filepath, df, savefolder = None, drawzones = False, showimg = True, suffix = '_DETECTION'):    
         '''
         Display an image with the annotations. 
 
@@ -139,6 +140,7 @@ class annotation():
                     laterality: L001 = OD, L002 = OS
 
         saveFolder : A target file path to save the image with annotation. 
+            If 'inplace', will save in the same folder, with a suffix '_DETECTION'.
             If None, will not save.
         showing : whether display the annotated image inline.
 
@@ -146,15 +148,15 @@ class annotation():
 
         # restore font size
         plt.rcParams.update({'font.size': 10})    
-        
+
         filename = os.path.basename(filepath) # file name
-        
+
         fig = plt.figure()
         img = plt.imread(filepath)
-        
+
         # 去除图像周围的白边
         im_height, im_width, channels = img.shape
-        
+
         # inch = pixel/dpi
         fig.set_size_inches(im_width/72.0, im_height/72.0)
         plt.gca().xaxis.set_major_locator(plt.NullLocator())
@@ -194,7 +196,7 @@ class annotation():
             prob = ''
             if ('prob' in df.columns):
                 prob = ' ' + str(round(row['prob'], 3))
-            
+
             # assign different color to different classes of objects
             if row['class'] == 'OpticDisk':
                 cx = (xmin + xmax) / 2.0
@@ -204,11 +206,11 @@ class annotation():
                 cx_m = (xmin + xmax) / 2.0
                 cy_m = (ymin + ymax) / 2.0
                 edgecolor = 'lavender' #'azure' 
-            
+
             radius = 0.5 * im_width # on a standard infant fundus
             if (cx_m != -1):
                 radius = 2*( sqrt((cx-cx_m)**2 + (cy-cy_m)**2) )            
-        
+
             # (xmin, xmax, ymin, ymax) 
             zone1 = [cx-radius, cx+radius, cy-radius, cy+radius]
             zone2p = [cx-1.3*radius, cx+1.3*radius, cy-1.3*radius, cy+1.3*radius]
@@ -219,7 +221,7 @@ class annotation():
             xy = (max(1, xmin),ymin-5)
             if (ymin < 5):
                 xy = (max(1, xmin),ymax)
-            ax.annotate(row['class'] + prob, xy=xy, color = edgecolor)
+            ax.annotate(row['class'] + prob, xy=xy, color = edgecolor, fontsize = round(im_width * 0.024))
 
             # add bounding boxes to the image
             rect = patches.Rectangle((xmin,ymin), width, height, edgecolor = edgecolor, facecolor = 'none')
@@ -234,23 +236,29 @@ class annotation():
             # # image = Image.frombytes('RGB', fig.canvas.get_width_height(),fig.canvas.tostring_rgb())
             # annotation.draw_fundus_zones_on_image_array(image, zones = [zone1, zone2p, zone2])
             # plt.imshow(image)
-            
+
             for zone, color in zip([zone1, zone2p, zone2], ["orange", "gold", "yellow"]):
                 # (ymin, xmin, ymax, xmax)
                 xmin = zone[0]
                 ymin = zone[2]
                 xmax = zone[1]
                 ymax = zone[3]               
-            
+
                 ellipse = patches.Ellipse((cx, cy), xmax-xmin , ymax-ymin, 
                 edgecolor = color, facecolor = 'none')   # (255,255,255)
                 ax.add_patch(ellipse)
 
         if savefolder:
-            if (os.path.isdir(savefolder) == False):
-                os.makedirs(savefolder)
-            plt.savefig(savefolder + '/' + filename)
-        
+
+            if savefolder == 'inplace':
+                # in this case, file path must be a full qualified path.
+                plt.savefig(filepath + suffix + '.jpg')
+
+            else:
+                if (os.path.isdir(savefolder) == False):
+                    os.makedirs(savefolder)
+                plt.savefig(savefolder + '/' + filename)
+
         if showimg == False:
             plt.close(fig)
         else:
@@ -291,7 +299,7 @@ class annotation():
                 to_be_removed = np.append(to_be_removed, ods[ods.index != ods['prob'].idxmax()].seq.values.flatten()) 
                 d_od = (od['xmax'] - od['xmin']) / od['width']
                 
-                assert (abs(d_od - Dod) <= Dod * 0.5)
+                # assert (abs(d_od - Dod) <= Dod * 0.5)
                 cx_od = (od['xmax'] + od['xmin']) / 2
                 cy_od = (od['ymax'] + od['ymin']) / 2
                 
@@ -557,14 +565,15 @@ class annotation():
 
 
     def tf_batch_object_detection(detection_graph, category_index, FILES, 
-                            target_folder, log_file, 
+                            target_folder, log_file, suffix = '_ANNO',
                             display = False, savefile = True, 
                             IMAGE_SIZE = (24, 18), threshold = 0.2, 
                             new_img_width = None,
-                            fontsize = 24):    
-        if savefile:
-            os.makedirs(target_folder, exist_ok=True) # create the target folder if not exist
+                            fontsize = None):    
         
+        if savefile and target_folder is not None:
+            os.makedirs(target_folder, exist_ok=True) # create the target folder if not exist
+
         if (log_file is not None and log_file != ''):
             if os.path.exists(log_file):
                 os.remove(log_file)
@@ -573,7 +582,7 @@ class annotation():
             except OSError:
                 print('Warning: log file path ', log_file, ' is invalid')
                 log_file = None
-        
+                
         with detection_graph.as_default():
             with tf.Session(graph=detection_graph) as sess:
                 # Definite input and output Tensors for detection_graph
@@ -598,24 +607,27 @@ class annotation():
                         (boxes, scores, classes, num) = sess.run(
                             [detection_boxes, detection_scores, detection_classes, num_detections],
                             feed_dict={image_tensor: image_np_expanded})
-                            
+
                         # get image dims
                         (im_width, im_height) = image.size
-                            
+                        
+                        if fontsize is None:
+                            fontsize = round( im_width * 0.024 )
+
                         # special treatment: only keep one opticdisk: OD or OS
                         idxOD = -1
                         idxOS = -1
                         idxMacula = -1
                         probMacula = 0
                         idx = 0
-                        
+
                         # log object detection info
                         info = os.path.basename(image_path) + ' '                    
-                        
+
                         for c in classes[0]:                          
-                            
+
                             info = info + str(int(c)) + ' ' + str(round(scores[0][idx],3)) + ' '
-                            
+
                             if (c == 1):
                                 idxOD = idx
                             if (c == 2):
@@ -626,13 +638,13 @@ class annotation():
                                         scores[0][idxMacula] = 0.0 
                                     idxMacula = idx
                                     probMacula = scores[0][idx]
-                                    
+
                             idx = idx + 1
-                        
+
                         if display: 
                             print('Top Objects:\n', 'boxes = ', boxes[0], '\nscores = ', scores[0], '\nclasses = ', classes[0])
-                        
-                    
+
+
                         ###### RULE1 #######
                         # Discard oversized macula candidates; Judge the distance between macula and OpticDisk                       
                         # On a 512-pixel-high image, macula radius is 55, optic disk radius is 35
@@ -641,44 +653,44 @@ class annotation():
                         m_h = abs(boxes[0][idxMacula][2] - boxes[0][idxMacula][0])
                         m_cx = abs(boxes[0][idxMacula][3] + boxes[0][idxMacula][1])/2.0
                         m_cy = abs(boxes[0][idxMacula][2] + boxes[0][idxMacula][0])/2.0
-                        
+
                         # print(m_w, m_h, m_cx, m_cy)
-                        
+
                         if m_w > 0.3 or m_h > 0.3:
                             scores[0][idxMacula] = 0.0
-                        
-                        
+
+
                         ##### RULE2: Optic Disk OD/OS Judgment ######
                         od_cx = abs(boxes[0][idxOD][3] + boxes[0][idxOD][1])/2.0
                         od_cy = abs(boxes[0][idxOD][2] + boxes[0][idxOD][0])/2.0
-                                
+
                         os_cx = abs(boxes[0][idxOS][3] + boxes[0][idxOS][1])/2.0
                         os_cy = abs(boxes[0][idxOS][2] + boxes[0][idxOS][0])/2.0
-                                
+
                         # OpticDisk near the left rim is OS
                         if (scores[0][idxOD] > threshold and scores[0][idxOD]>scores[0][idxOS] and od_cx < 0.2): # 2.0*35*2/512
                             scores[0][idxOS] = max(scores[0][idxOS], scores[0][idxOD])
                             scores[0][idxOD] = 0
                             boxes[0][idxOS] = boxes[0][idxOD] # ?üD?bbox
                             #classes[0][idxOD] = 2 # set as OS
-                                
+
                         # OpticDisk near the right rim is OD
                         if (scores[0][idxOS] > threshold  and scores[0][idxOD]<scores[0][idxOS] and os_cx > 0.8):
                             scores[0][idxOD] = max(scores[0][idxOS], scores[0][idxOD])
                             scores[0][idxOS] = 0
                             boxes[0][idxOD] = boxes[0][idxOS] # ?üD?bbox
                             #classes[0][idxOS] = 1 # set as OD
-                            
-                        
+
+
                         ##### RULE3: Judge relative positions of macula and OpticDisk
-                        
+
                         # reload boxes info
                         od_cx = abs(boxes[0][idxOD][3] + boxes[0][idxOD][1])/2.0
                         od_cy = abs(boxes[0][idxOD][2] + boxes[0][idxOD][0])/2.0
-                                
+
                         os_cx = abs(boxes[0][idxOS][3] + boxes[0][idxOS][1])/2.0
                         os_cy = abs(boxes[0][idxOS][2] + boxes[0][idxOS][0])/2.0
-                        
+
                         if (scores[0][idxMacula] > threshold):
                             if (scores[0][idxOD] > threshold and scores[0][idxOD] > scores[0][idxOS] and m_cx > od_cx ):
                                 scores[0][idxOS] = max(scores[0][idxOS], scores[0][idxOD])
@@ -688,15 +700,15 @@ class annotation():
                                 scores[0][idxOD] = max(scores[0][idxOS], scores[0][idxOD])
                                 scores[0][idxOS] = 0
                                 boxes[0][idxOD] = boxes[0][idxOS] # update bbox
-                        
-                        
+
+
                         ##### RULE4: Keep the bigger probality of OpticDisk
-                        
+
                         if (scores[0][idxOD] > scores[0][idxOS]):                        
                             scores[0][idxOS] = 0.0                        
                         if (scores[0][idxOD] < scores[0][idxOS]):
                             scores[0][idxOD] = 0.0                                    
-                            
+
 
                         info += ' ; ' 
                         idx = 0
@@ -706,10 +718,10 @@ class annotation():
                             if (scores[0][idx] > threshold):
                                 label += category_index[c]['name'] + ' ' + str(round(scores[0][idx],3)) + '  '
                             idx += 1
-                                        
+
                         zones = annotation.calculate_fundus_zones(classes[0], scores[0], boxes[0], threshold)
                         annotation.draw_fundus_zones_on_image_array(image_np, zones = zones, text=label)
-                        
+
                         # Visualization of the results of a detection.
                         vis_util.visualize_boxes_and_labels_on_image_array(
                             image_np,
@@ -727,22 +739,26 @@ class annotation():
                         if (display):
                             plt.imshow(image_np)
                         if(savefile):
-                            plt.imsave(os.path.join(target_folder, os.path.basename(image_path)), image_np)
+                            if target_folder and target_folder != 'inplace':
+                                new_file_path = os.path.join(target_folder, os.path.basename(image_path))
+                            else:
+                                new_file_path = image_path + suffix + ".jpg"
+                            # print(new_file_path)
+                            plt.imsave(new_file_path, image_np)
                             # plt.annotate(info, (0, 0), color='b', weight='bold', fontsize=12, ha='left', va='top')
                             # print(info)
                             plt.close(fig)
-                            
+
                         if (log_file is not None and log_file != ''): # the validity of log_file is already checked in the beginning
                             with open(log_file, "a") as myfile:
                                 myfile.write(info + '\n')                        
-                        pbar.update(1)                        
-
+                        pbar.update(1)   
 
 class dataset():
 
     def synthesize_anno(label_file, 
     dir_images, 
-    dir_output = None, 
+    dir_output = None,  suffix = '_ANNO',
     drawzones = False,   
     verbose = True,
     display = 5 ):
@@ -751,23 +767,12 @@ class dataset():
 
         Parameters
         ----------
-        label_file : a csv file containing all image path and ROIs. e.g.,  '../data/fundus/all_labels.csv'
-
-            The label file extends the VIA annotation format:
-
-                filename: file name of the image
-                class: denotes the class label of the ROI (region of interest)
-                cx: image width
-                cy: image height
-                xmin: x-coordinate of the bottom left part of the ROI
-                xmax: x-coordinate of the top right part of the ROI
-                ymin: y-coordinate of the bottom left part of the ROI
-                ymax: y-coordinate of the top right part of the ROI  
-                laterality: L001 = OD, L002 = OS
+        label_file : a csv file containing all image path and ROIs.
 
         dir_images : The folder path containing all images, e.g.,  '../data/fundus/images/'
 
         dir_output : The generated images will be saved to this folder. e.g., '../data/fundus/ground_truth/'.
+            If "inplace", will generate the annotated image in the same place.
             If None, will not output images.
         '''
         
@@ -785,11 +790,14 @@ class dataset():
             print('\n----------- \ndistribution of ROI labels:')
             print( df['class'].value_counts() )
         
+        FILES = utils.get_all_images_in_dir(dir_images)
+        
         i = 0
         for f in unique_files:            
-            filepath = dir_images + '/' + f
+            # filepath = dir_images + '/' + f
+            filepath = get_full_path_by_filename(FILES, f)
             annotation.show_anno (filepath, df, dir_output, 
-            drawzones = drawzones, showimg = (i < display) )
+            drawzones = drawzones, showimg = (i < display), suffix = suffix )
             i = i+1
 
 
@@ -1048,3 +1056,9 @@ def resize_fundus_image(root, f, target, prefix='', w=480, h=360):
     newfilePath = os.path.join(target, prefix + f)    
     im = Image.open(filePath).resize((w,h)) 
     im.save(newfilePath)
+
+def get_full_path_by_filename(filelist, filename):
+    
+    for f in filelist:
+        if (filename in f):
+            return f

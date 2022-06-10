@@ -15,6 +15,15 @@ from keras.applications.mobilenet import preprocess_input
 
 from tensorflow.compat.v1 import ConfigProto
 from tensorflow.compat.v1 import InteractiveSession
+
+
+## 读取图像，解决imread不能读取中文路径的问题
+def cv_imread(filePath):
+	cv_img=cv2.imdecode(np.fromfile(filePath,dtype=np.uint8),-1)
+	# imdecode读取的是rgb，如果后续需要opencv处理的话，需要转换成bgr，转换后图片颜色会变化
+	# cv_img=cv2.cvtColor(cv_img,cv2.COLOR_RGB2BGR)
+	return cv_img
+
 config = ConfigProto()
 config.gpu_options.allow_growth = True
 session = InteractiveSession(config=config)
@@ -218,7 +227,7 @@ for img_info in all_imgs: # sorted(os.listdir(img_path))):
 	st = time.time()
 	# filepath = os.path.join(img_path,img_name)
 
-	img = cv2.imread(img_name)
+	img = cv_imread(img_name)
 
     # preprocess image
 	X, ratio = format_img(img, C)
@@ -321,4 +330,4 @@ for img_info in all_imgs: # sorted(os.listdir(img_path))):
 
 # import pickle
 # pickle.dump(candidate_rois, open('candidate_rois.pickle', 'wb'))
-candidate_rois.to_csv('candidate_rois.txt')
+candidate_rois.to_csv(os.path.basename(img_path) + '_candidate_rois.txt')

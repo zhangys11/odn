@@ -8,8 +8,7 @@ We currently support Faster-RCNN, SSD and YOLO(todo). An infant funuds image obj
 The following 3rd-party packages are used: 
 1. The Faster-RCNN module is based on https://github.com/kentaroy47/frcnn-from-scratch-with-keras. We have updated the code according to the latest keras API change (K..image_dim_ordering () -> K.image_data_format()).   
 2. Data augmentation package (https://github.com/Paperspace/DataAugmentationForObjectDetection).   
-3. https://github.com/tensorflow/models/research/object_detection and https://github.com/tensorflow/models/research/slim  
-
+3. We took lots of efforts to integrate tensorflow's objection detection and slim source, mainly revising the relative importing. https://github.com/tensorflow/models/research/object_detection and https://github.com/tensorflow/models/research/slim  
 
 # Install
 
@@ -143,15 +142,25 @@ For tf_ssd, we need to add odn\tf_ssd\protoc-3.4.0-win32\bin to PATH, then run:
 
     python train.py --logtostderr --train_dir=training --pipeline_config_path=ssd_mobilenet_v1_fundus.config
 
-    To continue training,
-
-    Revise ssd_mobilenet_v1_fundus.config:
+    To use a pretrained model, revise ssd_mobilenet_v1_fundus.config:
 
         fine_tune_checkpoint: "../tf/export/model.ckpt"
 
-    python train.py --logtostderr --train_dir=training --pipeline_config_path=ssd_mobilenet_v1_fundus.config
+    If the training runs correctly, should output something like:
 
-3. Prediction
+```
+    INFO:tensorflow:global step 1906: loss = 4.3498 (3.848 sec/step)
+    I0610 11:49:51.364413 13848 learning.py:512] global step 1906: loss = 4.3498 (3.848 sec/step)
+    INFO:tensorflow:global step 1907: loss = 3.9057 (3.903 sec/step)
+    I0610 11:49:55.267028 13848 learning.py:512] global step 1907: loss = 3.9057 (3.903 sec/step)
+    INFO:tensorflow:global step 1908: loss = 3.4026 (3.856 sec/step)
+```
+
+3. Export model as tf graph
+
+    python export_inference_graph.py --input_type image_tensor --pipeline_config_path ssd_mobilenet_v1_fundus.config --trained_checkpoint_prefix training/model.ckpt-1945 --output_directory ./export2002206
+
+4. Prediction
 
 ```
     from odn.fundus import annotation 
