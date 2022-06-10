@@ -21,7 +21,7 @@ from __future__ import print_function
 import tensorflow.compat.v1 as tf
 import tf_slim as slim
 
-from nets import inception_utils
+from . import inception_utils
 
 # pylint: disable=g-long-lambda
 trunc_normal = lambda stddev: tf.truncated_normal_initializer(

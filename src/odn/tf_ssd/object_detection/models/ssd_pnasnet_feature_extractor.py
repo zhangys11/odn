@@ -27,7 +27,7 @@ from ..utils import context_manager
 from ..utils import ops
 from ..utils import variables_helper
 try:
-  from nets.nasnet import pnasnet  # pylint: disable=g-import-not-at-top
+  from .nets.nasnet import pnasnet  # pylint: disable=g-import-not-at-top
 except:  # pylint: disable=bare-except
   pass
 

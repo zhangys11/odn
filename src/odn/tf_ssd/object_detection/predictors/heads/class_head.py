@@ -23,9 +23,18 @@ import functools
 import tensorflow.compat.v1 as tf
 import tf_slim as slim
 
-from ..predictors.heads import head
-from ..utils import shape_utils
+from ..heads import head
 
+import sys
+import os.path
+
+# sys.path.append( '../../utils' )
+
+# current = os.path.dirname(os.path.realpath(__file__))  
+# print(current.replace("predictors\heads",""))
+# sys.path.append(current.replace("predictors\heads",""))
+
+from ...utils import shape_utils
 
 class MaskRCNNClassHead(head.Head):
   """Mask RCNN class prediction head.

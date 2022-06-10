@@ -30,7 +30,7 @@ from ..models import feature_map_generators
 from ..utils import context_manager
 from ..utils import ops
 from ..utils import shape_utils
-from nets import resnet_v1
+from .nets import resnet_v1
 
 
 class SSDResnetV1FpnFeatureExtractor(ssd_meta_arch.SSDFeatureExtractor):

@@ -30,8 +30,7 @@ from six.moves import range
 import tensorflow.compat.v1 as tf
 import tf_slim as slim
 
-from ..predictors.heads import head
-
+from ..heads import head
 
 class MaskRCNNKeypointHead(head.Head):
   """Mask RCNN keypoint prediction head.

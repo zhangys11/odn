@@ -21,7 +21,7 @@ from ..meta_architectures import ssd_meta_arch
 from ..models import feature_map_generators
 from ..utils import ops
 from ..utils import shape_utils
-from nets import inception_v3
+from .nets import inception_v3
 
 
 class SSDInceptionV3FeatureExtractor(ssd_meta_arch.SSDFeatureExtractor):

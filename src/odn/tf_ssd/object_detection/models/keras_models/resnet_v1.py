@@ -21,8 +21,8 @@ from __future__ import print_function
 
 import tensorflow.compat.v1 as tf
 
-from ..core import freezable_batch_norm
-from ..models.keras_models import model_utils
+from ...core import freezable_batch_norm
+from ..keras_models import model_utils
 
 try:
   from keras.applications import resnet  # pylint:disable=g-import-not-at-top

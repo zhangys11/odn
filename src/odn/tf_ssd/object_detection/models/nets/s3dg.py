@@ -27,7 +27,7 @@ from __future__ import print_function
 import tensorflow.compat.v1 as tf
 import tf_slim as slim
 
-from nets import i3d_utils
+from . import i3d_utils
 
 # pylint: disable=g-long-lambda
 trunc_normal = lambda stddev: tf.truncated_normal_initializer(

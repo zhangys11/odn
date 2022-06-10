@@ -30,8 +30,8 @@ from ..models import feature_map_generators
 from ..utils import context_manager
 from ..utils import ops
 from ..utils import shape_utils
-from nets.mobilenet import mobilenet
-from nets.mobilenet import mobilenet_v2
+from .nets.mobilenet import mobilenet
+from .nets.mobilenet import mobilenet_v2
 
 
 # A modified config of mobilenet v2 that makes it more detection friendly.

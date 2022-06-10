@@ -25,7 +25,7 @@ import tf_slim as slim
 from tensorflow.contrib import quantize as contrib_quantize
 
 from datasets import dataset_factory
-from nets import mobilenet_v1
+from . import mobilenet_v1
 from preprocessing import preprocessing_factory
 
 flags = tf.app.flags

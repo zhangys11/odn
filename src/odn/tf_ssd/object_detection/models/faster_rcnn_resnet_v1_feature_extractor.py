@@ -28,8 +28,8 @@ import tensorflow.compat.v1 as tf
 import tf_slim as slim
 
 from ..meta_architectures import faster_rcnn_meta_arch
-from nets import resnet_utils
-from nets import resnet_v1
+from .nets import resnet_utils
+from .nets import resnet_v1
 
 
 class FasterRCNNResnetV1FeatureExtractor(

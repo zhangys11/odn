@@ -31,7 +31,7 @@ from ..utils import variables_helper
 # import os.path
 # sys.path.append( os.path.abspath('../slim') )
 # print(sys.path)
-from nets import inception_resnet_v2
+from .nets import inception_resnet_v2
 
 
 class FasterRCNNInceptionResnetV2FeatureExtractor(

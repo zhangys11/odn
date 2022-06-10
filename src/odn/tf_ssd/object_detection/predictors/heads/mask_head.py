@@ -28,8 +28,9 @@ from six.moves import range
 import tensorflow.compat.v1 as tf
 import tf_slim as slim
 
-from ..predictors.heads import head
-from ..utils import ops
+from ..heads import head
+
+from ...utils import ops
 
 
 class MaskRCNNMaskHead(head.Head):

@@ -21,7 +21,7 @@ from __future__ import print_function
 
 import tensorflow.compat.v1 as tf
 
-from ..core import freezable_batch_norm
+from ...core import freezable_batch_norm
 
 
 class _LayersOverride(object):

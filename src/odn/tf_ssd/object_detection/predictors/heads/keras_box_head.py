@@ -21,8 +21,7 @@ All the box prediction heads have a _predict function that receives the
 """
 import tensorflow.compat.v1 as tf
 
-from ..predictors.heads import head
-
+from ..heads import head
 
 class ConvolutionalBoxHead(head.KerasHead):
   """Convolutional box prediction head."""

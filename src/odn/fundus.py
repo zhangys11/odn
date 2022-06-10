@@ -90,6 +90,7 @@ class demographics():
                         marker_line_width=1.5, opacity=0.6)
         fig.show()
 
+# H2W = 1 # 3/4 - default image height / width ratio. But we should use 1 for zone plot.
 
 class annotation():
 
@@ -149,10 +150,21 @@ class annotation():
         filename = os.path.basename(filepath) # file name
         
         fig = plt.figure()
-        image = plt.imread(filepath)
-        plt.imshow(image)
+        img = plt.imread(filepath)
+        
+        # 去除图像周围的白边
+        im_height, im_width, channels = img.shape
+        
+        # inch = pixel/dpi
+        fig.set_size_inches(im_width/72.0, im_height/72.0)
+        plt.gca().xaxis.set_major_locator(plt.NullLocator())
+        plt.gca().yaxis.set_major_locator(plt.NullLocator())
+        plt.subplots_adjust(top=1,bottom=0,left=0,right=1,hspace=0,wspace=0)
+        plt.margins(0,0)
+        plt.axis('off')
+        plt.imshow(img, aspect='equal')
         ax = fig.gca()
-        ax.set_axis_off()
+        # ax.set_axis_off()
 
         idxs = []
         base_fn = os.path.basename(filename).lower()
@@ -193,14 +205,15 @@ class annotation():
                 cy_m = (ymin + ymax) / 2.0
                 edgecolor = 'lavender' #'azure' 
             
-            radius = 0.5
+            radius = 0.5 * im_width # on a standard infant fundus
             if (cx_m != -1):
                 radius = 2*( sqrt((cx-cx_m)**2 + (cy-cy_m)**2) )            
         
             # (xmin, xmax, ymin, ymax) 
-            zone1 = [cx-radius, cx+radius, cy-radius*4/3, cy+radius*4/3]
-            zone2p = [cx-1.3*radius, cx+1.3*radius, cy-1.3*radius*4/3, cy+1.3*radius*4/3]
-            zone2 = [cx-2*radius, cx+2*radius, cy-2*radius*4/3, cy+2*radius*4/3]
+            zone1 = [cx-radius, cx+radius, cy-radius, cy+radius]
+            zone2p = [cx-1.3*radius, cx+1.3*radius, cy-1.3*radius, cy+1.3*radius]
+            zone2 = [cx-2*radius, cx+2*radius, cy-2*radius, cy+2*radius]
+
 
             # calculate the position of anno labels
             xy = (max(1, xmin),ymin-5)
@@ -213,7 +226,7 @@ class annotation():
 
             ax.add_patch(rect)
 
-        if drawzones:
+        if drawzones and cx > 0 and cy > 0:
             # buf = io.BytesIO()
             # fig.savefig(buf)
             # buf.seek(0)
@@ -229,7 +242,8 @@ class annotation():
                 xmax = zone[1]
                 ymax = zone[3]               
             
-                ellipse = patches.Ellipse((cx, cy), xmax-xmin , ymax-ymin, edgecolor = color, facecolor = 'none')   # (255,255,255)
+                ellipse = patches.Ellipse((cx, cy), xmax-xmin , ymax-ymin, 
+                edgecolor = color, facecolor = 'none')   # (255,255,255)
                 ax.add_patch(ellipse)
 
         if savefolder:
@@ -239,7 +253,8 @@ class annotation():
         
         if showimg == False:
             plt.close(fig)
-
+        else:
+            plt.show()
 
     def rule_filter_rois(input_file = '../src/odn/candidate_rois.txt', 
     output_file = '../src/odn/rois.txt',
@@ -707,6 +722,7 @@ class annotation():
                             max_boxes_to_draw=2, # 3
                             min_score_thresh=threshold,
                             fontsize = fontsize)
+
                         fig = plt.figure(figsize=IMAGE_SIZE)
                         if (display):
                             plt.imshow(image_np)

@@ -19,7 +19,7 @@ import tensorflow.compat.v1 as tf
 
 from google.protobuf import text_format
 from ..builders import hyperparams_builder
-from ..predictors.heads import box_head
+import box_head
 from ..protos import hyperparams_pb2
 from ..utils import test_case
 from ..utils import tf_version

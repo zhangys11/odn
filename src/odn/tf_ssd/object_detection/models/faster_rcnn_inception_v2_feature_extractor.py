@@ -22,7 +22,7 @@ import tensorflow.compat.v1 as tf
 import tf_slim as slim
 
 from ..meta_architectures import faster_rcnn_meta_arch
-from nets import inception_v2
+from .nets import inception_v2
 
 
 def _batch_norm_arg_scope(list_ops,

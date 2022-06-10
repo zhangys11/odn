@@ -21,7 +21,7 @@ For tf_ssd, we need to add odn\tf_ssd\protoc-3.4.0-win32\bin to PATH, then run:
     cd tf_ssd  
     protoc object_detection/protos/*.proto --python_out=.
 
-# How to use
+# How to use - FRCNN
 
 1. Output images with annotations
 
@@ -87,7 +87,8 @@ For tf_ssd, we need to add odn\tf_ssd\protoc-3.4.0-win32\bin to PATH, then run:
 
     dataset.synthesize_anno('../src/odn/rois.txt', 
     dir_images = '../data/fundus/images_public/', 
-    dir_output = '../data/fundus/odn_19e/',    
+    dir_output = '../data/fundus/odn_19e/',
+    drawzones = True, # set true if you want to draw ROP zones    
     verbose = True,
     display = 5 )
 
@@ -131,6 +132,48 @@ For tf_ssd, we need to add odn\tf_ssd\protoc-3.4.0-win32\bin to PATH, then run:
         '../data/fundus/odn_19e'], image_subset = image_subset, verbose = True )
 
     <img src='notebooks/comparison_with_metrics_diff.jpg'>
+
+# How to use - TF-SSD
+
+1. Follow our notebook (8.4 Object Detection - Fundus - TF-SSD ) to build the tfrecord.
+
+2. Training
+
+    cmd > cd to '/odn/tf_ssd' > run:
+
+    python train.py --logtostderr --train_dir=training --pipeline_config_path=ssd_mobilenet_v1_fundus.config
+
+    To continue training,
+
+    Revise ssd_mobilenet_v1_fundus.config:
+
+        fine_tune_checkpoint: "../tf/export/model.ckpt"
+
+    python train.py --logtostderr --train_dir=training --pipeline_config_path=ssd_mobilenet_v1_fundus.config
+
+3. Prediction
+
+```
+    from odn.fundus import annotation 
+
+    # get image file list to predict
+    FILES = utils.get_all_images_in_dir(folder = '../data/fundus/images_public/') 
+
+    # load tf graph model
+    detection_graph, category_index = annotation.load_tf_graph(ckpt_path = '../src/odn/tf_ssd/export/frozen_inference_graph.pb',
+                    label_path = '../src/odn/tf_ssd/fundus_label_map.pbtxt', 
+                    num_classes = 2)
+
+    # object detection
+    annotation.tf_batch_object_detection(detection_graph, category_index, FILES, 
+                                    '../data/fundus/ssd/', 
+                                    '../data/fundus/ssd_202206.txt', 
+                                    new_img_width = 300, fontsize = 12)
+```
+
+The annotated images will be generated in the ssd folder. A sample image is as follows,   
+<img src='src/odn/tf_ssd/0c8d6a2fe8a1ec3d9b91ca95550a2a8c.jpg'>    
+We draw ROP Zone I, Posterior Zone II and Zone II.
 
 # Jupyter notebooks
 

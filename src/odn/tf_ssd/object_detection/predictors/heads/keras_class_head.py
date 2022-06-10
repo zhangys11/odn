@@ -21,9 +21,12 @@ All the class prediction heads have a predict function that receives the
 """
 import tensorflow.compat.v1 as tf
 
-from ..predictors.heads import head
-from ..utils import shape_utils
+from ..heads import head
 
+import sys
+import os.path
+
+from ...utils import shape_utils
 
 class ConvolutionalClassHead(head.KerasHead):
   """Convolutional class prediction head."""

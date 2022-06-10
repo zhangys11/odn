@@ -59,7 +59,7 @@ from __future__ import print_function
 import tensorflow.compat.v1 as tf
 import tf_slim as slim
 
-from nets import resnet_utils
+from . import resnet_utils
 
 
 resnet_arg_scope = resnet_utils.resnet_arg_scope

@@ -27,8 +27,8 @@ import tf_slim as slim
 from ..meta_architectures import ssd_meta_arch
 from ..utils import ops
 from ..utils import shape_utils
-from nets.mobilenet import mobilenet
-from nets.mobilenet import mobilenet_v2
+from .nets.mobilenet import mobilenet
+from .nets.mobilenet import mobilenet_v2
 
 
 Block = collections.namedtuple(

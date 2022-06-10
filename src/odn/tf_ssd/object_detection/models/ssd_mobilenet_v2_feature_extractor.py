@@ -23,8 +23,8 @@ from ..models import feature_map_generators
 from ..utils import context_manager
 from ..utils import ops
 from ..utils import shape_utils
-from nets.mobilenet import mobilenet
-from nets.mobilenet import mobilenet_v2
+from .nets.mobilenet import mobilenet
+from .nets.mobilenet import mobilenet_v2
 
 
 class SSDMobileNetV2FeatureExtractor(ssd_meta_arch.SSDFeatureExtractor):

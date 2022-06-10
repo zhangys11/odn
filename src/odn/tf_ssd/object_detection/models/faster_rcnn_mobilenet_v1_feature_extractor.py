@@ -21,7 +21,7 @@ import tf_slim as slim
 
 from ..meta_architectures import faster_rcnn_meta_arch
 from ..utils import shape_utils
-from nets import mobilenet_v1
+from .nets import mobilenet_v1
 
 
 def _get_mobilenet_conv_no_last_stride_defs(conv_depth_ratio_in_percentage):

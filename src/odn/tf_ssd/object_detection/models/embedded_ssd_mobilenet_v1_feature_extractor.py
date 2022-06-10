@@ -22,7 +22,7 @@ from ..meta_architectures import ssd_meta_arch
 from ..models import feature_map_generators
 from ..utils import context_manager
 from ..utils import ops
-from nets import mobilenet_v1
+from .nets import mobilenet_v1
 
 
 class EmbeddedSSDMobileNetV1FeatureExtractor(ssd_meta_arch.SSDFeatureExtractor):

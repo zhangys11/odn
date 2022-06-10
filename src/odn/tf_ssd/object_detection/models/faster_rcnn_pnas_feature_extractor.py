@@ -28,10 +28,10 @@ import tf_slim as slim
 
 from ..meta_architectures import faster_rcnn_meta_arch
 from ..utils import variables_helper
-from nets.nasnet import nasnet_utils
+from .nets.nasnet import nasnet_utils
 
 try:
-  from nets.nasnet import pnasnet  # pylint: disable=g-import-not-at-top
+  from .nets.nasnet import pnasnet  # pylint: disable=g-import-not-at-top
 except:  # pylint: disable=bare-except
   pass
 

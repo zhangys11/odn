@@ -27,7 +27,7 @@ from __future__ import print_function
 import tensorflow.compat.v1 as tf
 import tf_slim as slim
 
-from nets import inception_utils
+from . import inception_utils
 
 
 def block_inception_a(inputs, scope=None, reuse=None):

@@ -33,8 +33,8 @@ from ..utils import variables_helper
 
 # pylint: disable=g-import-not-at-top
 try:
-  from nets.nasnet import nasnet
-  from nets.nasnet import nasnet_utils
+  from .nets.nasnet import nasnet
+  from .nets.nasnet import nasnet_utils
 except:  # pylint: disable=bare-except
   pass
 # pylint: enable=g-import-not-at-top

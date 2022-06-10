@@ -359,8 +359,8 @@ import numpy as np
 import tensorflow.compat.v1 as tf
 import tf_slim as slim
 
-from nets.mobilenet import conv_blocks as ops
-from nets.mobilenet import mobilenet as lib
+from ..mobilenet import conv_blocks as ops
+from ..mobilenet import mobilenet as lib
 
 op = lib.op
 expand_input = ops.expand_input_by_factor
