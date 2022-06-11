@@ -204,6 +204,34 @@ The annotated images will be generated in the ssd folder. A sample image is as f
 <img src='data/fundus/ssd/0a61e7f1edbe215fab6e9b6eae5283e5.jpg'>    
 We draw ROP Zone I, Posterior Zone II and Zone II.
 
+# How to use - Yolo
+
+1. Prerequisie: Install darkflow from source
+
+```
+    src\odn\darkflow_yolo>pip install -e .
+        Obtaining file:///C:/Users/eleve/Documents/codex/py/keras/8.%20Object%20Detection/github/src/odn/darkflow_yolo
+        Installing collected packages: darkflow
+        Running setup.py develop for darkflow
+        Successfully installed darkflow
+```
+
+2. Load yolo model and make prediction
+
+```
+    from odn import yolo​
+
+    tfnet = yolo.load_tfnet(options = {
+            'model': '../src/odn/darkflow_yolo/cfg/yolo.cfg', # 'bin/yolov1.cfg',
+            'load': '../src/odn/darkflow_yolo/bin/yolov2.weights', # 'bin/yolov1.weights',
+            'config': '../src/odn/darkflow_yolo/cfg/',
+            'threshold': 0.3,
+            'gpu': 0.7
+        })
+
+    yolo.predict(tfnet, '../data/generic/image2.jpg')
+```
+
 # How to use - Camera App
 
     from odn import camera
