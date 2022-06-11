@@ -8,7 +8,9 @@ We currently support Faster-RCNN, SSD and YOLO(todo). An infant funuds image obj
 The following 3rd-party packages are used: 
 1. The Faster-RCNN module is based on https://github.com/kentaroy47/frcnn-from-scratch-with-keras. We have updated the code according to the latest keras API change (K..image_dim_ordering () -> K.image_data_format()).   
 2. Data augmentation package (https://github.com/Paperspace/DataAugmentationForObjectDetection).   
-3. SSD (Single Shot MultiBox Detector) by tensorflow. We took lots of efforts to integrate tensorflow's objection detection and slim source, mainly revising the relative importing. https://github.com/tensorflow/models/research/object_detection and https://github.com/tensorflow/models/research/slim  
+3. SSD (Single Shot MultiBox Detector) by tensorflow. We took lots of efforts to integrate tensorflow's objection detection and slim source, mainly revising the relative importing. https://github.com/tensorflow/models/research/object_detection and https://github.com/tensorflow/models/research/slim    
+4. The darkflow framework (https://github.com/thtrieu/darkflow)
+
 
 # Install
 
@@ -201,6 +203,14 @@ For tf_ssd, we need to add odn\tf_ssd\protoc-3.4.0-win32\bin to PATH, then run:
 The annotated images will be generated in the ssd folder. A sample image is as follows,   
 <img src='data/fundus/ssd/0a61e7f1edbe215fab6e9b6eae5283e5.jpg'>    
 We draw ROP Zone I, Posterior Zone II and Zone II.
+
+# How to use - Camera App
+
+    from odn import camera
+
+    camera.realtime_object_detection(ckpt_path = '../src/odn/models/ssd_mobilenet_v2_coco_2018_03_29/frozen_inference_graph.pb',
+                    label_path = '../src/odn/models/mscoco_label_map.pbtxt', 
+                    num_classes = 90)
 
 # Jupyter notebooks
 
