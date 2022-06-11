@@ -8,7 +8,7 @@ We currently support Faster-RCNN, SSD and YOLO(todo). An infant funuds image obj
 The following 3rd-party packages are used: 
 1. The Faster-RCNN module is based on https://github.com/kentaroy47/frcnn-from-scratch-with-keras. We have updated the code according to the latest keras API change (K..image_dim_ordering () -> K.image_data_format()).   
 2. Data augmentation package (https://github.com/Paperspace/DataAugmentationForObjectDetection).   
-3. We took lots of efforts to integrate tensorflow's objection detection and slim source, mainly revising the relative importing. https://github.com/tensorflow/models/research/object_detection and https://github.com/tensorflow/models/research/slim  
+3. SSD (Single Shot MultiBox Detector) by tensorflow. We took lots of efforts to integrate tensorflow's objection detection and slim source, mainly revising the relative importing. https://github.com/tensorflow/models/research/object_detection and https://github.com/tensorflow/models/research/slim  
 
 # Install
 
@@ -199,12 +199,19 @@ For tf_ssd, we need to add odn\tf_ssd\protoc-3.4.0-win32\bin to PATH, then run:
 ```
 
 The annotated images will be generated in the ssd folder. A sample image is as follows,   
-<img src='src/odn/tf_ssd/0c8d6a2fe8a1ec3d9b91ca95550a2a8c.jpg'>    
+<img src='data/fundus/ssd/0a61e7f1edbe215fab6e9b6eae5283e5.jpg'>    
 We draw ROP Zone I, Posterior Zone II and Zone II.
 
 # Jupyter notebooks
 
-Under /notebooks, we provide two examples for fundus image object detection.
+Under /notebooks, we provide three examples for fundus image object detection.
+
+# Dataset
+
+data/fundus/images_public : a fundus image set in courtesy of SZEH (Shenzhen Eye Hospital)   
+data/fundus/ground_truth_public : images with ground truth annotations   
+data/fundus/frcnn_19e_zones : object detection results by FRCNN (trained 19 epochs)   
+data/fundus/ssd : object detection results by SSD (Single Shot MultiBox Detector)  
 
 # Deployment
 
