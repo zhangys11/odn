@@ -34,7 +34,6 @@ if StrictVersion(tf.__version__) < StrictVersion('1.4.0'):
   raise ImportError('Please upgrade your tensorflow installation to v1.4.* or later!')
 
 from . import utils
-from .tf_ssd.object_detection.utils import label_map_util
 from .tf_ssd.object_detection.utils import visualization_utils as vis_util
 # import importlib
 # importlib.reload(vis_util) # reflect changes in the source file immediately
@@ -531,7 +530,7 @@ class annotation():
                  label_path = '../src/odn/tf_ssd/fundus_label_map.pbtxt', 
                  num_classes = 2, verbose = True):
         '''
-        Load tf graph from checkpoint
+        Load tf graph from checkpoint. Directly calls utils.load_tf_graph().
         
         Parameters
         ----------
@@ -552,23 +551,9 @@ class annotation():
         detection_graph : a TensorFlow computation, represented as a dataflow graph.
         '''
 
-        detection_graph = tf.Graph()
-        with detection_graph.as_default():
-            od_graph_def = tf.GraphDef()
-            with tf.gfile.GFile(ckpt_path, 'rb') as fid:
-                serialized_graph = fid.read()
-                od_graph_def.ParseFromString(serialized_graph)
-                tf.import_graph_def(od_graph_def, name='')
-
-
-        label_map = label_map_util.load_labelmap(label_path)
-        categories = label_map_util.convert_label_map_to_categories(label_map, max_num_classes=num_classes, use_display_name=True)
-        category_index = label_map_util.create_category_index(categories)
-        
-        if verbose:
-            print('category_index: ', category_index)
-        
-        return detection_graph, category_index
+        return utils.load_tf_graph(ckpt_path,
+                 label_path, 
+                 num_classes, verbose)
 
 
     def tf_batch_object_detection(detection_graph, category_index, FILES, 
@@ -577,7 +562,10 @@ class annotation():
                             IMAGE_SIZE = (24, 18), threshold = 0.2, 
                             new_img_width = None,
                             fontsize = None):    
-        
+        '''
+        This is an extended version of utils.tf_batch_object_detection() that added fundus specific rules.
+        '''
+
         if savefile and target_folder is not None:
             os.makedirs(target_folder, exist_ok=True) # create the target folder if not exist
 
@@ -608,10 +596,10 @@ class annotation():
                         if (image_path.lower().endswith('.png')): # for png, convert rbga to rbg (3ch)
                             image = image.convert('RGB')
 
-                        if new_img_width > 0:
+                        if new_img_width is not None and  new_img_width> 0:
                             image.thumbnail((new_img_width,new_img_width)) # Image.ANTIALIAS
                         # the array based representation of the image will be used later in order to prepare the result image with boxes and labels on it.
-                        image_np = load_image_into_numpy_array(image)
+                        image_np = utils.load_image_into_numpy_array(image)
                         # Expand dimensions since the model expects images to have shape: [1, None, None, 3]
                         image_np_expanded = np.expand_dims(image_np, axis=0)
                         # Actual detection.
@@ -1060,11 +1048,6 @@ class dataset():
                     im = Image.open(os.path.join(root, f)).transpose(Image.FLIP_LEFT_RIGHT)                
                     im.save(os.path.join(root, f.replace('.jpg','_FLIP.jpg')))
 
-def load_image_into_numpy_array(image):    
-
-    (im_width, im_height) = image.size
-    return np.array(image.getdata()).reshape((im_height, im_width, 3)).astype(np.uint8)
-    
 # All fundus images are 4:3 ratio. 
 def resize_fundus_image(root, f, target, prefix='', w=480, h=360):
     filePath = os.path.join(root, f)

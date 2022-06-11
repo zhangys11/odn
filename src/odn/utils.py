@@ -7,6 +7,14 @@ import numpy as np
 import matplotlib.ticker as ticker
 import shutil
 import os
+import os.path
+import urllib.request
+import tarfile
+from tqdm import tqdm
+
+import tensorflow as tf
+from .tf_ssd.object_detection.utils import label_map_util
+from .tf_ssd.object_detection.utils import visualization_utils as vis_util
 
 def moving_average_3(a):    
 	return np.concatenate(([a[0]], np.convolve(a, np.ones(3), 'valid') / 3, [a[-1]]))
@@ -352,3 +360,174 @@ def get_all_images_in_dir(folder = '../data/fundus/images_public/', target_file 
 		file.close()
 
 	return FILES
+
+def load_tf_graph(ckpt_path = '../src/odn/tf_ssd/export/frozen_inference_graph.pb',
+                 label_path = '../src/odn/tf_ssd/fundus_label_map.pbtxt', 
+                 num_classes = 2, verbose = True):
+        '''
+        Load tf graph from checkpoint
+        
+        Parameters
+        ----------
+        ckpt_path : path to the model checkpoint file. e.g., '../src/odn/tf_ssd/export/frozen_inference_graph.pb', 'ssd_mobilenet_v1_coco_2017_11_17/frozen_inference_graph.pb'
+        label_path : path to label file. Should follow this json format:
+            item {
+            id: 1
+            name: 'OpticDisk'
+            }
+
+            item {
+            id: 2
+            name: 'Macula'
+            }
+        
+        Returns
+        -------    
+        detection_graph : a TensorFlow computation, represented as a dataflow graph.
+        '''
+
+        detection_graph = tf.Graph()
+        with detection_graph.as_default():
+            od_graph_def = tf.GraphDef()
+            with tf.gfile.GFile(ckpt_path, 'rb') as fid:
+                serialized_graph = fid.read()
+                od_graph_def.ParseFromString(serialized_graph)
+                tf.import_graph_def(od_graph_def, name='')
+
+
+        label_map = label_map_util.load_labelmap(label_path)
+        categories = label_map_util.convert_label_map_to_categories(label_map, max_num_classes=num_classes, use_display_name=True)
+        category_index = label_map_util.create_category_index(categories)
+        
+        if verbose:
+            print('category_index: ', category_index)
+        
+        return detection_graph, category_index
+
+def download_tf_model(url = 'http://download.tensorflow.org/models/object_detection/ssd_mobilenet_v1_coco_2017_11_17.tar.gz'):
+	'''
+	Download and extract frozen_inference_graph.pb from online tar.
+	'''
+	localpath = os.getcwd() + "/" + os.path.basename(url)
+
+	# Download tar.gz to get the PATH_TO_CKPT file
+	opener = urllib.request.URLopener()
+	opener.retrieve(url, localpath)
+	print(localpath)
+	tar_file = tarfile.open(localpath)
+	for file in tar_file.getmembers():
+		# print(file.name)
+		file_name = os.path.basename(file.name)
+		if 'frozen_inference_graph.pb' in file_name:
+			tar_file.extract(file, os.getcwd())
+
+def tf_batch_object_detection(detection_graph, category_index, FILES, 
+                            target_folder, log_file, suffix = '_ANNO',
+                            display = False, savefile = True, 
+                            IMAGE_SIZE = (24, 18), threshold = 0.2, 
+                            new_img_width = None, verbose = False,
+                            fontsize = None):
+	
+	if savefile and target_folder is not None:
+		os.makedirs(target_folder, exist_ok=True) # create the target folder if not exist
+
+	if (log_file is not None and log_file != ''):
+		if os.path.exists(log_file):
+			os.remove(log_file)
+		try:
+			open(log_file, 'w')
+		except OSError:
+			print('Warning: log file path ', log_file, ' is invalid')
+			log_file = None
+			
+	with detection_graph.as_default():
+		with tf.Session(graph=detection_graph) as sess:
+			# Definite input and output Tensors for detection_graph
+			image_tensor = detection_graph.get_tensor_by_name('image_tensor:0')
+			# Each box represents a part of the image where a particular object was detected.
+			detection_boxes = detection_graph.get_tensor_by_name('detection_boxes:0')
+			# Each score represent how level of confidence for each of the objects.
+			# Score is shown on the result image, together with the class label.
+			detection_scores = detection_graph.get_tensor_by_name('detection_scores:0')
+			detection_classes = detection_graph.get_tensor_by_name('detection_classes:0')
+			num_detections = detection_graph.get_tensor_by_name('num_detections:0')
+			with tqdm(total=len(FILES)) as pbar:
+				for image_path in FILES:
+					image = Image.open(image_path)
+
+					if (image_path.lower().endswith('.png')): # for png, convert rbga to rbg (3ch)
+						image = image.convert('RGB')
+
+					if new_img_width is not None and  new_img_width> 0:
+						image.thumbnail((new_img_width,new_img_width)) # Image.ANTIALIAS
+					# the array based representation of the image will be used later in order to prepare the result image with boxes and labels on it.
+					image_np = load_image_into_numpy_array(image)
+					# Expand dimensions since the model expects images to have shape: [1, None, None, 3]
+					image_np_expanded = np.expand_dims(image_np, axis=0)
+					# Actual detection.
+					(boxes, scores, classes, num) = sess.run(
+						[detection_boxes, detection_scores, detection_classes, num_detections],
+						feed_dict={image_tensor: image_np_expanded})
+
+					# get image dims
+					(im_width, im_height) = image.size
+					
+					if fontsize is None:
+						fontsize = round( im_width * 0.024 )
+
+					# log object detection info
+					info = os.path.basename(image_path) + ' '
+
+					if verbose: 
+						print('Top Objects:\n', 'boxes = ', boxes[0], '\nscores = ', scores[0], '\nclasses = ', classes[0])
+
+					info += ' ; ' 
+					idx = 0
+					label = ''
+					for c in classes[0]:                        
+						info = info + str(round(scores[0][idx],3)) + ' '                        
+						if (scores[0][idx] > threshold):
+							label += category_index[c]['name'] + ' ' + str(round(scores[0][idx],3)) + '  '
+						idx += 1
+
+					# Visualization of the results of a detection.
+					vis_util.visualize_boxes_and_labels_on_image_array(
+						image_np,
+						np.squeeze(boxes),
+						np.squeeze(classes).astype(np.int32),
+						np.squeeze(scores),
+						category_index,
+						use_normalized_coordinates=True,
+						line_thickness=1, # 3   
+						max_boxes_to_draw=2, # 3
+						min_score_thresh=threshold,
+						fontsize = fontsize)
+
+					fig = plt.figure(figsize=IMAGE_SIZE)
+
+					if (display):
+						plt.imshow(image_np)
+						plt.show()
+
+					if(savefile):
+						if target_folder and target_folder != 'inplace':
+							new_file_path = os.path.join(target_folder, os.path.basename(image_path))
+						else:
+							new_file_path = image_path + suffix + ".jpg"
+						# print(new_file_path)
+						plt.imsave(new_file_path, image_np)
+						# plt.annotate(info, (0, 0), color='b', weight='bold', fontsize=12, ha='left', va='top')
+						# print(info)
+						plt.close(fig)
+
+					if (log_file is not None and log_file != ''): # the validity of log_file is already checked in the beginning
+						with open(log_file, "a") as myfile:
+							myfile.write(info + '\n')       
+
+					pbar.update(1)   
+
+def load_image_into_numpy_array(image):    
+
+    (im_width, im_height) = image.size
+    return np.array(image.getdata()).reshape((im_height, im_width, 3)).astype(np.uint8)
+    
