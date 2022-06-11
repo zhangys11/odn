@@ -341,7 +341,7 @@ def get_all_images_in_dir(folder = '../data/fundus/images_public/', target_file 
 
 	for root, dirs, files in os.walk(folder):
 		for f in files:
-			if( os.path.isfile(os.path.join(root, f)) and f.endswith('.jpg')):
+			if( os.path.isfile(os.path.join(root, f)) and (f.endswith('.jpg') or f.endswith('.png')) ):
 				fp =  os.path.join(root, f).replace("\\", "/") 
 				FILES.append(fp)
 				content = content + fp + ",-1,-1,-1,-1,UNKNOWN" + "\n" # filename,x1,y1,x2,y2,class_name

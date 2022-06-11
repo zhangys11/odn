@@ -260,6 +260,13 @@ class annotation():
                 plt.savefig(savefolder + '/' + filename)
 
         if showimg == False:
+            '''
+            [Warning]
+            Anaconda3\lib\site-packages\matplotlib\pyplot.py:528: RuntimeWarning: More than 20 figures have been opened. Figures created through the pyplot interface (matplotlib.pyplot.figure) are retained until explicitly closed and may consume too much memory. (To control this warning, see the rcParam figure.max_open_warning). max_open_warning, RuntimeWarning)
+
+            [Solution]
+            plt.close(fig) will remove a specific figure instance from the pylab state machine (plt._pylab_helpers.Gcf) and allow it to be garbage collected.
+            '''
             plt.close(fig)
         else:
             plt.show()
@@ -437,7 +444,7 @@ class annotation():
         '''
 
         idxOD = -1
-        idxOS = -1
+        # idxOS = -1
         idxMacula = -1
         
         idx = 0
@@ -445,9 +452,9 @@ class annotation():
         for c in classes:                          
             if (c == 1 and scores[idx] > threshold):
                 idxOD = idx
+            # if (c == 2 and scores[idx] > threshold):
+            #    idxOS = idx
             if (c == 2 and scores[idx] > threshold):
-                idxOS = idx
-            if (c == 3 and scores[idx] > threshold):
                 idxMacula = idx
             idx = idx + 1
         
@@ -457,9 +464,9 @@ class annotation():
             cx = (boxes[idxOD][3] + boxes[idxOD][1])/2.0
             cy = (boxes[idxOD][2] + boxes[idxOD][0])/2.0
                 
-        if (idxOS >= 0):
-            cx = (boxes[idxOS][3] + boxes[idxOS][1])/2.0
-            cy = (boxes[idxOS][2] + boxes[idxOS][0])/2.0
+        #if (idxOS >= 0):
+        #    cx = (boxes[idxOS][3] + boxes[idxOS][1])/2.0
+        #    cy = (boxes[idxOS][2] + boxes[idxOS][0])/2.0
             
         if (cx == -1):
             return []    
@@ -597,6 +604,10 @@ class annotation():
                 with tqdm(total=len(FILES)) as pbar:
                     for image_path in FILES:
                         image = Image.open(image_path)
+
+                        if (image_path.lower().endswith('.png')): # for png, convert rbga to rbg (3ch)
+                            image = image.convert('RGB')
+
                         if new_img_width > 0:
                             image.thumbnail((new_img_width,new_img_width)) # Image.ANTIALIAS
                         # the array based representation of the image will be used later in order to prepare the result image with boxes and labels on it.
@@ -614,9 +625,9 @@ class annotation():
                         if fontsize is None:
                             fontsize = round( im_width * 0.024 )
 
-                        # special treatment: only keep one opticdisk: OD or OS
+                        # category_index:  {1: {'id': 1, 'name': 'OpticDisk'}, 2: {'id': 2, 'name': 'Macula'}}
                         idxOD = -1
-                        idxOS = -1
+                        # idxOS = -1
                         idxMacula = -1
                         probMacula = 0
                         idx = 0
@@ -631,8 +642,6 @@ class annotation():
                             if (c == 1):
                                 idxOD = idx
                             if (c == 2):
-                                idxOS = idx
-                            if (c == 3):
                                 if idxMacula == -1 or probMacula < scores[0][idx]:
                                     if idxMacula > 0:
                                         scores[0][idxMacula] = 0.0 
@@ -664,9 +673,10 @@ class annotation():
                         od_cx = abs(boxes[0][idxOD][3] + boxes[0][idxOD][1])/2.0
                         od_cy = abs(boxes[0][idxOD][2] + boxes[0][idxOD][0])/2.0
 
-                        os_cx = abs(boxes[0][idxOS][3] + boxes[0][idxOS][1])/2.0
-                        os_cy = abs(boxes[0][idxOS][2] + boxes[0][idxOS][0])/2.0
+                        # os_cx = abs(boxes[0][idxOS][3] + boxes[0][idxOS][1])/2.0
+                        # os_cy = abs(boxes[0][idxOS][2] + boxes[0][idxOS][0])/2.0
 
+                        '''
                         # OpticDisk near the left rim is OS
                         if (scores[0][idxOD] > threshold and scores[0][idxOD]>scores[0][idxOS] and od_cx < 0.2): # 2.0*35*2/512
                             scores[0][idxOS] = max(scores[0][idxOS], scores[0][idxOD])
@@ -680,7 +690,7 @@ class annotation():
                             scores[0][idxOS] = 0
                             boxes[0][idxOD] = boxes[0][idxOS] # ?üD?bbox
                             #classes[0][idxOS] = 1 # set as OD
-
+                        
 
                         ##### RULE3: Judge relative positions of macula and OpticDisk
 
@@ -688,8 +698,8 @@ class annotation():
                         od_cx = abs(boxes[0][idxOD][3] + boxes[0][idxOD][1])/2.0
                         od_cy = abs(boxes[0][idxOD][2] + boxes[0][idxOD][0])/2.0
 
-                        os_cx = abs(boxes[0][idxOS][3] + boxes[0][idxOS][1])/2.0
-                        os_cy = abs(boxes[0][idxOS][2] + boxes[0][idxOS][0])/2.0
+                        # os_cx = abs(boxes[0][idxOS][3] + boxes[0][idxOS][1])/2.0
+                        # os_cy = abs(boxes[0][idxOS][2] + boxes[0][idxOS][0])/2.0
 
                         if (scores[0][idxMacula] > threshold):
                             if (scores[0][idxOD] > threshold and scores[0][idxOD] > scores[0][idxOS] and m_cx > od_cx ):
@@ -701,14 +711,16 @@ class annotation():
                                 scores[0][idxOS] = 0
                                 boxes[0][idxOD] = boxes[0][idxOS] # update bbox
 
+                        
 
                         ##### RULE4: Keep the bigger probality of OpticDisk
 
                         if (scores[0][idxOD] > scores[0][idxOS]):                        
                             scores[0][idxOS] = 0.0                        
                         if (scores[0][idxOD] < scores[0][idxOS]):
-                            scores[0][idxOD] = 0.0                                    
-
+                            scores[0][idxOD] = 0.0    
+                        
+                        '''
 
                         info += ' ; ' 
                         idx = 0
@@ -718,6 +730,8 @@ class annotation():
                             if (scores[0][idx] > threshold):
                                 label += category_index[c]['name'] + ' ' + str(round(scores[0][idx],3)) + '  '
                             idx += 1
+
+                        # print(boxes, scores, classes, num)
 
                         zones = annotation.calculate_fundus_zones(classes[0], scores[0], boxes[0], threshold)
                         annotation.draw_fundus_zones_on_image_array(image_np, zones = zones, text=label)
@@ -1046,7 +1060,8 @@ class dataset():
                     im = Image.open(os.path.join(root, f)).transpose(Image.FLIP_LEFT_RIGHT)                
                     im.save(os.path.join(root, f.replace('.jpg','_FLIP.jpg')))
 
-def load_image_into_numpy_array(image):
+def load_image_into_numpy_array(image):    
+
     (im_width, im_height) = image.size
     return np.array(image.getdata()).reshape((im_height, im_width, 3)).astype(np.uint8)
     
