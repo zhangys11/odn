@@ -91,6 +91,16 @@ For tf_ssd, we need to add odn\tf_ssd\protoc-3.4.0-win32\bin to PATH, then run:
     verbose = True,
     display = 5 )
 
+    or output annotated images in place:
+
+    dataset.synthesize_anno('../src/odn/rois.txt', 
+                            dir_images = '../data/fundus/images_public/', 
+                            dir_output = 'inplace',
+                            drawzones = True,
+                            verbose = True,
+                            suffix = '_FRCNN', # inplace image name suffix
+                            display = 5 )
+
 6. Evaluation
    
    6.1 Output a single comparison plot
@@ -178,6 +188,14 @@ For tf_ssd, we need to add odn\tf_ssd\protoc-3.4.0-win32\bin to PATH, then run:
                                     '../data/fundus/ssd/', 
                                     '../data/fundus/ssd_202206.txt', 
                                     new_img_width = 300, fontsize = 12)
+
+
+    Or output annotated images in place:
+
+    annotation.tf_batch_object_detection(detection_graph, category_index, FILES, 
+                                  'inplace', 
+                                  '../data/fundus/ssd_202206.txt',                        
+                                  new_img_width = 900, fontsize = None, suffix = '_SSD')
 ```
 
 The annotated images will be generated in the ssd folder. A sample image is as follows,   
