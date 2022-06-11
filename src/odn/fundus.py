@@ -34,8 +34,8 @@ if StrictVersion(tf.__version__) < StrictVersion('1.4.0'):
   raise ImportError('Please upgrade your tensorflow installation to v1.4.* or later!')
 
 from . import utils
-from odn.tf_ssd.object_detection.utils import label_map_util
-from odn.tf_ssd.object_detection.utils import visualization_utils as vis_util
+from .tf_ssd.object_detection.utils import label_map_util
+from .tf_ssd.object_detection.utils import visualization_utils as vis_util
 # import importlib
 # importlib.reload(vis_util) # reflect changes in the source file immediately
 
