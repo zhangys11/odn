@@ -416,9 +416,9 @@ def download_tf_model(url = 'http://download.tensorflow.org/models/object_detect
 	print(localpath)
 	tar_file = tarfile.open(localpath)
 	for file in tar_file.getmembers():
-		# print(file.name)
+		print(file.name)
 		file_name = os.path.basename(file.name)
-		if 'frozen_inference_graph.pb' in file_name:
+		if '.pb' in file_name:
 			tar_file.extract(file, os.getcwd())
 
 def tf_batch_object_detection(detection_graph, category_index, FILES, 

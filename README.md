@@ -204,7 +204,7 @@ We draw ROP Zone I, Posterior Zone II and Zone II.
 
 # Jupyter notebooks
 
-Under /notebooks, we provide three examples for fundus image object detection.
+Under /notebooks, we provide several examples for both general-purposed and fundus image object detection.   
 
 # Dataset
 

@@ -9,6 +9,9 @@ import scipy.stats as stats
 from IPython.core.display import display, HTML
 
 def bbox_IoU(boxA, boxB):
+	'''
+	IOU=(A∩B)/(A∪B) :Intersection over Union 
+	'''
     
     # the two bboxes don't overlap
     if (boxA[0] >= boxB[2] or boxA[2] <= boxB[0]
