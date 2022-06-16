@@ -19,7 +19,6 @@ dist
 src/odn/results
 src/odn/tf_ssd/training
 *-checkpoint.ipynb
-src/odn/torch_yolo/runs
 src/odn/torch_yolo/models/yolov5x.pt
 data/fundus/ssd_202206.txt
 data/fundus/ssd_20220610.txt
