@@ -18,8 +18,6 @@ src/odn.egg-info
 dist
 src/odn/results
 src/odn/tf_ssd/training
-notebooks/.ipynb_checkpoints/8.8 Object Detection -Fundus - FRCNN Prediction-checkpoint.ipynb
-notebooks/.ipynb_checkpoints/8.8 Object Detection -Fundus - FRCNN Prediction Simple Demo-checkpoint.ipynb
-notebooks/.ipynb_checkpoints/8.1 Object Detection - COCO-checkpoint.ipynb
-notebooks/.ipynb_checkpoints/8.2 Object Detection - WebCam-checkpoint.ipynb
-notebooks/.ipynb_checkpoints/8.3 Object Detection - Raccoon-checkpoint.ipynb
+*-checkpoint.ipynb
+src/odn/torch_yolo/runs
+src/odn/torch_yolo/models/yolov5x.pt
