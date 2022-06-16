@@ -531,3 +531,32 @@ def load_image_into_numpy_array(image):
     (im_width, im_height) = image.size
     return np.array(image.getdata()).reshape((im_height, im_width, 3)).astype(np.uint8)
     
+def map_label_voc_to_coco(voc_label):
+
+	voc_to_coco = {
+	'aeroplane': 'airplane',
+	'bicycle': 'bicycle',
+	'bird': 'bird',
+	'boat': 'boat',
+	'bottle': 'bottle',
+	'bus': 'bus',
+	'car': 'car',
+	'cat': 'cat',
+	'chair': 'chair',
+	'cow': 'cow',
+	'diningtable': 'dining table',
+	'dog': 'dog',
+	'horse': 'horse',
+	'motorbike': 'motorcycle',
+	'person': 'person',
+	'pottedplant': 'potted plant',
+	'sheep': 'sheep',
+	'sofa': 'couch',
+	'train': 'train',
+	'tvmonitor': 'tv'
+	}
+
+	if voc_label not in voc_to_coco:
+		return None # not mapped
+
+	return voc_to_coco[voc_label]

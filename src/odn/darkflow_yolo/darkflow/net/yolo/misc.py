@@ -29,7 +29,7 @@ def labels(meta, FLAGS):
         file = FLAGS.labels
         if model in coco_models:
             print("Model has a coco model name, loading coco labels.")
-            print(FLAGS.config)
+            # print(FLAGS.config)
             file = os.path.join(FLAGS.config, coco_names)
         elif model == 'yolo9000':
             print("Model has name yolo9000, loading yolo9000 labels.")
