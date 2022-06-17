@@ -829,7 +829,7 @@ class annotation():
     input_path = '../data/fundus/test', # or a 'filelist.txt' file
     conf_thres=0.3, iou_thres=0.5, max_det=2, 
     anno_pil = True, colors = [(200,100,100),(55,125,125)],
-    suffix = '_YOLO5', display = True, verbose = False
+    output_path = None, suffix = '_YOLO5', display = True, verbose = False
     ):
         '''
         Fundus iamge batch detection using pytorch yolo model 
@@ -843,6 +843,8 @@ class annotation():
         max_det : how many ROIs should we keep
         anno_pil : use PIL or cv2 to draw annotations
         colors : color of ROI bbox
+        output_path : target output path, will create if non-exist. if None or 'inplace', will output images in the original folder. 
+        suffix : suffix added to output image, e.g., '_YOLO5'
         '''
 
         device = torch.device("cuda")
@@ -908,9 +910,16 @@ class annotation():
                     plt.imshow(cv2.cvtColor(im0, cv2.COLOR_BGR2RGB))
                     plt.show()
                 
+                if suffix is None:
+                    suffix = ''
+
                 # Save results (image with detections)
-                target_path = path.replace(pathlib.Path(path).suffix, suffix + pathlib.Path(path).suffix)
-                
+                if output_path is None or output_path == 'inplace': # inplace
+                    target_path = path.replace(pathlib.Path(path).suffix, suffix + pathlib.Path(path).suffix)
+                else:
+                    os.makedirs(output_path, exist_ok=True)
+                    target_path = output_path + '/' + os.path.basename(path).replace(pathlib.Path(path).suffix, suffix + pathlib.Path(path).suffix)
+
                 if verbose:
                     print('saved to', target_path)
 
