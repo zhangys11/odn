@@ -9,8 +9,8 @@ The following 3rd-party packages are used:
 1. The Faster-RCNN module is based on https://github.com/kentaroy47/frcnn-from-scratch-with-keras. We have updated the code according to the latest keras API change (K..image_dim_ordering () -> K.image_data_format()).   
 2. Data augmentation package (https://github.com/Paperspace/DataAugmentationForObjectDetection).   
 3. SSD (Single Shot MultiBox Detector) by tensorflow. We took lots of efforts to integrate tensorflow's objection detection and slim source, mainly revising the relative importing. https://github.com/tensorflow/models/research/object_detection and https://github.com/tensorflow/models/research/slim    
-4. The darkflow framework (https://github.com/thtrieu/darkflow)
-
+4. The darkflow framework (https://github.com/thtrieu/darkflow)   
+5. The pytorch_yolov5 project (https://github.com/ultralytics/yolov5)  
 
 # Install
 
@@ -204,7 +204,7 @@ The annotated images will be generated in the ssd folder. A sample image is as f
 <img src='data/fundus/ssd/0a61e7f1edbe215fab6e9b6eae5283e5.jpg'>    
 We draw ROP Zone I, Posterior Zone II and Zone II.
 
-# How to use - Yolo
+# How to use - Darflow Yolo
 
 1. Prerequisie: Install darkflow from source
 
@@ -232,6 +232,20 @@ We draw ROP Zone I, Posterior Zone II and Zone II.
     yolo.predict(tfnet, '../data/generic/image2.jpg')
 ```
 
+# How to use - pytorch YOLO
+
+1. Train by transfer learning
+
+    cd to src\odn\torch_yolo, run (download the yolov5m pretrained model first):
+
+    python train.py --data data/fundus.yaml --cfg models/yolov5m.yaml --weights models/yolov5m.pt --batch-size 16 --epochs 30 --img 640
+
+    The training results and models are saved to runs/train/exp/
+
+2. Predict
+
+    python detect.py --source ../../../data/fundus/test --weights runs/train/exp/weights/best.pt
+
 # How to use - Camera App
 
     from odn import camera
@@ -246,7 +260,7 @@ Under /notebooks, we provide several examples for both general-purposed and fund
 
 # Dataset
 
-data/fundus/images_public : a fundus image set in courtesy of SZEH (Shenzhen Eye Hospital)   
+data/fundus/images : a fundus image set in courtesy of SZEH (Shenzhen Eye Hospital)   
 data/fundus/ground_truth_public : images with ground truth annotations   
 data/fundus/frcnn_19e_zones : object detection results by FRCNN (trained 19 epochs)   
 data/fundus/ssd : object detection results by SSD (Single Shot MultiBox Detector)  
