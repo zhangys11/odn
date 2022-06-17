@@ -183,10 +183,16 @@ class LoadImages:
             files = sorted(glob.glob(p, recursive=True))  # glob
         elif os.path.isdir(p):
             files = sorted(glob.glob(os.path.join(p, '*.*')))  # dir
+        elif 'filelist.txt' in p:
+            f = open(p, 'r+')
+            files = sorted([line.replace('\n','') for line in f.readlines()])
+            f.close()
         elif os.path.isfile(p):
             files = [p]  # files
         else:
             raise Exception(f'ERROR: {p} does not exist')
+
+        print(files)
 
         images = [x for x in files if x.split('.')[-1].lower() in IMG_FORMATS]
         videos = [x for x in files if x.split('.')[-1].lower() in VID_FORMATS]

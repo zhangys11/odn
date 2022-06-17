@@ -38,6 +38,12 @@ from .tf_ssd.object_detection.utils import visualization_utils as vis_util
 # import importlib
 # importlib.reload(vis_util) # reflect changes in the source file immediately
 
+import torch
+import torch.jit
+from .torch_yolo.models import yolo
+from .torch_yolo import detect
+from .torch_yolo.utils import datasets,general,plots
+
 class demographics():
     '''
     Provides static ploting functions for subject demographics, Such As Gender, Birth Weight, Gestational Age, etc.
@@ -431,11 +437,12 @@ class annotation():
 
     #------------------ region tf_ssd --------------------#
 
-    def calculate_fundus_zones(classes, scores, boxes, threshold):
+    def calculate_fundus_zones(classes, scores, boxes, threshold = 0):
         '''
         Parameters
         ----------
         classes : a list of optic disc of OD, optic disc of OS, macula
+        boxes : in the order of x1,x2,y1,y2
 
         Return
         ------
@@ -487,6 +494,67 @@ class annotation():
         zone2 = [cx-2*radius, cx+2*radius, cy-2*radius*4/3, cy+2*radius*4/3]
         
         return [zone1, zone2p, zone2]
+
+
+    def torch_calculate_fundus_zones(classes, scores, boxes, threshold = 0):
+        '''
+        Another version of ROP zone calculation. bbox coordinates should be x1,y1,x2,y2 
+
+        Parameters
+        ----------
+        classes : a list of optic disc of OD, optic disc of OS, macula
+        scores : probs
+        boxes : in the order of x1,y1,x2,y2
+
+        Return
+        ------
+        cx, cy, zone 1 radius
+        '''
+        
+        idxOD = -1
+        # idxOS = -1
+        idxMacula = -1
+
+        idx = 0
+
+        for c in classes:                          
+            if (c == 1 and scores[idx] > threshold):
+                idxOD = idx
+            # if (c == 2 and scores[idx] > threshold):
+            #    idxOS = idx
+            if (c == 2 and scores[idx] > threshold):
+                idxMacula = idx
+            idx = idx + 1
+
+        print(idxOD, idxMacula)
+            
+        cx = -1
+        cy = -1
+        if (idxOD >= 0):
+            cx = (boxes[idxOD][0] + boxes[idxOD][2])/2.0
+            cy = (boxes[idxOD][1] + boxes[idxOD][3])/2.0
+
+        if (cx == -1):
+            return []    
+
+        cx_m = -1
+        cy_m = -1
+
+        if (idxMacula >= 0):
+            cx_m = (boxes[idxMacula][0] + boxes[idxMacula][2])/2.0
+            cy_m = (boxes[idxMacula][1] + boxes[idxMacula][3])/2.0
+
+        radius = 0.5
+        if (cx_m != -1):
+            radius = 2*( sqrt((cx-cx_m)**2 + (cy-cy_m)**2) )    
+            # print(cx-cx_m, cy-cy_m, radius)
+            
+        # # (xmin, xmax, ymin, ymax) 
+        # zone1 = [cx-radius, cx+radius, cy-radius*4/3, cy+radius*4/3]
+        # zone2p = [cx-1.3*radius, cx+1.3*radius, cy-1.3*radius*4/3, cy+1.3*radius*4/3]
+        # zone2 = [cx-2*radius, cx+2*radius, cy-2*radius*4/3, cy+2*radius*4/3]
+            
+        return int(cx), int(cy), int(radius) # [zone1, zone2p, zone2]
 
     def draw_fundus_zones_on_image_array(image, zones, text ='', use_normalized_coordinates=True):
         
@@ -755,6 +823,97 @@ class annotation():
                             with open(log_file, "a") as myfile:
                                 myfile.write(info + '\n')                        
                         pbar.update(1)   
+
+
+    def torch_batch_object_detection(model_path = '../src/odn/torch_yolo/runs/train/exp15/weights/best.pt',
+    input_path = '../data/fundus/test', # or a 'filelist.txt' file
+    conf_thres=0.3, iou_thres=0.5, max_det=2, 
+    anno_pil = True, colors = [(200,100,100),(55,125,125)],
+    display = True, verbose = False
+    ):
+        '''
+        Fundus iamge batch detection using pytorch yolo model 
+
+        Parameters
+        ----------
+        model_path : a pt file
+        input_path : a dir or a 'filelist.txt' file (each line is an image full path)
+        conf_thres : detection prob threshold
+        iou_thres : iou threshold for non_max_suppression
+        max_det : how many ROIs should we keep
+        anno_pil : use PIL or cv2 to draw annotations
+        colors : color of ROI bbox
+        '''
+
+        device = torch.device("cuda")
+        model = detect.DetectMultiBackend(model_path, device = device)
+        stride, names, pt = model.stride, model.names, model.pt
+
+        dataset = datasets.LoadImages(input_path, stride=stride, auto=pt)
+
+        for path, im, im0s, _, _ in dataset:        
+            im = torch.from_numpy(im).to(device)
+            im = im.half() if model.fp16 else im.float()  # uint8 to fp16/32
+            im /= 255  # 0 - 255 to 0.0 - 1.0
+            if len(im.shape) == 3:
+                im = im[None]  # expand for batch dim
+
+            # Inference
+            pred = model(im)
+
+            # NMS
+            pred = general.non_max_suppression(pred, 
+            conf_thres=conf_thres, iou_thres=iou_thres, 
+            max_det=max_det)
+
+            # Second-stage classifier (optional)
+            # pred = utils.general.apply_classifier(pred, classifier_model, im, im0s)
+
+            # Process predictions
+            for i, det in enumerate(pred):  # per image
+                p, im0, frame = path, im0s.copy(), getattr(dataset, 'frame', 0)
+                p = pathlib.Path(p)  # to Path
+                gn = torch.tensor(im0.shape)[[1, 0, 1, 0]]  # normalization gain whwh
+                annotator = plots.Annotator(im0, pil=anno_pil, line_width=None, example=str(names)) # pil=True / False
+                
+                fundus_classes = []
+                fundus_scores = []
+                fundus_bbox = []
+                
+                if len(det):
+                    # Rescale boxes from img_size to im0 size
+                    det[:, :4] = general.scale_coords(im.shape[2:], det[:, :4], im0.shape).round()
+                    
+                    # Write results
+                    for *xyxy, conf, cls in reversed(det):
+                        
+                        c = int(cls)  # integer class
+                        label = f'{names[c]} {conf:.2f}'
+                        annotator.box_label(xyxy, label, color = colors[c] )
+
+                        fundus_classes.append(c + 1)
+                        fundus_scores.append(conf)
+                        fundus_bbox.append(xyxy)
+                        
+                        # print(xyxy, conf, cls)
+                
+                cx, cy, radius = annotation.torch_calculate_fundus_zones(fundus_classes, fundus_scores, fundus_bbox)  
+                annotator.fundus_zones( cx, cy, radius )        
+                                
+                # Stream results
+                im0 = annotator.result()
+                
+                if display:
+                    plt.imshow(cv2.cvtColor(im0, cv2.COLOR_BGR2RGB))
+                    plt.show()
+                
+                # Save results (image with detections)
+                target_path = path.replace(pathlib.Path(path).suffix, '_YOLO5' + pathlib.Path(path).suffix)
+                
+                if verbose:
+                    print('saved to', target_path)
+
+                cv2.imwrite(target_path, im0)
 
 class dataset():
 

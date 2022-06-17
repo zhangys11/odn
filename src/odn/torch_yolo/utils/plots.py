@@ -113,6 +113,27 @@ class Annotator:
                             thickness=tf,
                             lineType=cv2.LINE_AA)
 
+    def fundus_zones(self, cx, cy, radius):
+
+        colors = [(255,255,255), (200,200,200), (128,128,128)]
+        idx = 0
+
+        for r in [radius, 1.3*radius, 2*radius]:
+
+            r = round(r)
+
+            if self.pil:
+                bbox = cx-r, cy-r, cx+r, cy+r
+                # print(bbox)
+                self.draw.ellipse(bbox, fill = None, outline =colors[idx], width=self.lw)
+            else:                
+                center_coordinates = (cx, cy)
+                axesLength = (r, r) 
+                # print(center_coordinates, axesLength)
+                cv2.ellipse(self.im, center_coordinates, axesLength, 0, 0, 360, colors[idx], self.lw)
+
+            idx = idx + 1
+
     def rectangle(self, xy, fill=None, outline=None, width=1):
         # Add rectangle to image (PIL-only)
         self.draw.rectangle(xy, fill, outline, width)
