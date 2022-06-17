@@ -526,7 +526,7 @@ class annotation():
                 idxMacula = idx
             idx = idx + 1
 
-        print(idxOD, idxMacula)
+        # print(idxOD, idxMacula)
             
         cx = -1
         cy = -1
@@ -535,7 +535,7 @@ class annotation():
             cy = (boxes[idxOD][1] + boxes[idxOD][3])/2.0
 
         if (cx == -1):
-            return []    
+            return 0,0,0    
 
         cx_m = -1
         cy_m = -1
@@ -829,7 +829,7 @@ class annotation():
     input_path = '../data/fundus/test', # or a 'filelist.txt' file
     conf_thres=0.3, iou_thres=0.5, max_det=2, 
     anno_pil = True, colors = [(200,100,100),(55,125,125)],
-    display = True, verbose = False
+    suffix = '_YOLO5', display = True, verbose = False
     ):
         '''
         Fundus iamge batch detection using pytorch yolo model 
@@ -898,7 +898,8 @@ class annotation():
                         # print(xyxy, conf, cls)
                 
                 cx, cy, radius = annotation.torch_calculate_fundus_zones(fundus_classes, fundus_scores, fundus_bbox)  
-                annotator.fundus_zones( cx, cy, radius )        
+                if radius > 0:
+                    annotator.fundus_zones( cx, cy, radius )        
                                 
                 # Stream results
                 im0 = annotator.result()
@@ -908,7 +909,7 @@ class annotation():
                     plt.show()
                 
                 # Save results (image with detections)
-                target_path = path.replace(pathlib.Path(path).suffix, '_YOLO5' + pathlib.Path(path).suffix)
+                target_path = path.replace(pathlib.Path(path).suffix, suffix + pathlib.Path(path).suffix)
                 
                 if verbose:
                     print('saved to', target_path)

@@ -242,9 +242,26 @@ We draw ROP Zone I, Posterior Zone II and Zone II.
 
     The training results and models are saved to runs/train/exp/
 
-2. Predict
+2. Predict a folder
 
     python detect.py --source ../../../data/fundus/test --weights runs/train/exp/weights/best.pt
+
+3. Inplace prediction (i.e., )
+
+    from odn.fundus import annotation
+    %matplotlib inline
+
+    annotation.torch_batch_object_detection(model_path = '../src/odn/torch_yolo/runs/train/exp15/weights/best.pt',
+        input_path = 'filelist.txt',
+        conf_thres=0.3, iou_thres=0.5, max_det=2, 
+        anno_pil = True, colors = [(200,100,100),(55,125,125)], 
+        suffix = '_YOLO5', display = True, verbose = False
+        )
+
+    Inside torch_batch_object_detection(), we have extended the original torch yolov5 with these functions to support in-place prediction:
+
+        datasets.py - LoadImages(input_path) - input_path can now be a filelist.txt of image paths   
+        plots.py - Annotation.fundus_zones(self, cx, cy, radius) - draw zone 1, posterior zone 2 and zone 2
 
 # How to use - Camera App
 
