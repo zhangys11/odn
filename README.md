@@ -286,3 +286,7 @@ data/fundus/ssd : object detection results by SSD (Single Shot MultiBox Detector
 
 After training, you will get a keras h5 model file. You can further convert it to tflite format, or tfjs format.    
 Then you can deploy on mobile device or browser-based apps.
+
+# TODO
+
+Add a tkinter GUI to wrapper all the ODN models.

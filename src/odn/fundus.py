@@ -921,7 +921,11 @@ class annotation():
                     target_path = output_path + '/' + os.path.basename(path).replace(pathlib.Path(path).suffix, suffix + pathlib.Path(path).suffix)
 
                 if verbose:
-                    print('saved to', target_path)
+
+                    print('----- prediction: classes, probs, bbox -----\n', fundus_classes)
+                    print(fundus_scores)
+                    print(fundus_bbox)
+                    print('\nsaved to', target_path)
 
                 cv2.imwrite(target_path, im0)
 
