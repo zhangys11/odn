@@ -63,13 +63,24 @@ if str(ROOT) not in sys.path:
 if platform.system() != 'Windows':
     ROOT = Path(os.path.relpath(ROOT, Path.cwd()))  # relative
 
-from models.experimental import attempt_load
-from models.yolo import Detect
-from utils.datasets import LoadImages
-from utils.general import (LOGGER, check_dataset, check_img_size, check_requirements, check_version, colorstr,
-                           file_size, print_args, url2file)
-from utils.torch_utils import select_device
-
+import os
+import sys
+if __package__:
+    from .models.experimental import attempt_load
+    from .models.yolo import Detect
+    from .utils.datasets import LoadImages
+    from .utils.general import (LOGGER, check_dataset, check_img_size, check_requirements, check_version, colorstr,
+                            file_size, print_args, url2file)
+    from .utils.torch_utils import select_device
+else:
+    if os.path.dirname (os.path.dirname(__file__)) not in sys.path: # odn
+        sys.path.append(os.path.dirname (os.path.dirname(__file__)) )
+    from torch_yolo.models.experimental import attempt_load
+    from torch_yolo.models.yolo import Detect
+    from torch_yolo.utils.datasets import LoadImages
+    from torch_yolo.utils.general import (LOGGER, check_dataset, check_img_size, check_requirements, check_version, colorstr,
+                            file_size, print_args, url2file)
+    from torch_yolo.utils.torch_utils import select_device
 
 def export_formats():
     # YOLOv5 export formats

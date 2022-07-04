@@ -1,0 +1,5 @@
+include LICENSE.txt
+include README.md
+include src/odn/tf_ssd/export/frozen_inference_graph.pb
+include src/odn/tf_ssd/fundus_label_map.pbtxt'
+include src/odn/torch_yolo/runs/train/exp15/weights/best.pt

@@ -31,7 +31,8 @@ if __package__:
     from ..utils.plots import Annotator, colors, save_one_box
     from ..utils.torch_utils import copy_attr, time_sync
 else:
-    sys.path.append(os.path.dirname (os.path.dirname(__file__)) ) # parent folder
+    if os.path.dirname (os.path.dirname(__file__)) not in sys.path:
+        sys.path.append(os.path.dirname (os.path.dirname(__file__)) ) # parent folder
     from utils.datasets import exif_transpose, letterbox
     from utils.general import (LOGGER, check_requirements, check_suffix, check_version, colorstr, increment_path,
                             make_divisible, non_max_suppression, scale_coords, xywh2xyxy, xyxy2xywh)
@@ -301,8 +302,13 @@ class DetectMultiBackend(nn.Module):
         #   TensorFlow GraphDef:            *.pb
         #   TensorFlow Lite:                *.tflite
         #   TensorFlow Edge TPU:            *_edgetpu.tflite
-        from models.experimental import attempt_download, attempt_load  # scoped to avoid circular import
-
+        
+        if __package__:
+            from .experimental import attempt_download, attempt_load  # scoped to avoid circular import
+        else:
+            sys.path.append(os.path.dirname (os.path.dirname(__file__)) ) # parent folder
+            from models.experimental import attempt_download, attempt_load  # scoped to avoid circular import        
+        
         super().__init__()
         w = str(weights[0] if isinstance(weights, list) else weights)
         pt, jit, onnx, xml, engine, coreml, saved_model, pb, tflite, edgetpu, tfjs = self.model_type(w)  # get backend

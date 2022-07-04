@@ -18,10 +18,11 @@ if __package__:
     from .tf_ssd.object_detection.utils import label_map_util
     from .tf_ssd.object_detection.utils import visualization_utils as vis_util
 else:
-    sys.path.append(os.path.dirname(__file__))
-    from keras_frcnn import roi_helpers
-    from tf_ssd.object_detection.utils import label_map_util
-    from tf_ssd.object_detection.utils import visualization_utils as vis_util
+	if os.path.dirname(__file__) not in sys.path:
+		sys.path.append(os.path.dirname(__file__))
+	from keras_frcnn import roi_helpers
+	from tf_ssd.object_detection.utils import label_map_util
+	from tf_ssd.object_detection.utils import visualization_utils as vis_util
 
 def moving_average_3(a):    
 	return np.concatenate(([a[0]], np.convolve(a, np.ones(3), 'valid') / 3, [a[-1]]))
@@ -349,7 +350,11 @@ def merge_json_anno_files(source_folder, target_file):
 		outfile.write(s)
 		outfile.write('}')   
 
-def get_all_images_in_dir(folder = '../data/fundus/images_public/', target_file = None):
+def get_all_images_in_dir(folder = '../data/fundus/images_public/', target_file = None, excludes = ['_FRCNN','_SSD','_YOLO5']):
+
+	'''
+	excludes : will exclude images whose names contains these strings.
+	'''
 
 	FILES=[]	
 	content = ""
@@ -358,8 +363,17 @@ def get_all_images_in_dir(folder = '../data/fundus/images_public/', target_file 
 		for f in files:
 			if( os.path.isfile(os.path.join(root, f)) and (f.endswith('.jpg') or f.endswith('.png')) ):
 				fp =  os.path.join(root, f).replace("\\", "/") 
-				FILES.append(fp)
-				content = content + fp + ",-1,-1,-1,-1,UNKNOWN" + "\n" # filename,x1,y1,x2,y2,class_name
+				
+				exclude = False
+				if excludes is not None and len(excludes) > 0:
+					for s in excludes:
+						if s in f:
+							exclude = True
+							break
+				
+				if not exclude:
+					FILES.append(fp)
+					content = content + fp + ",-1,-1,-1,-1,UNKNOWN" + "\n" # filename,x1,y1,x2,y2,class_name
 
 	if target_file:
 		file = open(target_file, 'w')

@@ -14,9 +14,9 @@ if __package__:
     from .common import Conv
     from ..utils.downloads import attempt_download
 else:
-    sys.path.append(os.path.dirname (os.path.dirname(__file__)) ) # parent dir
-    from models.common import Conv
-    from utils.downloads import attempt_download
+    sys.path.append(os.path.dirname (os.path.dirname (os.path.dirname(__file__)) ) ) # odn
+    from torch_yolo.models.common import Conv
+    from torch_yolo.utils.downloads import attempt_download
 
 class CrossConv(nn.Module):
     # Cross Convolution Downsample
@@ -94,7 +94,15 @@ class Ensemble(nn.ModuleList):
 
 
 def attempt_load(weights, map_location=None, inplace=True, fuse=True):
-    from models.yolo import Detect, Model
+
+    if __package__:
+        from .yolo import Detect, Model
+    else:
+        dir = os.path.dirname (os.path.dirname (os.path.dirname(__file__)) ) 
+        # print(dir)
+        if dir not in sys.path:
+            sys.path.append(dir) # odn
+        from torch_yolo.models.yolo import Detect, Model
 
     # Loads an ensemble of models weights=[a,b,c] or a single model weights=[a] or weights=a
     model = Ensemble()

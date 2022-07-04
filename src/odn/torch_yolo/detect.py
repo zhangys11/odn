@@ -48,7 +48,8 @@ if __package__:
     from .utils.plots import Annotator, colors, save_one_box
     from .utils.torch_utils import select_device, time_sync
 else:
-    sys.path.append(os.path.dirname(__file__))
+    if os.path.dirname(__file__) not in sys.path:
+        sys.path.append(os.path.dirname(__file__))
     from models.common import DetectMultiBackend
     from utils.datasets import IMG_FORMATS, VID_FORMATS, LoadImages, LoadStreams
     from utils.general import (LOGGER, check_file, check_img_size, check_imshow, check_requirements, colorstr, cv2,

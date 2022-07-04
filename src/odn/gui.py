@@ -19,9 +19,11 @@ from ttkbootstrap.toast import ToastNotification
 
 if __package__:
     from .toastx import ToastNotificationX
+    from . import predict_fundus_folder
 else:
     sys.path.append(os.path.dirname(__file__))
     from toastx import ToastNotificationX
+    import predict_fundus_folder
 
 USE_PROGRESSBAR = False
 USE_GRID_LAYOUT = False
@@ -382,7 +384,11 @@ class FileSearchFrame(ttk.Frame):
         '''
         method : 'FRCNN', 'SSD', 'YOLO5'
         '''
-        print(method)
+        predict_fundus_folder(self.path_var.get(), 
+            method = method,
+            dir_output = 'inplace',
+            model_path = None,
+            label_path = None)
 
     def upload_image(self):
 

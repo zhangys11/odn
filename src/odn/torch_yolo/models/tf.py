@@ -26,12 +26,21 @@ import tensorflow as tf
 import torch
 import torch.nn as nn
 from tensorflow import keras
-
-from models.common import C3, SPP, SPPF, Bottleneck, BottleneckCSP, Concat, Conv, DWConv, Focus, autopad
-from models.experimental import CrossConv, MixConv2d, attempt_load
-from models.yolo import Detect
-from utils.activations import SiLU
-from utils.general import LOGGER, make_divisible, print_args
+import os
+if __package__:
+    from .common import C3, SPP, SPPF, Bottleneck, BottleneckCSP, Concat, Conv, DWConv, Focus, autopad
+    from .experimental import CrossConv, MixConv2d, attempt_load
+    from .yolo import Detect
+    from ..utils.activations import SiLU
+    from ..utils.general import LOGGER, make_divisible, print_args
+else:
+    if os.path.dirname (os.path.dirname (os.path.dirname(__file__))) not in sys.path: #odn
+        sys.path.append(os.path.dirname(os.path.dirname (os.path.dirname(__file__))) )
+    from torch_yolo.models.common import C3, SPP, SPPF, Bottleneck, BottleneckCSP, Concat, Conv, DWConv, Focus, autopad
+    from torch_yolo.models.experimental import CrossConv, MixConv2d, attempt_load
+    from torch_yolo.models.yolo import Detect
+    from torch_yolo.utils.activations import SiLU
+    from torch_yolo.utils.general import LOGGER, make_divisible, print_args
 
 
 class TFBN(keras.layers.Layer):

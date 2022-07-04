@@ -194,7 +194,7 @@ class LoadImages:
             files = sorted(glob.glob(os.path.join(p, '*.*')))  # dir
         elif 'filelist.txt' in p:
             f = open(p, 'r+')
-            files = sorted([line.replace('\n','') for line in f.readlines()])
+            files = sorted([line.split(',')[0].replace('\n','') for line in f.readlines()]) # 1st column is image path
             f.close()
         elif os.path.isfile(p):
             files = [p]  # files

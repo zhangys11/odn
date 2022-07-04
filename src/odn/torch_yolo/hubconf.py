@@ -28,11 +28,22 @@ def _create(name, pretrained=True, channels=3, classes=80, autoshape=True, verbo
     """
     from pathlib import Path
 
-    from models.common import AutoShape, DetectMultiBackend
-    from models.yolo import Model
-    from utils.downloads import attempt_download
-    from utils.general import LOGGER, check_requirements, intersect_dicts, logging
-    from utils.torch_utils import select_device
+    import os
+    import sys
+    if __package__:
+        from .models.common import AutoShape, DetectMultiBackend
+        from .models.yolo import Model
+        from .utils.downloads import attempt_download
+        from .utils.general import LOGGER, check_requirements, intersect_dicts, logging
+        from .utils.torch_utils import select_device
+    else:
+        if os.path.dirname (os.path.dirname(__file__)) not in sys.path:
+            sys.path.append(os.path.dirname (os.path.dirname(__file__)) )
+        from torch_yolo.models.common import AutoShape, DetectMultiBackend
+        from torch_yolo.models.yolo import Model
+        from torch_yolo.utils.downloads import attempt_download
+        from torch_yolo.utils.general import LOGGER, check_requirements, intersect_dicts, logging
+        from torch_yolo.utils.torch_utils import select_device
 
     if not verbose:
         LOGGER.setLevel(logging.WARNING)
