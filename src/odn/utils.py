@@ -1,5 +1,4 @@
 import numpy as np
-from .keras_frcnn import roi_helpers
 import cv2
 import re
 from matplotlib import pyplot as plt
@@ -8,13 +7,21 @@ import matplotlib.ticker as ticker
 import shutil
 import os
 import os.path
+import sys
 import urllib.request
 import tarfile
 from tqdm import tqdm
-
 import tensorflow as tf
-from .tf_ssd.object_detection.utils import label_map_util
-from .tf_ssd.object_detection.utils import visualization_utils as vis_util
+
+if __package__:
+    from .keras_frcnn import roi_helpers
+    from .tf_ssd.object_detection.utils import label_map_util
+    from .tf_ssd.object_detection.utils import visualization_utils as vis_util
+else:
+    sys.path.append(os.path.dirname(__file__))
+    from keras_frcnn import roi_helpers
+    from tf_ssd.object_detection.utils import label_map_util
+    from tf_ssd.object_detection.utils import visualization_utils as vis_util
 
 def moving_average_3(a):    
 	return np.concatenate(([a[0]], np.convolve(a, np.ones(3), 'valid') / 3, [a[-1]]))
