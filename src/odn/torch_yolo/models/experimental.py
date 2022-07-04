@@ -2,15 +2,21 @@
 """
 Experimental modules
 """
-import math
 
+import os
+import sys
+import math
 import numpy as np
 import torch
 import torch.nn as nn
 
-from models.common import Conv
-from utils.downloads import attempt_download
-
+if __package__:
+    from .common import Conv
+    from ..utils.downloads import attempt_download
+else:
+    sys.path.append(os.path.dirname (os.path.dirname(__file__)) ) # parent dir
+    from models.common import Conv
+    from utils.downloads import attempt_download
 
 class CrossConv(nn.Module):
     # Cross Convolution Downsample

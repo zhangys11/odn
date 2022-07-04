@@ -18,6 +18,7 @@ from threading import Thread
 from urllib.parse import urlparse
 from zipfile import ZipFile
 
+import sys
 import numpy as np
 import torch
 import torch.nn.functional as F
@@ -26,10 +27,18 @@ from PIL import ExifTags, Image, ImageOps
 from torch.utils.data import DataLoader, Dataset, dataloader, distributed
 from tqdm.auto import tqdm
 
-from utils.augmentations import Albumentations, augment_hsv, copy_paste, letterbox, mixup, random_perspective
-from utils.general import (DATASETS_DIR, LOGGER, NUM_THREADS, check_dataset, check_requirements, check_yaml, clean_str,
-                           cv2, segments2boxes, xyn2xy, xywh2xyxy, xywhn2xyxy, xyxy2xywhn)
-from utils.torch_utils import torch_distributed_zero_first
+if __package__:
+    from .augmentations import Albumentations, augment_hsv, copy_paste, letterbox, mixup, random_perspective
+    from .general import (DATASETS_DIR, LOGGER, NUM_THREADS, check_dataset, check_requirements, check_yaml, clean_str,
+                            cv2, segments2boxes, xyn2xy, xywh2xyxy, xywhn2xyxy, xyxy2xywhn)
+    from .torch_utils import torch_distributed_zero_first
+else:
+    sys.path.append(os.path.dirname(__file__))
+    from augmentations import Albumentations, augment_hsv, copy_paste, letterbox, mixup, random_perspective
+    from general import (DATASETS_DIR, LOGGER, NUM_THREADS, check_dataset, check_requirements, check_yaml, clean_str,
+                            cv2, segments2boxes, xyn2xy, xywh2xyxy, xywhn2xyxy, xyxy2xywhn)
+    from torch_utils import torch_distributed_zero_first
+
 
 # Parameters
 HELP_URL = 'https://github.com/ultralytics/yolov5/wiki/Train-Custom-Data'

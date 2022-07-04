@@ -10,7 +10,13 @@ import torch
 import yaml
 from tqdm.auto import tqdm
 
-from utils.general import LOGGER, colorstr, emojis
+import os
+import sys
+if __package__:
+    from .general import LOGGER, colorstr, emojis
+else:
+    sys.path.append(os.path.dirname(__file__))
+    from general import LOGGER, colorstr, emojis
 
 PREFIX = colorstr('AutoAnchor: ')
 

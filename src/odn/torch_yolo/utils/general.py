@@ -32,8 +32,15 @@ import torch
 import torchvision
 import yaml
 
-from utils.downloads import gsutil_getsize
-from utils.metrics import box_iou, fitness
+import os
+import sys
+if __package__:
+    from .downloads import gsutil_getsize
+    from .metrics import box_iou, fitness
+else:
+    sys.path.append(os.path.dirname(__file__))
+    from downloads import gsutil_getsize
+    from metrics import box_iou, fitness
 
 # Settings
 FILE = Path(__file__).resolve()

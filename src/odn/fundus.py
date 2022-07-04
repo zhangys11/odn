@@ -2,6 +2,7 @@ from http.client import UnimplementedFileMode
 import numpy as np
 import os
 import os.path
+import sys
 import pathlib
 import io
 import time
@@ -28,21 +29,29 @@ from sklearn.metrics import confusion_matrix, roc_curve, roc_auc_score, auc
 import plotly.graph_objects as go
 import plotly.express as px
 
+import torch
+import torch.jit
+# import importlib
+# importlib.reload(vis_util) # reflect changes in the source file immediately
+
 import tensorflow as tf
 from distutils.version import StrictVersion
 if StrictVersion(tf.__version__) < StrictVersion('1.4.0'):
   raise ImportError('Please upgrade your tensorflow installation to v1.4.* or later!')
 
-from . import utils
-from .tf_ssd.object_detection.utils import visualization_utils as vis_util
-# import importlib
-# importlib.reload(vis_util) # reflect changes in the source file immediately
-
-import torch
-import torch.jit
-from .torch_yolo.models import yolo
-from .torch_yolo import detect
-from .torch_yolo.utils import datasets,general,plots
+if __package__:
+    from . import utils
+    from .tf_ssd.object_detection.utils import visualization_utils as vis_util
+    from .torch_yolo.models import yolo
+    from .torch_yolo import detect
+    from .torch_yolo.utils import datasets,general,plots
+else:
+    sys.path.append(os.path.dirname(__file__))
+    import utils
+    from tf_ssd.object_detection.utils import visualization_utils as vis_util
+    from torch_yolo.models import yolo
+    from torch_yolo import detect
+    from torch_yolo.utils import datasets,general,plots
 
 class demographics():
     '''
