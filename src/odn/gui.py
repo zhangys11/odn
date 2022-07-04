@@ -23,7 +23,7 @@ if __package__:
 else:
     sys.path.append(os.path.dirname(__file__))
     from toastx import ToastNotificationX
-    import predict_fundus_folder
+    from __init__ import predict_fundus_folder
 
 USE_PROGRESSBAR = False
 USE_GRID_LAYOUT = False
