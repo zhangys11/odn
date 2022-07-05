@@ -29,8 +29,6 @@ from sklearn.metrics import confusion_matrix, roc_curve, roc_auc_score, auc
 import plotly.graph_objects as go
 import plotly.express as px
 
-import torch
-import torch.jit
 # import importlib
 # importlib.reload(vis_util) # reflect changes in the source file immediately
 
@@ -41,17 +39,10 @@ if StrictVersion(tf.__version__) < StrictVersion('1.4.0'):
 
 if __package__:
     from . import utils
-    from .tf_ssd.object_detection.utils import visualization_utils as vis_util
-    from .torch_yolo.models import yolo
-    from .torch_yolo import detect
-    from .torch_yolo.utils import datasets,general,plots
 else:
-    sys.path.append(os.path.dirname(__file__))
+    if os.path.dirname(__file__) not in sys.path:
+        sys.path.append(os.path.dirname(__file__))
     import utils
-    from tf_ssd.object_detection.utils import visualization_utils as vis_util
-    from torch_yolo.models import yolo
-    from torch_yolo import detect
-    from torch_yolo.utils import datasets,general,plots
 
 class demographics():
     '''
@@ -643,6 +634,12 @@ class annotation():
         This is an extended version of utils.tf_batch_object_detection() that added fundus specific rules.
         '''
 
+        if __package__:
+            from .tf_ssd.object_detection.utils import visualization_utils as vis_util
+        else:
+            from tf_ssd.object_detection.utils import visualization_utils as vis_util
+
+
         if savefile and target_folder is not None:
             os.makedirs(target_folder, exist_ok=True) # create the target folder if not exist
 
@@ -855,6 +852,16 @@ class annotation():
         output_path : target output path, will create if non-exist. if None or 'inplace', will output images in the original folder. 
         suffix : suffix added to output image, e.g., '_YOLO5'
         '''
+
+        import torch
+        import torch.jit
+
+        if __package__:
+            from .torch_yolo import detect
+            from .torch_yolo.utils import datasets,general,plots
+        else:
+            from torch_yolo import detect
+            from torch_yolo.utils import datasets,general,plots
 
         device = torch.device("cuda")
         model = detect.DetectMultiBackend(model_path, device = device)

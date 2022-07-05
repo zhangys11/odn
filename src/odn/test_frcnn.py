@@ -26,10 +26,16 @@ from tensorflow.compat.v1 import ConfigProto
 from tensorflow.compat.v1 import InteractiveSession
 
 
-from .keras_frcnn import config, roi_helpers
-# if options.parser == 'simple':
-from .keras_frcnn.simple_parser import get_data
-
+if __package__:
+	from .keras_frcnn import config, roi_helpers
+	# if options.parser == 'simple':
+	from .keras_frcnn.simple_parser import get_data
+else:
+	if os.path.dirname(__file__) not in sys.path:
+		sys.path.append(os.path.dirname(__file__))
+	from keras_frcnn import config, roi_helpers
+    # if options.parser == 'simple':
+	from keras_frcnn.simple_parser import get_data
 
 ## 读取图像，解决imread不能读取中文路径的问题
 def cv_imread(filePath):
@@ -87,22 +93,41 @@ def build_model(network, num_rois, anchor_box_scales, anchor_box_ratios, class_m
 
 	# we will use resnet. may change to vgg
 	if network == 'vgg' or network == 'vgg16':
-		from .keras_frcnn import vgg as nn
+		if __package__:
+			from .keras_frcnn import vgg as nn
+		else:
+			from keras_frcnn import vgg as nn		
 	elif network == 'resnet50':
-		from .keras_frcnn import resnet as nn
+		if __package__:
+			from .keras_frcnn import resnet as nn
+		else:
+			from keras_frcnn import resnet as nn	
 	elif network == 'vgg19':
-		from .keras_frcnn import vgg19 as nn
+		if __package__:
+			from .keras_frcnn import vgg19 as nn
+		else:
+			from keras_frcnn import vgg19 as nn
 	elif network == 'mobilenetv1':
-		from .keras_frcnn import mobilenetv1 as nn
-	#	from keras.applications.mobilenet import preprocess_input
+		if __package__:
+			from .keras_frcnn import mobilenetv1 as nn
+		else:
+			from keras_frcnn import mobilenetv1 as nn
 	elif network == 'mobilenetv1_05':
-		from .keras_frcnn import mobilenetv1_05 as nn
-	#	from keras.applications.mobilenet import preprocess_input
+		if __package__:
+			from .keras_frcnn import mobilenetv1_05 as nn
+		else:
+			from keras_frcnn import mobilenetv1_05 as nn
 	elif network == 'mobilenetv1_25':
-		from .keras_frcnn import mobilenetv1_25 as nn
+		if __package__:
+			from .keras_frcnn import mobilenetv1_25 as nn
+		else:
+			from keras_frcnn import mobilenetv1_25 as nn
 	#	from keras.applications.mobilenet import preprocess_input
 	elif network == 'mobilenetv2':
-		from .keras_frcnn import mobilenetv2 as nn
+		if __package__:
+			from .keras_frcnn import mobilenetv2 as nn
+		else:
+			from keras_frcnn import mobilenetv2 as nn
 	else:
 		print('Not a valid model')
 		raise ValueError

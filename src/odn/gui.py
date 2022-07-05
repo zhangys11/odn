@@ -2,6 +2,7 @@ import pathlib
 from queue import Queue
 from threading import Thread
 from tkinter.filedialog import askdirectory
+from turtle import width
 from regex import B
 from send2trash import send2trash
 import shutil
@@ -17,13 +18,18 @@ from ttkbootstrap.dialogs.dialogs import Messagebox
 from ttkbootstrap.icons import Emoji
 from ttkbootstrap.toast import ToastNotification
 
+import warnings
+warnings.filterwarnings('ignore')
+
 if __package__:
     from .toastx import ToastNotificationX
     from . import predict_fundus_folder
+    from .waiting_frame import WaitingFrame
 else:
     sys.path.append(os.path.dirname(__file__))
     from toastx import ToastNotificationX
     from __init__ import predict_fundus_folder
+    from waiting_frame import WaitingFrame
 
 USE_PROGRESSBAR = False
 USE_GRID_LAYOUT = False
@@ -384,11 +390,15 @@ class FileSearchFrame(ttk.Frame):
         '''
         method : 'FRCNN', 'SSD', 'YOLO5'
         '''
+        wapp = ttk.Toplevel(title=method, size=(600,300))
+        wframe = WaitingFrame(wapp)
+        wframe.task_to_run = lambda: self.predict_fundus_folder_thread(method, wframe.message.set)
+            
+    def predict_fundus_folder_thread(self, method, callback):
+
         predict_fundus_folder(self.path_var.get(), 
-            method = method,
-            dir_output = 'inplace',
-            model_path = None,
-            label_path = None)
+             method = method, dir_output = 'inplace', callback = callback)
+        WaitingFrame.threadqueue.task_done()
 
     def upload_image(self):
 
