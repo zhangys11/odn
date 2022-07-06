@@ -24,7 +24,8 @@ import logging
 import numpy as np
 from six import string_types
 from six.moves import range
-import tensorflow.compat.v1 as tf
+# import tensorflow.compat.v1 as tf
+import tensorflow as tf
 from google.protobuf import text_format
 from ..protos import string_int_label_map_pb2
 
@@ -46,7 +47,6 @@ def _validate_label_map(label_map):
     if (item.id == 0 and item.name != 'background' and
         item.display_name != 'background'):
       raise ValueError('Label map id 0 is reserved for the background label')
-
 
 def create_category_index(categories):
   """Creates dictionary of COCO compatible categories keyed by category id.

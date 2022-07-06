@@ -33,13 +33,12 @@ import torch
 import torch.backends.cudnn as cudnn
 
 FILE = Path(__file__).resolve()
-ROOT = FILE.parents[0]  # YOLOv5 root directory
-if str(ROOT) not in sys.path:
-    sys.path.append(str(ROOT))  # add ROOT to PATH
+ROOT = FILE.parents[0] 
+# if str(ROOT) not in sys.path: # don't add YOLOv5 root directory to avoid conflict, i.e., torch_yolo
+#     sys.path.append(str(ROOT))  # add ROOT to PATH
 ROOT = Path(os.path.relpath(ROOT, Path.cwd()))  # relative
 
-import os
-import sys
+
 if __package__:
     from .models.common import DetectMultiBackend
     from .utils.datasets import IMG_FORMATS, VID_FORMATS, LoadImages, LoadStreams
@@ -48,15 +47,13 @@ if __package__:
     from .utils.plots import Annotator, colors, save_one_box
     from .utils.torch_utils import select_device, time_sync
 else:
-    if os.path.dirname(__file__) not in sys.path:
-        sys.path.append(os.path.dirname(__file__))
-    from models.common import DetectMultiBackend
-    from utils.datasets import IMG_FORMATS, VID_FORMATS, LoadImages, LoadStreams
-    from utils.general import (LOGGER, check_file, check_img_size, check_imshow, check_requirements, colorstr, cv2,
-                            increment_path, non_max_suppression, print_args, scale_coords, strip_optimizer, xyxy2xywh)
-    from utils.plots import Annotator, colors, save_one_box
-    from utils.torch_utils import select_device, time_sync
 
+    from torch_yolo.models.common import DetectMultiBackend
+    from torch_yolo.utils.datasets import IMG_FORMATS, VID_FORMATS, LoadImages, LoadStreams
+    from torch_yolo.utils.general import (LOGGER, check_file, check_img_size, check_imshow, check_requirements, colorstr, cv2,
+                            increment_path, non_max_suppression, print_args, scale_coords, strip_optimizer, xyxy2xywh)
+    from torch_yolo.utils.plots import Annotator, colors, save_one_box
+    from torch_yolo.utils.torch_utils import select_device, time_sync
 
 @torch.no_grad()
 def run(

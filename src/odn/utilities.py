@@ -11,18 +11,6 @@ import sys
 import urllib.request
 import tarfile
 from tqdm import tqdm
-import tensorflow as tf
-
-if __package__:
-    from .keras_frcnn import roi_helpers
-    from .tf_ssd.object_detection.utils import label_map_util
-    from .tf_ssd.object_detection.utils import visualization_utils as vis_util
-else:
-	if os.path.dirname(__file__) not in sys.path:
-		sys.path.append(os.path.dirname(__file__))
-	from keras_frcnn import roi_helpers
-	from tf_ssd.object_detection.utils import label_map_util
-	from tf_ssd.object_detection.utils import visualization_utils as vis_util
 
 def moving_average_3(a):    
 	return np.concatenate(([a[0]], np.convolve(a, np.ones(3), 'valid') / 3, [a[-1]]))
@@ -93,6 +81,12 @@ def plot_training_curves(input_file = '../src/odn/training_log.txt', output_file
 	plt.close(fig)
 
 def get_bbox(R, C, model_classifier, class_mapping, F, ratio, bbox_threshold = 0.8):
+	
+	if __package__:
+		from .keras_frcnn import roi_helpers
+	else:
+		from keras_frcnn import roi_helpers
+	
 	# convert from (x1,y1,x2,y2) to (x,y,w,h)
 	R[:, 2] -= R[:, 0]
 	R[:, 3] -= R[:, 1]
@@ -407,6 +401,13 @@ def load_tf_graph(ckpt_path = '../src/odn/tf_ssd/export/frozen_inference_graph.p
         detection_graph : a TensorFlow computation, represented as a dataflow graph.
         '''
 
+        import tensorflow as tf
+
+        if __package__:
+            from .tf_ssd.object_detection.utils import label_map_util			
+        else:
+            from tf_ssd.object_detection.utils import label_map_util
+
         detection_graph = tf.Graph()
         with detection_graph.as_default():
             od_graph_def = tf.GraphDef()
@@ -415,6 +416,11 @@ def load_tf_graph(ckpt_path = '../src/odn/tf_ssd/export/frozen_inference_graph.p
                 od_graph_def.ParseFromString(serialized_graph)
                 tf.import_graph_def(od_graph_def, name='')
 
+
+        if __package__:
+            from .tf_ssd.object_detection.utils import label_map_util			
+        else:
+            from tf_ssd.object_detection.utils import label_map_util
 
         label_map = label_map_util.load_labelmap(label_path)
         categories = label_map_util.convert_label_map_to_categories(label_map, max_num_classes=num_classes, use_display_name=True)
@@ -449,6 +455,11 @@ def tf_batch_object_detection(detection_graph, category_index, FILES,
                             new_img_width = None, verbose = False,
                             fontsize = None):
 	
+	if __package__:
+		from .tf_ssd.object_detection.utils import visualization_utils as vis_util
+	else:
+		from tf_ssd.object_detection.utils import visualization_utils as vis_util
+
 	if savefile and target_folder is not None:
 		os.makedirs(target_folder, exist_ok=True) # create the target folder if not exist
 

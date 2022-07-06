@@ -41,45 +41,23 @@ if str(ROOT) not in sys.path:
 ROOT = Path(os.path.relpath(ROOT, Path.cwd()))  # relative
 
 import val  # for end-of-epoch mAP
-
-if __package__:
-    from .models.experimental import attempt_load
-    from .umodels.yolo import Model
-    from .utils.autoanchor import check_anchors
-    from .utils.autobatch import check_train_batch_size
-    from .utils.callbacks import Callbacks
-    from .utils.datasets import create_dataloader
-    from .utils.downloads import attempt_download
-    from .utils.general import (LOGGER, check_dataset, check_file, check_git_status, check_img_size, check_requirements,
-                            check_suffix, check_yaml, colorstr, get_latest_run, increment_path, init_seeds,
-                            intersect_dicts, labels_to_class_weights, labels_to_image_weights, methods, one_cycle,
-                            print_args, print_mutation, strip_optimizer)
-    from .utils.loggers import Loggers
-    from .utils.loggers.wandb.wandb_utils import check_wandb_resume
-    from .utils.loss import ComputeLoss
-    from .utils.metrics import fitness
-    from .utils.plots import plot_evolve, plot_labels
-    from .utils.torch_utils import EarlyStopping, ModelEMA, de_parallel, select_device, torch_distributed_zero_first
-else:
-    if os.path.dirname (os.path.dirname(__file__)) not in sys.path:
-        sys.path.append(os.path.dirname (os.path.dirname(__file__)))
-    from torch_yolo.models.experimental import attempt_load
-    from torch_yolo.models.yolo import Model
-    from torch_yolo.utils.autoanchor import check_anchors
-    from torch_yolo.utils.autobatch import check_train_batch_size
-    from torch_yolo.utils.callbacks import Callbacks
-    from torch_yolo.utils.datasets import create_dataloader
-    from torch_yolo.utils.downloads import attempt_download
-    from torch_yolo.utils.general import (LOGGER, check_dataset, check_file, check_git_status, check_img_size, check_requirements,
-                            check_suffix, check_yaml, colorstr, get_latest_run, increment_path, init_seeds,
-                            intersect_dicts, labels_to_class_weights, labels_to_image_weights, methods, one_cycle,
-                            print_args, print_mutation, strip_optimizer)
-    from torch_yolo.utils.loggers import Loggers
-    from torch_yolo.utils.loggers.wandb.wandb_utils import check_wandb_resume
-    from torch_yolo.utils.loss import ComputeLoss
-    from torch_yolo.utils.metrics import fitness
-    from torch_yolo.utils.plots import plot_evolve, plot_labels
-    from torch_yolo.utils.torch_utils import EarlyStopping, ModelEMA, de_parallel, select_device, torch_distributed_zero_first
+from models.experimental import exp_attempt_load
+from models.yolo import Model
+from utils.autoanchor import check_anchors
+from utils.autobatch import check_train_batch_size
+from utils.callbacks import Callbacks
+from utils.datasets import create_dataloader
+from utils.downloads import attempt_download
+from utils.general import (LOGGER, check_dataset, check_file, check_git_status, check_img_size, check_requirements,
+             check_suffix, check_yaml, colorstr, get_latest_run, increment_path, init_seeds,
+             intersect_dicts, labels_to_class_weights, labels_to_image_weights, methods, one_cycle,
+             print_args, print_mutation, strip_optimizer)
+from utils.loggers import Loggers
+from utils.loggers.wandb.wandb_utils import check_wandb_resume
+from utils.loss import ComputeLoss
+from utils.metrics import fitness
+from utils.plots import plot_evolve, plot_labels
+from utils.torch_utils import EarlyStopping, ModelEMA, de_parallel, select_device, torch_distributed_zero_first
 
 LOCAL_RANK = int(os.getenv('LOCAL_RANK', -1))  # https://pytorch.org/docs/stable/elastic/run.html
 RANK = int(os.getenv('RANK', -1))
@@ -475,7 +453,7 @@ def train(hyp, opt, device, callbacks):  # hyp is path/to/hyp.yaml or hyp dictio
                         data_dict,
                         batch_size=batch_size // WORLD_SIZE * 2,
                         imgsz=imgsz,
-                        model=attempt_load(f, device).half(),
+                        model=exp_attempt_load(f, device).half(),
                         iou_thres=0.65 if is_coco else 0.60,  # best pycocotools results at 0.65
                         single_cls=single_cls,
                         dataloader=val_loader,

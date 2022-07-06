@@ -1,3 +1,7 @@
+# TODO
+
+intall torch, sys.path.insert(0, ...)
+
 # About
 
 We provide a set of object detection neural network training and evaluation functions.  
@@ -219,9 +223,9 @@ We draw ROP Zone I, Posterior Zone II and Zone II.
 2. Load yolo model and make prediction
 
 ```
-    from odn import yolo​
+    from odn import dark_yolo​
 
-    tfnet = yolo.load_tfnet(options = {
+    tfnet = dark_yolo.load_tfnet(options = {
             'model': '../src/odn/darkflow_yolo/cfg/yolo.cfg', # 'bin/yolov1.cfg',
             'load': '../src/odn/darkflow_yolo/bin/yolov2.weights', # 'bin/yolov1.weights',
             'config': '../src/odn/darkflow_yolo/cfg/',

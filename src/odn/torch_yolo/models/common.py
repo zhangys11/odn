@@ -23,7 +23,6 @@ import yaml
 from PIL import Image
 from torch.cuda import amp
 
-
 if __package__:
     from ..utils.datasets import exif_transpose, letterbox
     from ..utils.general import (LOGGER, check_requirements, check_suffix, check_version, colorstr, increment_path,
@@ -31,13 +30,11 @@ if __package__:
     from ..utils.plots import Annotator, colors, save_one_box
     from ..utils.torch_utils import copy_attr, time_sync
 else:
-    if os.path.dirname (os.path.dirname(__file__)) not in sys.path:
-        sys.path.append(os.path.dirname (os.path.dirname(__file__)) ) # parent folder
-    from utils.datasets import exif_transpose, letterbox
-    from utils.general import (LOGGER, check_requirements, check_suffix, check_version, colorstr, increment_path,
+    from torch_yolo.utils.datasets import exif_transpose, letterbox
+    from torch_yolo.utils.general import (LOGGER, check_requirements, check_suffix, check_version, colorstr, increment_path,
                             make_divisible, non_max_suppression, scale_coords, xywh2xyxy, xyxy2xywh)
-    from utils.plots import Annotator, colors, save_one_box
-    from utils.torch_utils import copy_attr, time_sync
+    from torch_yolo.utils.plots import Annotator, colors, save_one_box
+    from torch_yolo.utils.torch_utils import copy_attr, time_sync
 
 def autopad(k, p=None):  # kernel, padding
     # Pad to 'same'
@@ -304,23 +301,22 @@ class DetectMultiBackend(nn.Module):
         #   TensorFlow Edge TPU:            *_edgetpu.tflite
         
         if __package__:
-            from .experimental import attempt_download, attempt_load  # scoped to avoid circular import
+            from .experimental import  exp_attempt_load  # scoped to avoid circular import        
         else:
-            sys.path.append(os.path.dirname (os.path.dirname(__file__)) ) # parent folder
-            from models.experimental import attempt_download, attempt_load  # scoped to avoid circular import        
-        
+            from torch_yolo.models.experimental import exp_attempt_load      
+
         super().__init__()
         w = str(weights[0] if isinstance(weights, list) else weights)
         pt, jit, onnx, xml, engine, coreml, saved_model, pb, tflite, edgetpu, tfjs = self.model_type(w)  # get backend
         stride, names = 32, [f'class{i}' for i in range(1000)]  # assign defaults
-        w = attempt_download(w)  # download if not local
+        w = exp_attempt_load(w)  # download if not local
         fp16 &= (pt or jit or onnx or engine) and device.type != 'cpu'  # FP16
         if data:  # data.yaml path (optional)
             with open(data, errors='ignore') as f:
                 names = yaml.safe_load(f)['names']  # class names
 
         if pt:  # PyTorch
-            model = attempt_load(weights if isinstance(weights, list) else w, map_location=device)
+            model = exp_attempt_load(weights if isinstance(weights, list) else w, map_location=device)
             stride = max(int(model.stride.max()), 32)  # model stride
             names = model.module.names if hasattr(model, 'module') else model.names  # get class names
             model.half() if fp16 else model.float()
@@ -496,7 +492,12 @@ class DetectMultiBackend(nn.Module):
     @staticmethod
     def model_type(p='path/to/model.pt'):
         # Return model type from model path, i.e. path='path/to/model.onnx' -> type=onnx
-        from export import export_formats
+        
+        if __package__:
+            from ..export import export_formats
+        else:
+            from torch_yolo.export import export_formats
+        
         suffixes = list(export_formats().Suffix) + ['.xml']  # export suffixes
         check_suffix(p, suffixes)  # checks
         p = Path(p).name  # eliminate trailing separators

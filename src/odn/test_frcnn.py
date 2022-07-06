@@ -25,16 +25,11 @@ from keras.utils import plot_model
 from tensorflow.compat.v1 import ConfigProto
 from tensorflow.compat.v1 import InteractiveSession
 
-
 if __package__:
 	from .keras_frcnn import config, roi_helpers
-	# if options.parser == 'simple':
 	from .keras_frcnn.simple_parser import get_data
 else:
-	if os.path.dirname(__file__) not in sys.path:
-		sys.path.append(os.path.dirname(__file__))
 	from keras_frcnn import config, roi_helpers
-    # if options.parser == 'simple':
 	from keras_frcnn.simple_parser import get_data
 
 ## 读取图像，解决imread不能读取中文路径的问题

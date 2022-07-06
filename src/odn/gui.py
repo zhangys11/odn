@@ -17,6 +17,7 @@ from ttkbootstrap import utility
 from ttkbootstrap.dialogs.dialogs import Messagebox
 from ttkbootstrap.icons import Emoji
 from ttkbootstrap.toast import ToastNotification
+from pathlib import Path
 
 import warnings
 warnings.filterwarnings('ignore')
@@ -26,7 +27,12 @@ if __package__:
     from . import predict_fundus_folder
     from .waiting_frame import WaitingFrame
 else:
-    sys.path.append(os.path.dirname(__file__))
+    FILE = Path(__file__).resolve()
+    ROOT = FILE.parents[0]  # root directory, i.e., odn
+    if ROOT not in sys.path:
+        sys.path.insert(0, ROOT)
+        print('*** Add odn root to sys.path: ', ROOT)
+
     from toastx import ToastNotificationX
     from __init__ import predict_fundus_folder
     from waiting_frame import WaitingFrame

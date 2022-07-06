@@ -34,16 +34,21 @@ import pandas as pd
 
 FILE = Path(__file__).resolve()
 ROOT = FILE.parents[1]  # YOLOv5 root directory
-if str(ROOT) not in sys.path:
-    sys.path.append(str(ROOT))  # add ROOT to PATH
+#if str(ROOT) not in sys.path:
+#    sys.path.append(str(ROOT))  # add ROOT to PATH
 # ROOT = ROOT.relative_to(Path.cwd())  # relative
 
 import export
 import val
-from utils import notebook_init
-from utils.general import LOGGER, print_args
-from utils.torch_utils import select_device
 
+if __package__:
+    from . import notebook_init
+    from .general import LOGGER, print_args
+    from .torch_utils import select_device
+else:
+    from torch_yolo.utils import notebook_init
+    from torch_yolo.utils.general import LOGGER, print_args
+    from torch_yolo.utils.torch_utils import select_device
 
 def run(
         weights=ROOT / 'yolov5s.pt',  # weights path

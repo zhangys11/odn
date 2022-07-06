@@ -15,8 +15,7 @@ import sys
 if __package__:
     from .general import LOGGER, colorstr, emojis
 else:
-    sys.path.append(os.path.dirname(__file__))
-    from general import LOGGER, colorstr, emojis
+    from torch_yolo.utils.general import LOGGER, colorstr, emojis
 
 PREFIX = colorstr('AutoAnchor: ')
 

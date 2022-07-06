@@ -9,12 +9,18 @@ import math
 import numpy as np
 import torch
 import torch.nn as nn
+from pathlib import Path
 
 if __package__:
     from .common import Conv
     from ..utils.downloads import attempt_download
 else:
-    sys.path.append(os.path.dirname (os.path.dirname (os.path.dirname(__file__)) ) ) # odn
+    
+    FILE = Path(__file__).resolve()
+    ROOT = FILE.parents[2] 
+    if str(ROOT) not in sys.path: # don't add YOLOv5 root directory to avoid conflict, i.e., torch_yolo
+        sys.path.append(str(ROOT))  # add ROOT to PATH
+    
     from torch_yolo.models.common import Conv
     from torch_yolo.utils.downloads import attempt_download
 
@@ -93,20 +99,24 @@ class Ensemble(nn.ModuleList):
         return y, None  # inference, train output
 
 
-def attempt_load(weights, map_location=None, inplace=True, fuse=True):
+def exp_attempt_load(weights, map_location=None, inplace=True, fuse=True):
 
     if __package__:
+        # from odn.torch_yolo.models.yolo import Detect, Model
         from .yolo import Detect, Model
     else:
-        dir = os.path.dirname (os.path.dirname (os.path.dirname(__file__)) ) 
-        # print(dir)
-        if dir not in sys.path:
-            sys.path.append(dir) # odn
+
+        FILE = Path(__file__).resolve()
+        ROOT = FILE.parents[2] 
+        if str(ROOT) not in sys.path: # don't add YOLOv5 root directory to avoid conflict, i.e., torch_yolo
+            sys.path.append(str(ROOT))  # add ROOT to PATH
+        
         from torch_yolo.models.yolo import Detect, Model
 
     # Loads an ensemble of models weights=[a,b,c] or a single model weights=[a] or weights=a
     model = Ensemble()
     for w in weights if isinstance(weights, list) else [weights]:
+        print(sys.path)
         ckpt = torch.load(attempt_download(w), map_location=map_location)  # load
         ckpt = (ckpt.get('ema') or ckpt['model']).float()  # FP32 model
         model.append(ckpt.fuse().eval() if fuse else ckpt.eval())  # fused or un-fused model in eval mode

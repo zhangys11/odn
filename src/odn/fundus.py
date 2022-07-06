@@ -4,10 +4,6 @@ import os
 import os.path
 import sys
 import pathlib
-import io
-import time
-import pickle
-import matplotlib
 import shutil
 from matplotlib import pyplot as plt
 import matplotlib.patches as patches
@@ -32,17 +28,14 @@ import plotly.express as px
 # import importlib
 # importlib.reload(vis_util) # reflect changes in the source file immediately
 
-import tensorflow as tf
-from distutils.version import StrictVersion
-if StrictVersion(tf.__version__) < StrictVersion('1.4.0'):
-  raise ImportError('Please upgrade your tensorflow installation to v1.4.* or later!')
+#from distutils.version import StrictVersion
+#if StrictVersion(tf.__version__) < StrictVersion('1.4.0'):
+#  raise ImportError('Please upgrade your tensorflow installation to v1.4.* or later!')
 
 if __package__:
-    from . import utils
+    from . import utilities
 else:
-    if os.path.dirname(__file__) not in sys.path:
-        sys.path.append(os.path.dirname(__file__))
-    import utils
+    import utilities
 
 class demographics():
     '''
@@ -598,7 +591,7 @@ class annotation():
                  label_path = '../src/odn/tf_ssd/fundus_label_map.pbtxt', 
                  num_classes = 2, verbose = True):
         '''
-        Load tf graph from checkpoint. Directly calls utils.load_tf_graph().
+        Load tf graph from checkpoint. Directly calls utilities.load_tf_graph().
         
         Parameters
         ----------
@@ -619,7 +612,7 @@ class annotation():
         detection_graph : a TensorFlow computation, represented as a dataflow graph.
         '''
 
-        return utils.load_tf_graph(ckpt_path,
+        return utilities.load_tf_graph(ckpt_path,
                  label_path, 
                  num_classes, verbose)
 
@@ -631,8 +624,10 @@ class annotation():
                             new_img_width = None,
                             fontsize = None):    
         '''
-        This is an extended version of utils.tf_batch_object_detection() that added fundus specific rules.
+        This is an extended version of utilities.tf_batch_object_detection() that added fundus specific rules.
         '''
+
+        import tensorflow as tf
 
         if __package__:
             from .tf_ssd.object_detection.utils import visualization_utils as vis_util
@@ -673,7 +668,7 @@ class annotation():
                         if new_img_width is not None and  new_img_width> 0:
                             image.thumbnail((new_img_width,new_img_width)) # Image.ANTIALIAS
                         # the array based representation of the image will be used later in order to prepare the result image with boxes and labels on it.
-                        image_np = utils.load_image_into_numpy_array(image)
+                        image_np = utilities.load_image_into_numpy_array(image)
                         # Expand dimensions since the model expects images to have shape: [1, None, None, 3]
                         image_np_expanded = np.expand_dims(image_np, axis=0)
                         # Actual detection.
@@ -863,7 +858,11 @@ class annotation():
             from torch_yolo import detect
             from torch_yolo.utils import datasets,general,plots
 
-        device = torch.device("cuda")
+        if torch.cuda.is_available():
+            device = torch.device("cuda")
+        else:
+            device = torch.device('cpu')
+            
         model = detect.DetectMultiBackend(model_path, device = device)
         stride, names, pt = model.stride, model.names, model.pt
 
@@ -981,7 +980,7 @@ class dataset():
             print('\n----------- \ndistribution of ROI labels:')
             print( df['class'].value_counts() )
         
-        FILES = utils.get_all_images_in_dir(dir_images)
+        FILES = utilities.get_all_images_in_dir(dir_images)
         
         i = 0
         for f in unique_files:            

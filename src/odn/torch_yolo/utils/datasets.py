@@ -33,7 +33,8 @@ if __package__:
                             cv2, segments2boxes, xyn2xy, xywh2xyxy, xywhn2xyxy, xyxy2xywhn)
     from .torch_utils import torch_distributed_zero_first
 else:
-    sys.path.append(os.path.dirname(__file__))
+    if os.path.dirname(__file__) not in sys.path:
+        sys.path.insert(0, os.path.dirname(__file__))
     from augmentations import Albumentations, augment_hsv, copy_paste, letterbox, mixup, random_perspective
     from general import (DATASETS_DIR, LOGGER, NUM_THREADS, check_dataset, check_requirements, check_yaml, clean_str,
                             cv2, segments2boxes, xyn2xy, xywh2xyxy, xywhn2xyxy, xyxy2xywhn)

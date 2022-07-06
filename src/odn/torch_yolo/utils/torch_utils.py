@@ -18,13 +18,10 @@ import torch.distributed as dist
 import torch.nn as nn
 import torch.nn.functional as F
 
-import os
-import sys
 if __package__:
     from .general import LOGGER, file_update_date, git_describe
 else:
-    sys.path.append(os.path.dirname(__file__))
-    from general import LOGGER, file_update_date, git_describe
+    from torch_yolo.utils.general import LOGGER, file_update_date, git_describe
 
 try:
     import thop  # for FLOPs computation

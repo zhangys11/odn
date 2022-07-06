@@ -15,8 +15,8 @@ from pathlib import Path
 
 FILE = Path(__file__).resolve()
 ROOT = FILE.parents[1]  # YOLOv5 root directory
-if str(ROOT) not in sys.path:
-    sys.path.append(str(ROOT))  # add ROOT to PATH
+#if str(ROOT) not in sys.path:
+#    sys.path.append(str(ROOT))  # add ROOT to PATH
 if platform.system() != 'Windows':
     ROOT = Path(os.path.relpath(ROOT, Path.cwd()))  # relative
 
@@ -29,13 +29,12 @@ if __package__:
     from ..utils.torch_utils import (fuse_conv_and_bn, initialize_weights, model_info, profile, scale_img, select_device,
                                 time_sync)
 else:
-    sys.path.append(os.path.dirname (os.path.dirname(__file__)) ) # parent folder
-    from models.common import *
-    from models.experimental import *
-    from utils.autoanchor import check_anchor_order
-    from utils.general import LOGGER, check_version, check_yaml, make_divisible, print_args
-    from utils.plots import feature_visualization
-    from utils.torch_utils import (fuse_conv_and_bn, initialize_weights, model_info, profile, scale_img, select_device,
+    from torch_yolo.models.common import *
+    from torch_yolo.models.experimental import *
+    from torch_yolo.utils.autoanchor import check_anchor_order
+    from torch_yolo.utils.general import LOGGER, check_version, check_yaml, make_divisible, print_args
+    from torch_yolo.utils.plots import feature_visualization
+    from torch_yolo.utils.torch_utils import (fuse_conv_and_bn, initialize_weights, model_info, profile, scale_img, select_device,
                                 time_sync)
 
 try:

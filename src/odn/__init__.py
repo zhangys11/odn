@@ -1,16 +1,20 @@
-
 import pandas as pd
 
 import os
 import sys
+from pathlib import Path
+
 if __package__:
-    from . import utils, fundus
-    import warnings
-    warnings.filterwarnings('ignore')
+    from . import utilities, fundus
 else:
-    if os.path.dirname(__file__) not in sys.path:
-        sys.path.append(os.path.dirname(__file__))
-    import utils, fundus
+    FILE = Path(__file__).resolve()
+    ROOT = FILE.parents[0]  # root directory, i.e., odn
+    if ROOT not in sys.path:
+        sys.path.insert(0, ROOT)
+        print('*** Add odn root to sys.path: ', ROOT)
+    import utilities, fundus
+
+# sys.path.remove(os.path.dirname(__file__)) # to avoid conflicts with torch_yolo. Both have a model subpackage.
 
 def predict_fundus_folder(folder, method = 'FRCNN', dir_output = 'inplace',model_path = None,
     label_path = None, callback = None):
@@ -29,7 +33,7 @@ def predict_fundus_folder(folder, method = 'FRCNN', dir_output = 'inplace',model
 
     # construct the file list file
     fl = wd + '/filelist.tmp.txt' # uuid.uuid1() + '.txt'
-    FILES = utils.get_all_images_in_dir(folder, fl, excludes = ['_FRCNN','_SSD','_YOLO5'])
+    FILES = utilities.get_all_images_in_dir(folder, fl, excludes = ['_FRCNN','_SSD','_YOLO5'])
     # test_set = pd.read_csv(fl, header=None, encoding = 'gbk')
 
     if method == 'FRCNN':
@@ -108,7 +112,7 @@ def predict_fundus_folder(folder, method = 'FRCNN', dir_output = 'inplace',model
 
 if __name__ == "__main__":
     predict_fundus_folder('C:/Users/eleve/Desktop/横向2022/SZEH分区 第二次激光/激光  85个第二次', 
-    method = 'YOLO5',
+    method = 'FRCNN',
     dir_output = 'inplace',
     model_path = None,
     label_path = None)

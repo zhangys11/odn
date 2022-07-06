@@ -26,10 +26,7 @@ def _create(name, pretrained=True, channels=3, classes=80, autoshape=True, verbo
     Returns:
         YOLOv5 model
     """
-    from pathlib import Path
 
-    import os
-    import sys
     if __package__:
         from .models.common import AutoShape, DetectMultiBackend
         from .models.yolo import Model
@@ -37,8 +34,6 @@ def _create(name, pretrained=True, channels=3, classes=80, autoshape=True, verbo
         from .utils.general import LOGGER, check_requirements, intersect_dicts, logging
         from .utils.torch_utils import select_device
     else:
-        if os.path.dirname (os.path.dirname(__file__)) not in sys.path:
-            sys.path.append(os.path.dirname (os.path.dirname(__file__)) )
         from torch_yolo.models.common import AutoShape, DetectMultiBackend
         from torch_yolo.models.yolo import Model
         from torch_yolo.utils.downloads import attempt_download
@@ -55,7 +50,7 @@ def _create(name, pretrained=True, channels=3, classes=80, autoshape=True, verbo
 
         if pretrained and channels == 3 and classes == 80:
             model = DetectMultiBackend(path, device=device)  # download/load FP32 model
-            # model = models.experimental.attempt_load(path, map_location=device)  # download/load FP32 model
+            # model = experimental.exp_attempt_load(path, map_location=device)  # download/load FP32 model
         else:
             cfg = list((Path(__file__).parent / 'models').rglob(f'{path.stem}.yaml'))[0]  # model.yaml path
             model = Model(cfg, channels, classes)  # create model

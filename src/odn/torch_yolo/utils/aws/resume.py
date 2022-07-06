@@ -8,11 +8,6 @@ from pathlib import Path
 import torch
 import yaml
 
-FILE = Path(__file__).resolve()
-ROOT = FILE.parents[2]  # YOLOv5 root directory
-if str(ROOT) not in sys.path:
-    sys.path.append(str(ROOT))  # add ROOT to PATH
-
 port = 0  # --master_port
 path = Path('').resolve()
 for last in path.rglob('*/**/last.pt'):
