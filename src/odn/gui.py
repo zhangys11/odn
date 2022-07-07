@@ -318,7 +318,7 @@ class FileSearchFrame(ttk.Frame):
             master=container,
             text='FRCNN',
             padding=PADDING,
-            # state=DISABLED,
+            state=DISABLED,
             command= lambda : self.predict('FRCNN')
         )
         btn.pack(side=LEFT, fill=X, expand=YES)    
@@ -327,7 +327,7 @@ class FileSearchFrame(ttk.Frame):
             master=container,
             text='SSD',
             padding=PADDING,
-            # state=DISABLED,
+            state=DISABLED,
             command= lambda : self.predict('SSD')
         )
         btn.pack(side=LEFT, fill=X, expand=YES)    
