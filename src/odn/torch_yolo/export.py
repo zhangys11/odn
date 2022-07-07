@@ -64,14 +64,14 @@ if platform.system() != 'Windows':
     ROOT = Path(os.path.relpath(ROOT, Path.cwd()))  # relative
 
 if __package__:
-    from .models.experimental import exp_attempt_load
+    from .models.experimental import attempt_load
     from .models.yolo import Detect
     from .utils.datasets import LoadImages
     from .utils.general import (LOGGER, check_dataset, check_img_size, check_requirements, check_version, colorstr,
                   file_size, print_args, url2file)
     from .utils.torch_utils import select_device
 else:
-    from torch_yolo.models.experimental import exp_attempt_load
+    from torch_yolo.models.experimental import attempt_load
     from torch_yolo.models.yolo import Detect
     from torch_yolo.utils.datasets import LoadImages
     from torch_yolo.utils.general import (LOGGER, check_dataset, check_img_size, check_requirements, check_version, colorstr,
@@ -475,7 +475,7 @@ def run(
     # Load PyTorch model
     device = select_device(device)
     assert not (device.type == 'cpu' and half), '--half only compatible with GPU export, i.e. use --device 0'
-    model = exp_attempt_load(weights, map_location=device, inplace=True, fuse=True)  # load FP32 model
+    model = attempt_load(weights, map_location=device, inplace=True, fuse=True)  # load FP32 model
     nc, names = model.nc, model.names  # number of classes, class names
 
     # Checks

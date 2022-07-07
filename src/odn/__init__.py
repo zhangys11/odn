@@ -16,10 +16,11 @@ else:
 
 # sys.path.remove(os.path.dirname(__file__)) # to avoid conflicts with torch_yolo. Both have a model subpackage.
 
-def predict_fundus_folder(folder, method = 'FRCNN', dir_output = 'inplace',model_path = None,
+def predict_fundus_folder(folder, method = 'YOLO5', dir_output = 'inplace',model_path = None,
     label_path = None, callback = None):
     '''
     method : 'FRCNN', 'SSD', or 'YOLO5'
+            'FRCNN' and 'SSD' require legacy tensorflow version. The install and config can be a real pain. We recommend using YOLO5.
     dir_output : specify a target folder or just 'inplace'
     model_path : if None, will use internal model
     label_path : the SSD pbtxt path
@@ -112,7 +113,7 @@ def predict_fundus_folder(folder, method = 'FRCNN', dir_output = 'inplace',model
 
 if __name__ == "__main__":
     predict_fundus_folder('C:/Users/eleve/Desktop/横向2022/SZEH分区 第二次激光/激光  85个第二次', 
-    method = 'FRCNN',
+    method = 'YOLO5',
     dir_output = 'inplace',
     model_path = None,
     label_path = None)

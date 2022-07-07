@@ -22,7 +22,7 @@ from __future__ import print_function
 import tensorflow.compat.v1 as tf
 
 from ...core import freezable_batch_norm
-from ..keras_models import model_utils
+from . import model_utils
 
 
 def _fixed_padding(inputs, kernel_size, rate=1):  # pylint: disable=invalid-name

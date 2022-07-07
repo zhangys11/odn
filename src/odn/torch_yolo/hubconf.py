@@ -50,7 +50,7 @@ def _create(name, pretrained=True, channels=3, classes=80, autoshape=True, verbo
 
         if pretrained and channels == 3 and classes == 80:
             model = DetectMultiBackend(path, device=device)  # download/load FP32 model
-            # model = experimental.exp_attempt_load(path, map_location=device)  # download/load FP32 model
+            # model = experimental.attempt_load(path, map_location=device)  # download/load FP32 model
         else:
             cfg = list((Path(__file__).parent / 'models').rglob(f'{path.stem}.yaml'))[0]  # model.yaml path
             model = Model(cfg, channels, classes)  # create model

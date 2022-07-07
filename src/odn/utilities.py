@@ -312,17 +312,21 @@ def convert_to_rgb(folder, json_annos):
 					else:
 						print(file,' Not Found.')
 
-def move_images_to_one_folder(source, target):
+def move_images_to_one_folder(source, target, copy = True):
 	'''
 	Move all images (including subfolders) in the source folder to the target folder.
+
+	copy : move or copy
 	'''
 	os.makedirs(target, exist_ok=True)
 
 	for root, dirs, files in os.walk(source):
 		for file in files:
 			if( not file.endswith('.db') and not file.endswith('.json')):
-				shutil.move(os.path.join(root, file),os.path.join(target, file)) 
-
+				if copy:
+					shutil.copy(os.path.join(root, file),os.path.join(target, file))
+				else:
+					shutil.move(os.path.join(root, file),os.path.join(target, file)) 
 
 def merge_json_anno_files(source_folder, target_file):
 	'''

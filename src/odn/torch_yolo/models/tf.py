@@ -29,13 +29,13 @@ from tensorflow import keras
 
 if __package__:
     from .common import C3, SPP, SPPF, Bottleneck, BottleneckCSP, Concat, Conv, DWConv, Focus, autopad
-    from .experimental import CrossConv, MixConv2d, exp_attempt_load
+    from .experimental import CrossConv, MixConv2d, attempt_load
     from .yolo import Detect
     from ..utils.activations import SiLU
     from ..utils.general import LOGGER, make_divisible, print_args
 else:
     from torch_yolo.models.common import C3, SPP, SPPF, Bottleneck, BottleneckCSP, Concat, Conv, DWConv, Focus, autopad
-    from torch_yolo.models.experimental import CrossConv, MixConv2d, exp_attempt_load
+    from torch_yolo.models.experimental import CrossConv, MixConv2d, attempt_load
     from torch_yolo.models.yolo import Detect
     from torch_yolo.utils.activations import SiLU
     from torch_yolo.utils.general import LOGGER, make_divisible, print_args
@@ -466,7 +466,7 @@ def run(
 ):
     # PyTorch model
     im = torch.zeros((batch_size, 3, *imgsz))  # BCHW image
-    model = exp_attempt_load(weights, map_location=torch.device('cpu'), inplace=True, fuse=False)
+    model = attempt_load(weights, map_location=torch.device('cpu'), inplace=True, fuse=False)
     _ = model(im)  # inference
     model.info()
 

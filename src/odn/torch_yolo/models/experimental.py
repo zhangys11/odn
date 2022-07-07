@@ -11,18 +11,18 @@ import torch
 import torch.nn as nn
 from pathlib import Path
 
-if __package__:
-    from .common import Conv
-    from ..utils.downloads import attempt_download
-else:
+# if __package__:
+#    from .common import Conv
+#    from ..utils.downloads import attempt_download
+#else:
     
-    FILE = Path(__file__).resolve()
-    ROOT = FILE.parents[2] 
-    if str(ROOT) not in sys.path: # don't add YOLOv5 root directory to avoid conflict, i.e., torch_yolo
-        sys.path.append(str(ROOT))  # add ROOT to PATH
+FILE = Path(__file__).resolve()
+ROOT = FILE.parents[2] 
+if str(ROOT) not in sys.path: # don't add YOLOv5 root directory to avoid conflict, i.e., torch_yolo
+    sys.path.append(str(ROOT))  # add ROOT to PATH
     
-    from torch_yolo.models.common import Conv
-    from torch_yolo.utils.downloads import attempt_download
+from torch_yolo.models.common import Conv
+from torch_yolo.utils.downloads import attempt_download
 
 class CrossConv(nn.Module):
     # Cross Convolution Downsample
@@ -99,7 +99,17 @@ class Ensemble(nn.ModuleList):
         return y, None  # inference, train output
 
 
-def exp_attempt_load(weights, map_location=None, inplace=True, fuse=True):
+def attempt_load(weights, map_location=None, inplace=True, fuse=True):
+
+    # Loads an ensemble of models weights=[a,b,c] or a single model weights=[a] or weights=a
+    model = Ensemble()
+    for w in weights if isinstance(weights, list) else [weights]:
+        print(sys.path)
+        loaded_model = attempt_download(w)
+        ckpt = torch.load(loaded_model, map_location=map_location)  # load
+        ckpt = (ckpt.get('ema') or ckpt['model']).float()  # FP32 model
+        model.append(ckpt.fuse().eval() if fuse else ckpt.eval())  # fused or un-fused model in eval mode
+
 
     if __package__:
         # from odn.torch_yolo.models.yolo import Detect, Model
@@ -112,14 +122,6 @@ def exp_attempt_load(weights, map_location=None, inplace=True, fuse=True):
             sys.path.append(str(ROOT))  # add ROOT to PATH
         
         from torch_yolo.models.yolo import Detect, Model
-
-    # Loads an ensemble of models weights=[a,b,c] or a single model weights=[a] or weights=a
-    model = Ensemble()
-    for w in weights if isinstance(weights, list) else [weights]:
-        print(sys.path)
-        ckpt = torch.load(attempt_download(w), map_location=map_location)  # load
-        ckpt = (ckpt.get('ema') or ckpt['model']).float()  # FP32 model
-        model.append(ckpt.fuse().eval() if fuse else ckpt.eval())  # fused or un-fused model in eval mode
 
     # Compatibility updates
     for m in model.modules():

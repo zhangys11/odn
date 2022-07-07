@@ -31,11 +31,17 @@ import pkg_resources as pkg
 import torch
 import torchvision
 import yaml
+import sys
 
 if __package__:
     from .downloads import gsutil_getsize
     from .metrics import box_iou, fitness
 else:
+    FILE = Path(__file__).resolve()
+    ROOT = FILE.parents[2]  # root directory, i.e., odn
+    if ROOT not in sys.path:
+        sys.path.insert(0, ROOT)
+        print('*** Add odn root to sys.path: ', ROOT)
     from torch_yolo.utils.downloads import gsutil_getsize
     from torch_yolo.utils.metrics import box_iou, fitness
 
