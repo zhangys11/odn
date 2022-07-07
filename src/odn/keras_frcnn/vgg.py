@@ -12,7 +12,6 @@ import warnings
 from keras.models import Model
 from keras.layers import Flatten, Dense, Input, Conv2D, MaxPooling2D, Dropout
 from keras.layers import GlobalAveragePooling2D, GlobalMaxPooling2D, TimeDistributed
-from keras.engine.topology import get_source_inputs
 from keras.utils import layer_utils
 from keras.utils.data_utils import get_file
 from keras import backend as K

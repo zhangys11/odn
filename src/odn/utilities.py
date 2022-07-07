@@ -405,7 +405,7 @@ def load_tf_graph(ckpt_path = '../src/odn/tf_ssd/export/frozen_inference_graph.p
         detection_graph : a TensorFlow computation, represented as a dataflow graph.
         '''
 
-        import tensorflow as tf
+        import tensorflow.compat.v1 as tf
 
         if __package__:
             from .tf_ssd.object_detection.utils import label_map_util			

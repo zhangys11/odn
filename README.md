@@ -1,12 +1,8 @@
-# TODO
-
-intall torch, sys.path.insert(0, ...)
-
 # About
 
 We provide a set of object detection neural network training and evaluation functions.  
 We currently support Faster-RCNN, SSD and YOLO(v5). An infant funuds image object detection application is provided.   
-NOTE: Faster-RCNN and SSD require tf 1.x. It may be painful get things running. We recommend using the latest YOLO v5.
+NOTE: Faster-RCNN and SSD require tf 1.x. SSD can run under tf 2.x using 'import tensorflow.compat.v1 as tf'. FRCNN may be painful to get running. We recommend using the latest YOLO v5.
 
 # Credit
 

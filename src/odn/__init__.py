@@ -118,7 +118,7 @@ def predict_fundus_folder(folder, method = 'YOLO5', dir_output = 'inplace',model
 
 if __name__ == "__main__":
     predict_fundus_folder('C:/Users/eleve/Desktop/横向2022/SZEH分区 第二次激光', 
-    method = 'YOLO5',
+    method = 'SSD',
     dir_output = 'inplace',
     model_path = None,
     label_path = None)

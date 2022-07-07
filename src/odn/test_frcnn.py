@@ -160,10 +160,11 @@ def build_model(network, num_rois, anchor_box_scales, anchor_box_ratios, class_m
 	model_rpn = Model(img_input, rpn_layers)
 	model_classifier = Model([feature_map_input, roi_input], classifier)
 
-	plot_model(model_rpn, to_file='model_rpn.png', show_shapes = True)
-	plot_model(model_classifier, to_file='model_classifier.png', show_shapes = True)
-	#model_all = Model([img_input, roi_input], model_rpn[:2] + model_classifier)
-	#plot_model(model_all, to_file='model_all.png', show_shapes = True)
+	if False:
+		plot_model(model_rpn, to_file='model_rpn.png', show_shapes = True)
+		plot_model(model_classifier, to_file='model_classifier.png', show_shapes = True)
+		#model_all = Model([img_input, roi_input], model_rpn[:2] + model_classifier)
+		#plot_model(model_all, to_file='model_all.png', show_shapes = True)
 
 	print('Loading weights from {}'.format(model_path))
 	model_rpn.load_weights(model_path, by_name=True)

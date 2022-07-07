@@ -627,7 +627,7 @@ class annotation():
         This is an extended version of utilities.tf_batch_object_detection() that added fundus specific rules.
         '''
 
-        import tensorflow as tf
+        import tensorflow.compat.v1 as tf
 
         if __package__:
             from .tf_ssd.object_detection.utils import visualization_utils as vis_util
