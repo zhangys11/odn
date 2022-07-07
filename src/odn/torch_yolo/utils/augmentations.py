@@ -9,12 +9,9 @@ import random
 import cv2
 import numpy as np
 
-if __package__:
-    from .general import LOGGER, check_version, colorstr, resample_segments, segment2box
-    from .metrics import bbox_ioa
-else:
-    from torch_yolo.utils.general import LOGGER, check_version, colorstr, resample_segments, segment2box
-    from torch_yolo.utils.metrics import bbox_ioa
+from utils.general import LOGGER, check_version, colorstr, resample_segments, segment2box
+from utils.metrics import bbox_ioa
+
 
 class Albumentations:
     # YOLOv5 Albumentations class (optional, only used if package is installed)

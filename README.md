@@ -5,7 +5,8 @@ intall torch, sys.path.insert(0, ...)
 # About
 
 We provide a set of object detection neural network training and evaluation functions.  
-We currently support Faster-RCNN, SSD and YOLO(todo). An infant funuds image object detection application is provided.  
+We currently support Faster-RCNN, SSD and YOLO(v5). An infant funuds image object detection application is provided.   
+NOTE: Faster-RCNN and SSD require tf 1.x. It may be painful get things running. We recommend using the latest YOLO v5.
 
 # Credit
 
@@ -14,7 +15,7 @@ The following 3rd-party packages are used:
 2. Data augmentation package (https://github.com/Paperspace/DataAugmentationForObjectDetection).   
 3. SSD (Single Shot MultiBox Detector) by tensorflow. We took lots of efforts to integrate tensorflow's objection detection and slim source, mainly revising the relative importing. https://github.com/tensorflow/models/research/object_detection and https://github.com/tensorflow/models/research/slim    
 4. The darkflow framework (https://github.com/thtrieu/darkflow)   
-5. The pytorch_yolov5 project (https://github.com/ultralytics/yolov5)  
+5. The pytorch_yolov5 project (https://github.com/ultralytics/yolov5). The main changes are in utils/datasets.py (we added filelist.txt support) and utils/plots (we added fundus_zones()).  
 
 # Install
 

@@ -7,11 +7,13 @@ from pathlib import Path
 if __package__:
     from . import utilities, fundus
 else:
+    '''
     FILE = Path(__file__).resolve()
     ROOT = FILE.parents[0]  # root directory, i.e., odn
     if ROOT not in sys.path:
         sys.path.insert(0, ROOT)
         print('*** Add odn root to sys.path: ', ROOT)
+    '''
     import utilities, fundus
 
 # sys.path.remove(os.path.dirname(__file__)) # to avoid conflicts with torch_yolo. Both have a model subpackage.
@@ -33,9 +35,12 @@ def predict_fundus_folder(folder, method = 'YOLO5', dir_output = 'inplace',model
     wd = os.path.dirname(__file__) # the current working folder
 
     # construct the file list file
-    fl = wd + '/filelist.tmp.txt' # uuid.uuid1() + '.txt'
+    fl = wd + '/filelist.txt' # uuid.uuid1() + '.txt'
     FILES = utilities.get_all_images_in_dir(folder, fl, excludes = ['_FRCNN','_SSD','_YOLO5'])
     # test_set = pd.read_csv(fl, header=None, encoding = 'gbk')
+    if FILES is None or len(FILES) <=0:
+        callback('Error: No files found in folder ', folder)
+        return
 
     if method == 'FRCNN':
 
@@ -112,7 +117,7 @@ def predict_fundus_folder(folder, method = 'YOLO5', dir_output = 'inplace',model
     callback('\nfinish ' + method + ' detection. \nimages saved to: ' + dir_output + '')
 
 if __name__ == "__main__":
-    predict_fundus_folder('C:/Users/eleve/Desktop/横向2022/SZEH分区 第二次激光/激光  85个第二次', 
+    predict_fundus_folder('C:/Users/eleve/Desktop/横向2022/SZEH分区 第二次激光', 
     method = 'YOLO5',
     dir_output = 'inplace',
     model_path = None,
