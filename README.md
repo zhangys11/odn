@@ -19,6 +19,13 @@ This repo also contains the de-identified fundus image sets in the article:
     data/fundus/yolo5 : object detection and zone segmentation results by YOLOv5   
     data/fundus/test : another fundus image set for testing purposes     
 
+Model weights:  
+
+    src/odn/tf_ssd/export/frozen_inference_graph.pb : SSD weights
+    src/odn/tf_ssd/fundus_label_map.pbtxt : SSD label map file   
+    src/odn/torch_yolo/runs/train/exp15/weights/best.pt : YOLOv5 weights
+    FRCNN model weigths (>500MB) is not included due to github's file size limit.    
+
 # Credit
 
 The following 3rd-party packages are used: 
