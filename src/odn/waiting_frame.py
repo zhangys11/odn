@@ -1,3 +1,5 @@
+# a slightly different copy of pi.gui.waiting_frame.py
+
 import textwrap
 from time import sleep
 from queue import Queue

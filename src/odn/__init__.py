@@ -117,8 +117,8 @@ def predict_fundus_folder(folder, method = 'YOLO5', dir_output = 'inplace',model
     callback('\nfinish ' + method + ' detection. \nimages saved to: ' + dir_output + '')
 
 if __name__ == "__main__":
-    predict_fundus_folder('C:/Users/eleve/Desktop/横向2022/SZEH分区 第二次激光', 
-    method = 'SSD',
+    predict_fundus_folder('C:/Users/eleve/Desktop/横向2022/SZEH 分区 第三批 注药组初步整理', 
+    method = 'FRCNN',
     dir_output = 'inplace',
     model_path = None,
     label_path = None)

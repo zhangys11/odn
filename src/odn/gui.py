@@ -39,7 +39,7 @@ else:
 
 USE_PROGRESSBAR = False
 USE_GRID_LAYOUT = False
-DEFAULT_WINSIZE = '1024x768'
+DEFAULT_WINSIZE = '640x480'
 TREEVIEW_ROW_HEIGHT = 21
 VERBOSE = False
 
@@ -592,5 +592,5 @@ if __name__ == '__main__':
     app = ttk.Window("ODN") # , "cyborg")
     FileSearchFrame(app, None)
     app.geometry(DEFAULT_WINSIZE)
-    app.attributes('-fullscreen', False)
+    app.attributes('-fullscreen', True)
     app.mainloop()

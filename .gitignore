@@ -1,5 +1,3 @@
-data/fundus/images
-data/fundus/ground_truth
 *.pyc
 src/odn/models/rpn/pretrained_rpn_vgg_model.36-1.42.hdf5
 notebooks/.ipynb_checkpoints/8.7 Object Detection -Fundus - Clean-checkpoint.ipynb
