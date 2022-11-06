@@ -1,30 +1,8 @@
 # About
 
 We provide a set of object detection neural network training and evaluation functions.  
-We currently support Faster-RCNN, SSD and YOLO(v5). An infant funuds image object detection application is provided. This application combined the general-purposed object dection and domain-specific morphological rules. The rule-filtering and ROP zone segmentatin functions are provided in the annotation class of the fundus.py file.      
+We currently support Faster-RCNN, SSD and YOLO(v5). An infant funuds image object detection application is provided.   
 NOTE: Faster-RCNN and SSD require tf 1.x. SSD can run under tf 2.x using 'import tensorflow.compat.v1 as tf'. FRCNN may be painful to get running. We recommend using the latest YOLO v5.
-
-# Publication
-
-Morphological Rule-Constrained Object Detection of Key Structures in Infant Fundus Image. IEEE/ACM Transactions on Computational Biology and Bioinformatics [J]. 2022. Under Review.   
-
-This repo also contains the de-identified fundus image sets in the article:  
-
-    data/fundus/images : de-identified fundus images   
-    data/fundus/all_labes.csv : annotation in one file    
-    data/fundus/labels/ : annotation files for each image    
-    data/fundus/ground_truth_public : fundus images marked with annotations   
-    data/fundus/frcnn_19e_zones : object detection and zone segmentation results by FRCNN   
-    data/fundus/ssd : object detection and zone segmentation results by SSD   
-    data/fundus/yolo5 : object detection and zone segmentation results by YOLOv5   
-    data/fundus/test : another fundus image set for testing purposes     
-
-Model weights:  
-
-    src/odn/tf_ssd/export/frozen_inference_graph.pb : SSD weights
-    src/odn/tf_ssd/fundus_label_map.pbtxt : SSD label map file   
-    src/odn/torch_yolo/runs/train/exp15/weights/best.pt : YOLOv5 weights
-    FRCNN model weigths (>500MB) is not included due to github's file size limit.    
 
 # Credit
 
