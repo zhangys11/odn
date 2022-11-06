@@ -501,7 +501,9 @@ class annotation():
 
         Return
         ------
-        cx, cy, zone 1 radius
+        cx : x coordinate of optical disk
+        cy : y coordinate of optical disk
+        radius : zone 1 radius. if cx and cy is not 0, but radius = 0, means no macula is found.
         '''
         
         idxOD = -1
@@ -532,13 +534,11 @@ class annotation():
 
         cx_m = -1
         cy_m = -1
+        radius = 0
 
-        if (idxMacula >= 0):
+        if (idxMacula >= 0): # macula is found
             cx_m = (boxes[idxMacula][0] + boxes[idxMacula][2])/2.0
             cy_m = (boxes[idxMacula][1] + boxes[idxMacula][3])/2.0
-
-        radius = 0.5
-        if (cx_m != -1):
             radius = 2*( sqrt((cx-cx_m)**2 + (cy-cy_m)**2) )    
             # print(cx-cx_m, cy-cy_m, radius)
             
@@ -830,7 +830,7 @@ class annotation():
     input_path = '../data/fundus/test', # or a 'filelist.txt' file
     conf_thres=0.3, iou_thres=0.5, max_det=2, 
     anno_pil = True, colors = [(200,100,100),(55,125,125)],
-    output_path = None, suffix = '_YOLO5', display = True, verbose = False
+    output_path = None, suffix = '_YOLO5', display = True, verbose = False, radius = 0
     ):
         '''
         Fundus iamge batch detection using pytorch yolo model 
@@ -844,9 +844,21 @@ class annotation():
         max_det : how many ROIs should we keep
         anno_pil : use PIL or cv2 to draw annotations
         colors : color of ROI bbox
-        output_path : target output path, will create if non-exist. if None or 'inplace', will output images in the original folder. 
+        output_path : target output path, will create if non-exist. 
+            if None or 'inplace', will output images in the original folder. 
+            if 'radius', no file output, only calcuate the zone I radius. (when the input files belong to one "examination")
         suffix : suffix added to output image, e.g., '_YOLO5'
+        
+        Return
+        ------
+        RADIUS : if the input files belong to one "examination" / output_path = 'radius’, 
+            the returned radius can be used to draw zones for images without macula.
+            如果输入的为同一组检查图片（同一病人的同眼别的一次检查的数张照片），则返回依据有黄斑结构的图片测算出的一区半径。
         '''
+
+        # some functions changes our matplotlib backend, restore it where ploting is used.
+        import matplotlib
+        backend = matplotlib.get_backend()        
 
         import torch
         import torch.jit
@@ -867,6 +879,9 @@ class annotation():
         stride, names, pt = model.stride, model.names, model.pt
 
         dataset = datasets.LoadImages(input_path, stride=stride, auto=pt)
+
+        radii = [] # stores the zone 1 radius found by each image
+        INPUT_RADIUS = radius
 
         for path, im, im0s, _, _ in dataset:        
             im = torch.from_numpy(im).to(device)
@@ -915,34 +930,76 @@ class annotation():
                         # print(xyxy, conf, cls)
                 
                 cx, cy, radius = annotation.torch_calculate_fundus_zones(fundus_classes, fundus_scores, fundus_bbox)  
-                if radius > 0:
+                
+                if INPUT_RADIUS > 0: # use the input radius first
+                    annotator.fundus_zones( cx, cy, INPUT_RADIUS ) 
+                elif radius > 0: # means both optic disc and macula are found. use 2*|| od - macula || as the zone I radius.
+                    radii.append(radius)
                     annotator.fundus_zones( cx, cy, radius )        
                                 
                 # Stream results
                 im0 = annotator.result()
                 
-                if display:
+                if display:   
+                    plt.figure()                 
                     plt.imshow(cv2.cvtColor(im0, cv2.COLOR_BGR2RGB))
+                    matplotlib.use(backend) # restore matplotlib backend
                     plt.show()
                 
                 if suffix is None:
                     suffix = ''
 
-                # Save results (image with detections)
-                if output_path is None or output_path == 'inplace': # inplace
-                    target_path = path.replace(pathlib.Path(path).suffix, suffix + pathlib.Path(path).suffix)
-                else:
-                    os.makedirs(output_path, exist_ok=True)
-                    target_path = output_path + '/' + os.path.basename(path).replace(pathlib.Path(path).suffix, suffix + pathlib.Path(path).suffix)
-
                 if verbose:
-
                     print('----- prediction: classes, probs, bbox -----\n', fundus_classes)
                     print(fundus_scores)
                     print(fundus_bbox)
                     print('\nsaved to', target_path)
 
-                cv2.imwrite(target_path, im0)
+                # Save results (image with detections)
+                if output_path == 'radius':
+                    pass # do thing, only return the radius
+                elif output_path is None or output_path == 'inplace': # inplace
+                    target_path = path.replace(pathlib.Path(path).suffix, suffix + pathlib.Path(path).suffix)
+                    cv2.imwrite(target_path, im0)        
+                else:
+                    os.makedirs(output_path, exist_ok=True)
+                    target_path = output_path + '/' + os.path.basename(path).replace(pathlib.Path(path).suffix, suffix + pathlib.Path(path).suffix)
+                    cv2.imwrite(target_path, im0)
+        
+        RADIUS = 0 # use the median as the final radius
+        if len(radii) == 1:
+            RADIUS = radii[0]
+        elif len(radii) > 1:
+            RADIUS = np.median(radii)
+
+        return RADIUS
+
+    def torch_batch_object_detection_for_one_exam(model_path = '../src/odn/torch_yolo/runs/train/exp15/weights/best.pt',
+        input_path = '../data/fundus/test', # or a 'filelist.txt' file
+        conf_thres=0.3, iou_thres=0.5, max_det=2, 
+        anno_pil = True, colors = [(200,100,100),(55,125,125)],
+        suffix = '_YOLO5', display = True, verbose = False
+        ):
+        '''
+        输入的为同一组检查图片（同一病人的同眼别的一次检查的数张照片），
+        将依据有黄斑结构的图片测算出的一区半径去绘制所有该组图片。
+        生成的图片将位于同目录，文件名默认后缀"_YOLO5"
+        '''
+
+        # 1st loop to get radius
+        RADIUS = annotation.torch_batch_object_detection(model_path,
+        input_path, conf_thres, iou_thres, max_det, 
+        anno_pil, colors,
+        output_path = 'radius', display = False, verbose = False)
+
+        # 2nd loop to use the radius to render zones
+        _ = annotation.torch_batch_object_detection(model_path,
+        input_path, conf_thres, iou_thres, max_det, 
+        anno_pil, colors,
+        output_path = None, suffix = suffix, display = display, verbose = verbose, 
+        radius = RADIUS)
+
+        return RADIUS
 
 class dataset():
 

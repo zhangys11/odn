@@ -1,7 +1,7 @@
 # About
 
 We provide a set of object detection neural network training and evaluation functions.  
-We currently support Faster-RCNN, SSD and YOLO(v5). An infant funuds image object detection application is provided.   
+We currently support Faster-RCNN, SSD and YOLO(v5). An infant funuds image object detection application is provided. This application combined the general-purposed object dection and domain-specific morphological rules. The rule-filtering and ROP zone segmentatin functions are provided in the annotation class of the fundus.py file.  
 NOTE: Faster-RCNN and SSD require tf 1.x. SSD can run under tf 2.x using 'import tensorflow.compat.v1 as tf'. FRCNN may be painful to get running. We recommend using the latest YOLO v5.
 
 # Credit
