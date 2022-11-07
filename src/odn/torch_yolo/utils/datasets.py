@@ -202,7 +202,7 @@ class LoadImages:
         else:
             raise Exception(f'ERROR: {p} does not exist')
 
-        print(files)
+        # print(files)
 
         images = [x for x in files if x.split('.')[-1].lower() in IMG_FORMATS]
         videos = [x for x in files if x.split('.')[-1].lower() in VID_FORMATS]
@@ -219,8 +219,9 @@ class LoadImages:
             self.new_video(videos[0])  # new video
         else:
             self.cap = None
-        assert self.nf > 0, f'No images or videos found in {p}. ' \
-                            f'Supported formats are:\nimages: {IMG_FORMATS}\nvideos: {VID_FORMATS}'
+
+        if self.nf <= 0:
+            print('No images or videos found in ' + str(p) + '. \n'  + f'Supported formats are:\nimages: {IMG_FORMATS}\nvideos: {VID_FORMATS}')
 
     def __iter__(self):
         self.count = 0

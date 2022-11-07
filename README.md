@@ -15,6 +15,7 @@ The following 3rd-party packages are used:
 
 # Install
 
+    pip install torch==1.8.2 torchvision==0.9.2 torchaudio===0.8.2 --extra-index-url https://download.pytorch.org/whl/lts/1.8/cu111 (use LTS version)       
     pip install tensorflow-gpu == 1.14.0  
     pip install tf-slim 
     pip install odn
@@ -299,3 +300,11 @@ data/fundus/ssd : object detection results by SSD (Single Shot MultiBox Detector
 
 After training, you will get a keras h5 model file. You can further convert it to tflite format, or tfjs format.    
 Then you can deploy on mobile device or browser-based apps.
+
+# Functions added since first publication
+
+One-exam zone segmentation:  
+`odn.fundus.annotation.torch_batch_object_detection_for_one_exam()`
+
+The basic idea is to use images with both optic disc and macula to get the zone 1 radius (left). Later use this radius for images of the same exam only with the optic disc (right).  
+<img src='one_exam.png'>

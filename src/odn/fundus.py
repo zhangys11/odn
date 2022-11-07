@@ -858,7 +858,7 @@ class annotation():
 
         # some functions changes our matplotlib backend, restore it where ploting is used.
         import matplotlib
-        backend = matplotlib.get_backend()        
+        backend = matplotlib.get_backend()
 
         import torch
         import torch.jit
@@ -879,6 +879,9 @@ class annotation():
         stride, names, pt = model.stride, model.names, model.pt
 
         dataset = datasets.LoadImages(input_path, stride=stride, auto=pt)
+        if (len(dataset) <= 0 ):
+            matplotlib.use(backend)
+            return
 
         radii = [] # stores the zone 1 radius found by each image
         INPUT_RADIUS = radius
@@ -930,12 +933,13 @@ class annotation():
                         # print(xyxy, conf, cls)
                 
                 cx, cy, radius = annotation.torch_calculate_fundus_zones(fundus_classes, fundus_scores, fundus_bbox)  
-                
-                if INPUT_RADIUS > 0: # use the input radius first
-                    annotator.fundus_zones( cx, cy, INPUT_RADIUS ) 
-                elif radius > 0: # means both optic disc and macula are found. use 2*|| od - macula || as the zone I radius.
-                    radii.append(radius)
-                    annotator.fundus_zones( cx, cy, radius )        
+
+                if cx > 0 and cy > 0: # cx and cy = -1 if no optic disc is found               
+                    if INPUT_RADIUS > 0: # use the input radius first
+                        annotator.fundus_zones( cx, cy, INPUT_RADIUS ) 
+                    elif radius > 0: # means both optic disc and macula are found. use 2*|| od - macula || as the zone I radius.
+                        radii.append(radius)
+                        annotator.fundus_zones( cx, cy, radius )
                                 
                 # Stream results
                 im0 = annotator.result()
@@ -944,6 +948,7 @@ class annotation():
                     plt.figure()                 
                     plt.imshow(cv2.cvtColor(im0, cv2.COLOR_BGR2RGB))
                     matplotlib.use(backend) # restore matplotlib backend
+                    plt.axis('off')
                     plt.show()
                 
                 if suffix is None:
@@ -972,6 +977,7 @@ class annotation():
         elif len(radii) > 1:
             RADIUS = np.median(radii)
 
+        matplotlib.use(backend) # restore matplotlib backend
         return RADIUS
 
     def torch_batch_object_detection_for_one_exam(model_path = '../src/odn/torch_yolo/runs/train/exp15/weights/best.pt',
