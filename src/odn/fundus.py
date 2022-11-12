@@ -886,7 +886,15 @@ class annotation():
         radii = [] # stores the zone 1 radius found by each image
         INPUT_RADIUS = radius
 
-        for path, im, im0s, _, _ in dataset:        
+        for path, im, im0s, _, _ in dataset:  
+
+            if im is None: # something goes wrong during reading the image
+                continue
+
+            # skip those ending with 'suffix', e.g., _YOLO5
+            if suffix is not None and suffix != '' and (suffix+'.' in path):
+                continue
+
             im = torch.from_numpy(im).to(device)
             im = im.half() if model.fp16 else im.float()  # uint8 to fp16/32
             im /= 255  # 0 - 255 to 0.0 - 1.0

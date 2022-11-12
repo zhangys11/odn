@@ -251,9 +251,15 @@ class LoadImages:
 
         else:
             # Read image
-            self.count += 1
-            img0 = cv2.imread(path)  # BGR
+            try:
+                img0 = cv2.imread(path)  # BGR
+            except:
+                print ('cv2.imread() exception. path: ' + path)
+                return path, None, None, None, ''
+
             assert img0 is not None, f'Image Not Found {path}'
+
+            self.count += 1
             s = f'image {self.count}/{self.nf} {path}: '
 
         # Padded resize
