@@ -32,3 +32,5 @@ src/odn/filtered.rois.txt
 src/odn/models/vgg16/10e.hdf5
 src/odn/models/vgg16/19e.hdf5
 src/odn/torch_yolo/utils/docker/
+data/fundus/images_public.cache
+data/fundus/labels.cache
