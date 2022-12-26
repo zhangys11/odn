@@ -359,7 +359,7 @@ def get_all_images_in_dir(folder = '../data/fundus/images_public/', target_file 
 
 	for root, dirs, files in os.walk(folder):
 		for f in files:
-			if( os.path.isfile(os.path.join(root, f)) and (f.endswith('.jpg') or f.endswith('.png')) ):
+			if( os.path.isfile(os.path.join(root, f)) and (f.endswith('.jpg') or f.endswith('.png') or f.endswith('.ppm') or f.endswith('.tif')) ):
 				fp =  os.path.join(root, f).replace("\\", "/") 
 				
 				exclude = False
