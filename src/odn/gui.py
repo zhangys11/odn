@@ -1,15 +1,13 @@
+import os
+import sys
 import pathlib
+import shutil
 from queue import Queue
 from threading import Thread
 from tkinter.filedialog import askdirectory
-from turtle import width
-from regex import B
-from send2trash import send2trash
-import shutil
-import requests
-import os
-import sys
+import warnings
 from datetime import datetime
+import requests
 
 import ttkbootstrap as ttk
 from ttkbootstrap.constants import *
@@ -17,9 +15,7 @@ from ttkbootstrap import utility
 from ttkbootstrap.dialogs.dialogs import Messagebox
 from ttkbootstrap.icons import Emoji
 from ttkbootstrap.toast import ToastNotification
-from pathlib import Path
 
-import warnings
 warnings.filterwarnings('ignore')
 
 if __package__:
@@ -27,7 +23,7 @@ if __package__:
     from . import predict_fundus_folder
     from .waiting_frame import WaitingFrame
 else:
-    FILE = Path(__file__).resolve()
+    FILE = pathlib.Path(__file__).resolve()
     ROOT = FILE.parents[0]  # root directory, i.e., odn
     if ROOT not in sys.path:
         sys.path.insert(0, ROOT)

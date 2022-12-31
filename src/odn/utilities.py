@@ -276,7 +276,7 @@ def search_file(folder, fname):
 
 
 def replace_image_in_list(l, file, newfile):
-    for idx, item in enumerate(l):
+    for _, item in enumerate(l):
         if(item['filename'] == file):
             item['filename'] = newfile
             print('R',  newfile)
@@ -296,7 +296,7 @@ def convert_to_rgb(folder, json_annos):
 	to_del = []
 	to_replace = []
 
-	for root, dirs, files in os.walk(folder):
+	for root, _, files in os.walk(folder):
 			for file in files:
 				if( not file.endswith('.db')):
 					if (search_file(root, file) is not None):
@@ -320,7 +320,7 @@ def move_images_to_one_folder(source, target, copy = True):
 	'''
 	os.makedirs(target, exist_ok=True)
 
-	for root, dirs, files in os.walk(source):
+	for root, _, files in os.walk(source):
 		for file in files:
 			if( not file.endswith('.db') and not file.endswith('.json')):
 				if copy:
@@ -337,7 +337,7 @@ def merge_json_anno_files(source_folder, target_file):
 
 	with open(target_file, 'w') as outfile:
 		outfile.write('{')
-		for root, dirs, files in os.walk(source_folder):
+		for root, _, files in os.walk(source_folder):
 			for f in files:
 				if f.endswith('.json'):
 					with open(os.path.join(root, f), 'r') as jf:
@@ -346,7 +346,7 @@ def merge_json_anno_files(source_folder, target_file):
 						s = s + jf.read()[1:-1] + ','
 		s = s[:-1]
 		outfile.write(s)
-		outfile.write('}')   
+		outfile.write('}') 
 
 def get_all_images_in_dir(folder = '../data/fundus/images_public/', target_file = None, excludes = ['_FRCNN','_SSD','_YOLO5']):
 
@@ -381,7 +381,7 @@ def get_all_images_in_dir(folder = '../data/fundus/images_public/', target_file 
 	return FILES
 
 def load_tf_graph(ckpt_path = '../src/odn/tf_ssd/export/frozen_inference_graph.pb',
-                 label_path = '../src/odn/tf_ssd/fundus_label_map.pbtxt', 
+                 label_path = '../src/odn/tf_ssd/fundus_label_map.pbtxt',
                  num_classes = 2, verbose = True):
         '''
         Load tf graph from checkpoint
@@ -506,7 +506,7 @@ def tf_batch_object_detection(detection_graph, category_index, FILES,
 						feed_dict={image_tensor: image_np_expanded})
 
 					# get image dims
-					(im_width, im_height) = image.size
+					(im_width, _) = image.size
 					
 					if fontsize is None:
 						fontsize = round( im_width * 0.024 )

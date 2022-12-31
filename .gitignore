@@ -34,3 +34,5 @@ src/odn/models/vgg16/19e.hdf5
 src/odn/torch_yolo/utils/docker/
 data/fundus/images_public.cache
 data/fundus/labels.cache
+code/comparison_with_metrics.jpg
+code/metrics.png
