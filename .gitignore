@@ -36,3 +36,6 @@ data/fundus/images_public.cache
 data/fundus/labels.cache
 code/comparison_with_metrics.jpg
 code/metrics.png
+data/fundus/one_exam/OD-e2657fbd-e042-4bd9-b964-7bdeca535d1b.3_YOLO5.png
+data/fundus/one_exam/OD-e2657fbd-e042-4bd9-b964-7bdeca535d1b.6_YOLO5.png
+data/fundus/one_exam/OS-e2657fbd-e042-4bd9-b964-7bdeca535d1b.61_YOLO5.png
