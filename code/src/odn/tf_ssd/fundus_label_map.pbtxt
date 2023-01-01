@@ -1,0 +1,9 @@
+item {
+  id: 1
+  name: 'OpticDisk'
+}
+
+item {
+  id: 2
+  name: 'Macula'
+}
