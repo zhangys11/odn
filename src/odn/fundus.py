@@ -410,14 +410,10 @@ class annotation():
         # disable the "A value is trying to be set on a copy of a slice from a DataFrame" warning
         pd.options.mode.chained_assignment = None
 
-        Dod = 0.1  # diameter of optic disc
-        Dma = 0.16  # diameter of macula
-        Dom = 0.32  # distance between optic disc and macula
-
         uniquefiles = set(rois['filename'].values)
         all_to_be_removed = []
 
-        for index, fn in enumerate(uniquefiles):
+        for _, fn in enumerate(uniquefiles):
             # print(fn)
 
             rows = rois.loc[rois.filename == fn]
@@ -465,26 +461,26 @@ class annotation():
         Three bbox : Zone I, Posterior Zone II, Zone II
         '''
 
-        idxOD = -1
-        # idxOS = -1
-        idxMacula = -1
+        idx_optic_disc = -1
+        # idxOS = -1 # optic_disc of OS
+        idx_macula = -1
 
         idx = 0
 
         for c in classes:
             if (c == 1 and scores[idx] > threshold):
-                idxOD = idx
+                idx_optic_disc = idx
             # if (c == 2 and scores[idx] > threshold):
             #    idxOS = idx
             if (c == 2 and scores[idx] > threshold):
-                idxMacula = idx
+                idx_macula = idx
             idx = idx + 1
 
         cx = -1
         cy = -1
-        if (idxOD >= 0):
-            cx = (boxes[idxOD][3] + boxes[idxOD][1])/2.0
-            cy = (boxes[idxOD][2] + boxes[idxOD][0])/2.0
+        if (idx_optic_disc >= 0):
+            cx = (boxes[idx_optic_disc][3] + boxes[idx_optic_disc][1])/2.0
+            cy = (boxes[idx_optic_disc][2] + boxes[idx_optic_disc][0])/2.0
 
         # if (idxOS >= 0):
         #    cx = (boxes[idxOS][3] + boxes[idxOS][1])/2.0
@@ -496,9 +492,9 @@ class annotation():
         cx_m = -1
         cy_m = -1
 
-        if (idxMacula >= 0):
-            cx_m = (boxes[idxMacula][3] + boxes[idxMacula][1])/2.0
-            cy_m = (boxes[idxMacula][2] + boxes[idxMacula][0])/2.0
+        if (idx_macula >= 0):
+            cx_m = (boxes[idx_macula][3] + boxes[idx_macula][1])/2.0
+            cy_m = (boxes[idx_macula][2] + boxes[idx_macula][0])/2.0
 
         radius = 0.5
         if (cx_m != -1):
@@ -530,28 +526,28 @@ class annotation():
         radius : zone 1 radius. if cx and cy is not 0, but radius = 0, means no macula is found.
         '''
 
-        idxOD = -1
+        idx_optic_disc = -1
         # idxOS = -1
-        idxMacula = -1
+        idx_macula = -1
 
         idx = 0
 
         for c in classes:
             if (c == 1 and scores[idx] > threshold):
-                idxOD = idx
+                idx_optic_disc = idx
             # if (c == 2 and scores[idx] > threshold):
             #    idxOS = idx
             if (c == 2 and scores[idx] > threshold):
-                idxMacula = idx
+                idx_macula = idx
             idx = idx + 1
 
-        # print(idxOD, idxMacula)
+        # print(idx_optic_disc, idx_macula)
 
         cx = -1
         cy = -1
-        if (idxOD >= 0):
-            cx = (boxes[idxOD][0] + boxes[idxOD][2])/2.0
-            cy = (boxes[idxOD][1] + boxes[idxOD][3])/2.0
+        if (idx_optic_disc >= 0):
+            cx = (boxes[idx_optic_disc][0] + boxes[idx_optic_disc][2])/2.0
+            cy = (boxes[idx_optic_disc][1] + boxes[idx_optic_disc][3])/2.0
 
         if (cx == -1):
             return 0, 0, 0
@@ -560,9 +556,9 @@ class annotation():
         cy_m = -1
         radius = 0
 
-        if (idxMacula >= 0):  # macula is found
-            cx_m = (boxes[idxMacula][0] + boxes[idxMacula][2])/2.0
-            cy_m = (boxes[idxMacula][1] + boxes[idxMacula][3])/2.0
+        if (idx_macula >= 0):  # macula is found
+            cx_m = (boxes[idx_macula][0] + boxes[idx_macula][2])/2.0
+            cy_m = (boxes[idx_macula][1] + boxes[idx_macula][3])/2.0
             radius = 2*(sqrt((cx-cx_m)**2 + (cy-cy_m)**2))
             # print(cx-cx_m, cy-cy_m, radius)
 
@@ -646,7 +642,7 @@ class annotation():
 
     @staticmethod
     def tf_batch_object_detection(detection_graph, category_index, FILES,
-                                  target_folder, log_file, suffix='_ANNO',
+                                  target_folder, log_file, suffix='_SSD',
                                   display=False, savefile=True,
                                   IMAGE_SIZE=(24, 18), threshold=0.2,
                                   new_img_width=None,
@@ -654,6 +650,8 @@ class annotation():
         '''
         This is an extended version of utilities.tf_batch_object_detection() that added fundus specific rules.
         '''
+        import matplotlib
+        backend = matplotlib.get_backend()
 
         import tensorflow.compat.v1 as tf
 
@@ -719,9 +717,9 @@ class annotation():
                             fontsize = round(im_width * 0.024)
 
                         # category_index:  {1: {'id': 1, 'name': 'OpticDisk'}, 2: {'id': 2, 'name': 'Macula'}}
-                        idxOD = -1
+                        idx_optic_disc = -1
                         # idxOS = -1
-                        idxMacula = -1
+                        idx_macula = -1
                         probMacula = 0
                         idx = 0
 
@@ -734,12 +732,12 @@ class annotation():
                                 str(round(scores[0][idx], 3)) + ' '
 
                             if (c == 1):
-                                idxOD = idx
+                                idx_optic_disc = idx
                             if (c == 2):
-                                if idxMacula == -1 or probMacula < scores[0][idx]:
-                                    if idxMacula > 0:
-                                        scores[0][idxMacula] = 0.0
-                                    idxMacula = idx
+                                if idx_macula == -1 or probMacula < scores[0][idx]:
+                                    if idx_macula > 0:
+                                        scores[0][idx_macula] = 0.0
+                                    idx_macula = idx
                                     probMacula = scores[0][idx]
 
                             idx = idx + 1
@@ -752,72 +750,72 @@ class annotation():
                         # Discard oversized macula candidates; Judge the distance between macula and OpticDisk
                         # On a 512-pixel-high image, macula radius is 55, optic disk radius is 35
                         # The boxes object is a 2 dimensional numpy array of [N, 4]: (ymin, xmin, ymax, xmax). The coordinates are in normalized format between [0, 1].
-                        m_w = abs(boxes[0][idxMacula][3] -
-                                  boxes[0][idxMacula][1])
-                        m_h = abs(boxes[0][idxMacula][2] -
-                                  boxes[0][idxMacula][0])
-                        m_cx = abs(boxes[0][idxMacula][3] +
-                                   boxes[0][idxMacula][1])/2.0
-                        m_cy = abs(boxes[0][idxMacula][2] +
-                                   boxes[0][idxMacula][0])/2.0
+                        m_w = abs(boxes[0][idx_macula][3] -
+                                  boxes[0][idx_macula][1])
+                        m_h = abs(boxes[0][idx_macula][2] -
+                                  boxes[0][idx_macula][0])
+                        m_cx = abs(boxes[0][idx_macula][3] +
+                                   boxes[0][idx_macula][1])/2.0
+                        m_cy = abs(boxes[0][idx_macula][2] +
+                                   boxes[0][idx_macula][0])/2.0
 
                         # print(m_w, m_h, m_cx, m_cy)
 
                         if m_w > 0.3 or m_h > 0.3:
-                            scores[0][idxMacula] = 0.0
+                            scores[0][idx_macula] = 0.0
 
                         ##### RULE2: Optic Disk OD/OS Judgment ######
-                        od_cx = abs(boxes[0][idxOD][3] +
-                                    boxes[0][idxOD][1])/2.0
-                        od_cy = abs(boxes[0][idxOD][2] +
-                                    boxes[0][idxOD][0])/2.0
+                        od_cx = abs(boxes[0][idx_optic_disc][3] +
+                                    boxes[0][idx_optic_disc][1])/2.0
+                        od_cy = abs(boxes[0][idx_optic_disc][2] +
+                                    boxes[0][idx_optic_disc][0])/2.0
 
                         # os_cx = abs(boxes[0][idxOS][3] + boxes[0][idxOS][1])/2.0
                         # os_cy = abs(boxes[0][idxOS][2] + boxes[0][idxOS][0])/2.0
 
                         '''
                         # OpticDisk near the left rim is OS
-                        if (scores[0][idxOD] > threshold and scores[0][idxOD]>scores[0][idxOS] and od_cx < 0.2): # 2.0*35*2/512
-                            scores[0][idxOS] = max(scores[0][idxOS], scores[0][idxOD])
-                            scores[0][idxOD] = 0
-                            boxes[0][idxOS] = boxes[0][idxOD] # ?üD?bbox
-                            #classes[0][idxOD] = 2 # set as OS
+                        if (scores[0][idx_optic_disc] > threshold and scores[0][idx_optic_disc]>scores[0][idxOS] and od_cx < 0.2): # 2.0*35*2/512
+                            scores[0][idxOS] = max(scores[0][idxOS], scores[0][idx_optic_disc])
+                            scores[0][idx_optic_disc] = 0
+                            boxes[0][idxOS] = boxes[0][idx_optic_disc] # ?üD?bbox
+                            #classes[0][idx_optic_disc] = 2 # set as OS
 
                         # OpticDisk near the right rim is OD
-                        if (scores[0][idxOS] > threshold  and scores[0][idxOD]<scores[0][idxOS] and os_cx > 0.8):
-                            scores[0][idxOD] = max(scores[0][idxOS], scores[0][idxOD])
+                        if (scores[0][idxOS] > threshold  and scores[0][idx_optic_disc]<scores[0][idxOS] and os_cx > 0.8):
+                            scores[0][idx_optic_disc] = max(scores[0][idxOS], scores[0][idx_optic_disc])
                             scores[0][idxOS] = 0
-                            boxes[0][idxOD] = boxes[0][idxOS] # ?üD?bbox
+                            boxes[0][idx_optic_disc] = boxes[0][idxOS] # ?üD?bbox
                             #classes[0][idxOS] = 1 # set as OD
                         
 
                         ##### RULE3: Judge relative positions of macula and OpticDisk
 
                         # reload boxes info
-                        od_cx = abs(boxes[0][idxOD][3] + boxes[0][idxOD][1])/2.0
-                        od_cy = abs(boxes[0][idxOD][2] + boxes[0][idxOD][0])/2.0
+                        od_cx = abs(boxes[0][idx_optic_disc][3] + boxes[0][idx_optic_disc][1])/2.0
+                        od_cy = abs(boxes[0][idx_optic_disc][2] + boxes[0][idx_optic_disc][0])/2.0
 
                         # os_cx = abs(boxes[0][idxOS][3] + boxes[0][idxOS][1])/2.0
                         # os_cy = abs(boxes[0][idxOS][2] + boxes[0][idxOS][0])/2.0
 
-                        if (scores[0][idxMacula] > threshold):
-                            if (scores[0][idxOD] > threshold and scores[0][idxOD] > scores[0][idxOS] and m_cx > od_cx ):
-                                scores[0][idxOS] = max(scores[0][idxOS], scores[0][idxOD])
-                                scores[0][idxOD] = 0
-                                boxes[0][idxOS] = boxes[0][idxOD]
-                            if (scores[0][idxOS] > threshold and scores[0][idxOD] < scores[0][idxOS] and m_cx < os_cx):
-                                scores[0][idxOD] = max(scores[0][idxOS], scores[0][idxOD])
+                        if (scores[0][idx_macula] > threshold):
+                            if (scores[0][idx_optic_disc] > threshold and scores[0][idx_optic_disc] > scores[0][idxOS] and m_cx > od_cx ):
+                                scores[0][idxOS] = max(scores[0][idxOS], scores[0][idx_optic_disc])
+                                scores[0][idx_optic_disc] = 0
+                                boxes[0][idxOS] = boxes[0][idx_optic_disc]
+                            if (scores[0][idxOS] > threshold and scores[0][idx_optic_disc] < scores[0][idxOS] and m_cx < os_cx):
+                                scores[0][idx_optic_disc] = max(scores[0][idxOS], scores[0][idx_optic_disc])
                                 scores[0][idxOS] = 0
-                                boxes[0][idxOD] = boxes[0][idxOS] # update bbox
+                                boxes[0][idx_optic_disc] = boxes[0][idxOS] # update bbox
 
                         
 
                         ##### RULE4: Keep the bigger probality of OpticDisk
 
-                        if (scores[0][idxOD] > scores[0][idxOS]):                        
+                        if (scores[0][idx_optic_disc] > scores[0][idxOS]):                        
                             scores[0][idxOS] = 0.0                        
-                        if (scores[0][idxOD] < scores[0][idxOS]):
-                            scores[0][idxOD] = 0.0    
+                        if (scores[0][idx_optic_disc] < scores[0][idxOS]):
+                            scores[0][idx_optic_disc] = 0.0    
                         
                         '''
 
@@ -852,9 +850,12 @@ class annotation():
                             fontsize=fontsize)
 
                         fig = plt.figure(figsize=IMAGE_SIZE)
-                        if (display):
+                        if display:
+                            matplotlib.use(backend)
                             plt.imshow(image_np)
-                        if(savefile):
+                            plt.axis('off')
+                            plt.show()                     
+                        if savefile:
                             if target_folder and target_folder != 'inplace':
                                 new_file_path = os.path.join(
                                     target_folder, os.path.basename(image_path))
@@ -871,6 +872,8 @@ class annotation():
                             with open(log_file, "a") as myfile:
                                 myfile.write(info + '\n')
                         pbar.update(1)
+
+        matplotlib.use(backend)
 
     @staticmethod
     def torch_batch_object_detection(model_path='../src/odn/torch_yolo/runs/train/exp15/weights/best.pt',
