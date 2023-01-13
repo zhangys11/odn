@@ -5,7 +5,9 @@ We currently support Faster-RCNN, SSD and YOLO(v5). An infant funuds image objec
 NOTE: Faster-RCNN and SSD require tf 1.x. SSD can run under tf 2.x using 'import tensorflow.compat.v1 as tf'. FRCNN may be painful to get running. We recommend using the latest YOLO v5.
 
 Cite our paper if you use the odn package or the dataset:  
-> "Morphological Rule-Constrained Object Detection of Key Structures in Infant Fundus Image", IEEE/ACM Transactions on Computational Biology and Bioinformatics, 2023
+> Y. Zhang et al., "Morphological Rule-Constrained Object Detection of Key Structures in Infant Fundus Image," in IEEE/ACM Transactions on Computational Biology and Bioinformatics, 2023, doi: 10.1109/TCBB.2023.3234100.
+
+The dataset is also available in [Mendeley data](http://doi.org/10.17632/9kvk7nkhx6).
 
 # Credit
 
