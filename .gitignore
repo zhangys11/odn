@@ -39,3 +39,11 @@ code/metrics.png
 data/fundus/one_exam/OD-e2657fbd-e042-4bd9-b964-7bdeca535d1b.3_YOLO5.png
 data/fundus/one_exam/OD-e2657fbd-e042-4bd9-b964-7bdeca535d1b.6_YOLO5.png
 data/fundus/one_exam/OS-e2657fbd-e042-4bd9-b964-7bdeca535d1b.61_YOLO5.png
+
+# v0.5.0: OS/cache/build artifacts and large model weights
+__pycache__/
+.DS_Store
+.ipynb_checkpoints/
+src/odn/darkflow_yolo/build/
+src/odn/darkflow_yolo/darkflow.egg-info/
+src/odn/darkflow_yolo/bin/yolov2.weights

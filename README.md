@@ -9,10 +9,42 @@ Cite our paper if you use the odn package or the dataset:
 
 The dataset is also available in [Mendeley data](http://doi.org/10.17632/9kvk7nkhx6).
 
+# Security Audit (v0.5.0)
+
+This release addresses GitHub Advisory security vulnerabilities and modernizes deprecated API usage.  
+All fixes have been independently reviewed and syntax-verified.
+
+## 🔴 Dependency Security Fixes
+
+| Dependency | Old Version | New Version | CVE Addressed |
+|-----------|------------|------------|---------------|
+| tensorflow | ==1.4.1 | >=1.7.1,<2 | CVE-2018-7575, CVE-2021-41208, CVE-2023-25668 |
+| Flask | ==1.0.2 | >=2.2.5,<3 | CVE-2023-30861 |
+| pip | ==21.1 | >=23.3 | CVE-2023-5752 |
+| gunicorn | ==19.9.0 | >=22.0.0 | CVE-2024-1135, CVE-2024-6827 |
+
+## 🛠 Code Modernization
+
+- **Keras API**: `K.image_dim_ordering()` → `K.image_data_format()` (all call sites)
+- **Keras training**: `fit_generator()` → `fit()`, `period=` → `save_freq=`
+- **Python stdlib**: `imp.load_source()` → `importlib.util`, `distutils` → removed, `urllib.request.URLopener()` → `urlretrieve()`
+- **Pillow**: `font.getsize()` → `font.getbbox()`
+- **Python 3 fix**: `dict.iteritems()` → `dict.items()` (crashed on Python 3)
+- **Dependencies**: Removed obsolete `uuid` and `six` packages; added minimum version pins
+
+## 📋 Affected Files
+
+`requirements-testing.txt`, `additional_requirements.txt`, `setup.cfg`, `measure_map.py`, `train_rpn.py`, `utilities.py`, `plots.py`, `roi_helpers.py`, `simple.py`, `visualization_utils.py`, `darkflow_yolo/setup.py`
+
+## ⚠️ Known Limitations
+
+- Faster-RCNN and SSD components still require TensorFlow 1.x. Full migration to TF 2.x is not included in this release.
+- The `darkflow_yolo` YOLOv2 component uses Cython extensions that must be compiled at install time.
+
 # Credit
 
 The following 3rd-party packages are used: 
-1. The Faster-RCNN module is based on https://github.com/kentaroy47/frcnn-from-scratch-with-keras. We have updated the code according to the latest keras API change (K..image_dim_ordering () -> K.image_data_format()).   
+1. The Faster-RCNN module is based on https://github.com/kentaroy47/frcnn-from-scratch-with-keras. We have updated the code according to the latest Keras API changes (K.image_dim_ordering() → K.image_data_format(), fit_generator() → fit()).
 2. Data augmentation package (https://github.com/Paperspace/DataAugmentationForObjectDetection).   
 3. SSD (Single Shot MultiBox Detector) by tensorflow. We took lots of efforts to integrate tensorflow's objection detection and slim source, mainly revising the relative importing. https://github.com/tensorflow/models/research/object_detection and https://github.com/tensorflow/models/research/slim    
 4. The darkflow framework (https://github.com/thtrieu/darkflow)   

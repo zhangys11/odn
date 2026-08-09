@@ -246,7 +246,7 @@ def rpn_to_roi(rpn_layer, regr_layer, C, dim_ordering, use_regr=True, max_boxes=
 
 			anchor_x = (anchor_size * anchor_ratio[0])/C.rpn_stride
 			anchor_y = (anchor_size * anchor_ratio[1])/C.rpn_stride
-			if dim_ordering == 'th':
+			if dim_ordering == 'channels_first':
 				regr = regr_layer[0, 4 * curr_layer:4 * curr_layer + 4, :, :]
 			else:
 				regr = regr_layer[0, :, :, 4 * curr_layer:4 * curr_layer + 4]

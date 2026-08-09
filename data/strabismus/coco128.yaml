@@ -1,0 +1,16 @@
+# Dataset configuration
+path: D:/gitvscode/odn/data/fundus/split4/images  # The root dir is directly 'split' since the YAML is inside 'newdata'
+train: D:/gitvscode/odn/data/fundus/split4/images/train  # Train images directory relative to 'path'
+val: D:/gitvscode/odn/data/fundus/split4/images/val
+test: D:/gitvscode/odn/data/fundus/split4/images/test  # Test images directory (optional)
+
+# # Number of classes
+nc: 2  # Change this based on the number of classes in your dataset
+
+# Class names
+names:
+  0: OpticDisk
+  1: Macula
+
+# Download script/URL (optional)
+# download: https://ultralytics.com/assets/coco128.zip

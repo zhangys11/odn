@@ -1,7 +1,6 @@
 import tensorflow.contrib.slim as slim
 from .baseop import BaseOp
 import tensorflow as tf
-from distutils.version import StrictVersion
 
 class route(BaseOp):
 	def forward(self):

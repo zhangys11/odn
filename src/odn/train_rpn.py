@@ -220,19 +220,19 @@ vis = True
 # you should enable NMS when you visualize your results.
 # NMS will filter out redundant predictions rpn gives, and will only leave the "best" predictions.
 # P_rpn = model_rpn.predict_on_batch(image)
-# R = roi_helpers.rpn_to_roi(P_rpn[0], P_rpn[1], C, K.image_dim_ordering(), use_regr=True, overlap_thresh=0.7, max_boxes=300)
+# R = roi_helpers.rpn_to_roi(P_rpn[0], P_rpn[1], C, K.image_data_format(), use_regr=True, overlap_thresh=0.7, max_boxes=300)
 # X2, Y1, Y2, IouS = roi_helpers.calc_iou(R, img_data, C, class_mapping)
 # this will output the binding box axis. [x1,x2,y1,y2].
 
-Callbacks=keras.callbacks.ModelCheckpoint("./models/rpn/rpn."+options.network+".weights.{epoch:02d}-{loss:.2f}.hdf5", monitor='loss', verbose=1, save_best_only=True, save_weights_only=True, mode='auto', period=4)
+Callbacks=keras.callbacks.ModelCheckpoint("./models/rpn/rpn."+options.network+".weights.{epoch:02d}-{loss:.2f}.hdf5", monitor='loss', verbose=1, save_best_only=True, save_weights_only=True, mode='auto', save_freq=4)
 callback=[Callbacks]
 if len(val_imgs) == 0:
     # assuming you don't have validation data
-    history = model_rpn.fit_generator(data_gen_train,
+    history = model_rpn.fit(data_gen_train,
                     epochs=options.num_epochs, steps_per_epoch = options.epoch_length, callbacks=callback)
     loss_history = history.history["loss"]
 else:
-    history = model_rpn.fit_generator(data_gen_train,
+    history = model_rpn.fit(data_gen_train,
                     epochs=options.num_epochs, validation_data=data_gen_val,
                     steps_per_epoch=options.epoch_length, callbacks=callback, validation_steps=100)
     loss_history = history.history["val_loss"]

@@ -442,8 +442,7 @@ def download_tf_model(url = 'http://download.tensorflow.org/models/object_detect
 	localpath = os.getcwd() + "/" + os.path.basename(url)
 
 	# Download tar.gz to get the PATH_TO_CKPT file
-	opener = urllib.request.URLopener()
-	opener.retrieve(url, localpath)
+	urllib.request.urlretrieve(url, localpath)
 	print(localpath)
 	tar_file = tarfile.open(localpath)
 	for file in tar_file.getmembers():
