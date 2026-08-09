@@ -47,3 +47,4 @@ __pycache__/
 src/odn/darkflow_yolo/build/
 src/odn/darkflow_yolo/darkflow.egg-info/
 src/odn/darkflow_yolo/bin/yolov2.weights
+data/strabismus/
